@@ -1,5 +1,5 @@
 body {
-   padding-top: 70px;
+   padding-top: 100px;
    color: white;
    background-color: black;
    background-image: url(red-bg.png);
@@ -9,25 +9,81 @@ body {
 
 }
 
-.content {
-  width: 70%;
-  color: white;
+
+
+.container {
+  padding: 10px;
+  margin-top: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color:white;
 }
 
-.content .left, .content .right {
-  display: inline-block;
+.container .item {
+  margin:10px;
+  flex-grow: 1;
+  width: 50%;
 }
 
-.content .left {
-  float: left;
-  width: 45%;
-}
 
-.content .right {
-  float: right;
-  width: 45%;
-}
 /*Bouton*/
-#clicktoadd {
+.clicktoadd  {
+  position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
 
+a.clicktoadd{
+	background: none;
+	display: block;
+	width: 200px;
+	height; 40px;
+	line-height:40px;
+	font-size: 18px;
+	font-family: sans-serif;
+	text-transform: uppercase;
+	text-decoration: none;
+	letter-spacing: 1px;
+	border: 2px solid #000000;
+	text-align: center;
+	position: relative;
+	transition: color 0.30s linear;
+	color: #DC143C
+}
+
+a.clicktoadd:hover {
+	color: #fff;
+  text-decoration: none;
+}
+
+a.clicktoadd::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #000000;
+	transition: transform 0.30s;
+	z-index: -1;
+	transform-origin: 0 0;
+	transition-timing-function: cubic-bezier(0.4 0 0.2 1)
+}
+
+a.clicktoadd::before {
+	transform: scaleX(0);
+}
+
+a.clicktoadd:hover::before {
+	transform: scaleX(1)
+}
+
+.box {
+  margin-top: 470px;
+  display:flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }

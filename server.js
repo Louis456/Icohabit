@@ -24,13 +24,20 @@ app.use(session({
     }
 }));
 
+const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
+
 MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     dbo = db.db("database");
     if (err) throw err;
 
     // Home page
     app.get('/', (req, res) => {
-        res.render('index.html', {});
+        res.render('index.html', {IdButtonText: idButton(req)});
+    });
+
+    // Groups page
+    app.get('/groupes', (req, res) => {
+        res.render('groupes.html', {IdButtonText: idButton(req)});
     });
 
     https.createServer({
@@ -41,3 +48,25 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.use(express.static('static'));
 
 });
+
+
+
+
+//            Les Fonctions
+
+function isConnected(req) {
+    /**
+     * Return a boolean
+     * @return True if the user is connected, otherwise false
+     */
+    return !(req.session.username == null);
+}
+
+function idButton(req) {
+    /**
+     * Return the string to be displayed on the upper right side of the screen.
+     * @return The username if the user is connected, else ID_BUTTON_TEXT string.
+     */
+    if (req.session.username) return req.session.username;
+    return ID_BUTTON_TEXT
+}
