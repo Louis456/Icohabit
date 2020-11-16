@@ -6,25 +6,47 @@ body {
    background-repeat: no-repeat;
    background-attachment: scroll;
    background-position: center top;
+   background-size: 100%;
 
 }
 
+h3 {
+	font-family: "Comic Sans MS", cursive, sans-serif;
+}
 
+p{
+	font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.divider {
+	width:2px;
+	background-color: white;
+	height: 420px;
+	content:'';
+	
+}
+
+.starter-template {
+	text-align: center;
+ }
 
 .container {
-  padding: 10px;
-  margin-top: 500px;
+  padding: 15px;
+  margin-top: 650px;
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: flex-start;
   color:white;
 }
 
 .container .item {
-  margin:10px;
+  margin:15px;
   flex-grow: 1;
-  width: 50%;
+  width: 30%;
 }
+
+
 
 
 /*Bouton*/
@@ -36,11 +58,11 @@ body {
 	text-align: center;
 }
 
-a.clicktoadd{
+a.clicktoadd {
 	background: none;
 	display: block;
 	width: 200px;
-	height; 40px;
+	height: 40px;
 	line-height:40px;
 	font-size: 18px;
 	font-family: sans-serif;
