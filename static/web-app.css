@@ -9,6 +9,23 @@ body {
 
 }
 
+#content {
+  width: 70%;
+}
+
+#content .left, #content .right {
+  display: inline-block;
+}
+
+#content .left {
+  float: left;
+  width: 45%;
+}
+
+#content .right {
+  float: right;
+  width: 45%;
+}
 /*Bouton*/
 #clicktoadd {
 

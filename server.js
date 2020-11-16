@@ -30,15 +30,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     // Home page
     app.get('/', (req, res) => {
-        dbo.collection('events').find().toArray(function (err, events) {
-            if (err) throw err;
-            let d = new Date();
-            res.render('index.html', {
-                TodaysDate: d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(),
-                Identif: idButton(req),
-                events: events
-            });
-        });
+        res.render('index.html', {});
     });
 
     https.createServer({
