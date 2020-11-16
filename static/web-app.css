@@ -1,0 +1,15 @@
+body {
+   padding-top: 70px;
+   color: white;
+   background-color: black;
+   background-image: url(red-bg.png);
+   background-repeat: no-repeat;
+   background-attachment: scroll;
+   background-position: center top;
+
+}
+
+/*Bouton*/
+#clicktoadd {
+
+}
