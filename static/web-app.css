@@ -9,20 +9,21 @@ body {
 
 }
 
-#content {
+.content {
   width: 70%;
+  color: white;
 }
 
-#content .left, #content .right {
+.content .left, .content .right {
   display: inline-block;
 }
 
-#content .left {
+.content .left {
   float: left;
   width: 45%;
 }
 
-#content .right {
+.content .right {
   float: right;
   width: 45%;
 }

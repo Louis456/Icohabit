@@ -1,55 +1,58 @@
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-#----------------- Projet Final -----------------
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+# Projet Final
 
-
-
-            ~    **Installation**    ~
+## Installation
 1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js, toutes les etapes indiquees dans les slides des semaines precedentes
 sont primordiales pour le bon fonctionnement de l'application.
 
-MongoDB : https://www.mongodb.com/try/download/community
-Node.js : https://nodejs.org
+    - **MongoDB** : https://www.mongodb.com/try/download/community
+    - **Node.js** : https://nodejs.org
 
 2. Installer la base de donnees:
     - Ouvrez un terminal et executez ces commandes :
-      * mongo
-      * use database (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
-      * db.createCollection("users")
+      ```sh
+      $ mongo
+      $ use database
+      $ db.createCollection("users")
+      ```
+      (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
 
 3. Installer les modules:
     - Ouvrez un terminal et executez ces commandes :
-      * npm install express
-      * npm install hogan
-      * npm install consolidate
-      * npm install mongodb
-      * npm install express-session
-      * npm install body-parser
-      * npm install https
-      * npm install fs
-      * npm install bcrypt
+      ```sh
+      $ npm install express
+      $ npm install hogan
+      $ npm install consolidate
+      $ npm install mongodb
+      $ npm install express-session
+      $ npm install body-parser
+      $ npm install https
+      $ npm install fs
+      $ npm install bcrypt
+      ```
 
     (Pour utiliser les tests :)
-      * npm install selenium-webdriver selenium
-      * npm install jest
+      ```sh
+      $ npm install selenium-webdriver selenium
+      $ npm install jest
+      ```
 
 
 
-            ~    **Utilisation**    ~
+## Utilisation
 1. Executer la commande "node server.js" dans le dossier racine (ici).
 
 2. Ouvrir un navigateur.
 
-3. Entrer l'url suivante: "https://localhost:8080".
+3. Entrer l'url suivante: `https://localhost:8080`.
 
 
 
-            ~    **Application**    ~
+## Application
 * La page d'accueil contient une description et permet de se connecter ou de se creer un compte.
 
 
 
-              ~    **Authors**    ~
+## Authors
 + Alsteens Louis
 + Arys Simon
 + Thirifay Louis
