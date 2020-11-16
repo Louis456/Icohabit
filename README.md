@@ -39,7 +39,7 @@ sont primordiales pour le bon fonctionnement de l'application.
 
 
 ## Utilisation
-1. Executer la commande "node server.js" dans le dossier racine (ici).
+1. Executer la commande `node server.js` dans le dossier racine (ici).
 
 2. Ouvrir un navigateur.
 
