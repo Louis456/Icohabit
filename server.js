@@ -70,3 +70,16 @@ function idButton(req) {
     if (req.session.username) return req.session.username;
     return ID_BUTTON_TEXT
 }
+
+function balance(expenses) {
+    /**
+     * Take the expenses as inputs and returns the transactions that should be done for everyone to get their money back.
+     * 
+     * @param {list} expenses : List of lists of expenses.
+     * Example: [["Louis", 5, ["Simon", "Maxime", "Louis"]], [...]]      --> 5€ paid by Louis for Simon, Maxime and Louis.
+     * 
+     * @return {list}   A list of tuples representing who owes how much to whom.
+     * Example: [("Louis", 5, "Simon"), ("Louis", 10, "Maxime")]   --> Louis owes 5€ to Simon and Louis owes 10€ to Maxime.
+     */
+    
+}
