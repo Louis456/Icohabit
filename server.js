@@ -26,7 +26,7 @@ app.use(session({
 
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
 
-MongoClient.connect('mongodb://localhost:27017', (err, db) => {
+MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true }, (err, db) => {
     dbo = db.db("database");
     if (err) throw err;
 
