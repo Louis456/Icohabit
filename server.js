@@ -81,5 +81,45 @@ function balance(expenses) {
      * @return {list}   A list of tuples representing who owes how much to whom.
      * Example: [("Louis", 5, "Simon"), ("Louis", 10, "Maxime")]   --> Louis owes 5€ to Simon and Louis owes 10€ to Maxime.
      */
-    
+    let accounts = {};
+    for (const exp of expenses) {
+        let oneWhoPaid = exp[0];
+        let addedAmount = exp[1];
+        if (oneWhoPaid in accounts) {
+            accounts[oneWhoPaid] = accounts[oneWhoPaid] + addedAmount;
+        } else {
+            accounts[oneWhoPaid] = addedAmount;
+        }
+        let subtractedAmount = exp[1] / exp[2].length;
+        for (const person of exp[2]) {
+            if (person in accounts) {
+                accounts[person] = accounts[person] - subtractedAmount;
+            } else {
+                accounts[person] = -subtractedAmount;
+            }
+        }
+    }
+    let balanceList = [];
+    for (const creditor in accounts) {
+        if (accounts[creditor] > 0) {
+            for (const debtor in accounts) {
+                if (accounts[debtor] < 0) {
+                    // round numbers to 2 decimals (1.666666 = 1.67)
+                    let toRetrieve = Math.round((accounts[creditor] + Number.EPSILON) * 100) / 100;
+                    let toGive = Math.round((Math.abs(accounts[debtor]) + Number.EPSILON) * 100) / 100;
+                    if (toGive >= toRetrieve) {
+                        accounts[creditor] = 0;
+                        accounts[debtor] = accounts[debtor] + toRetrieve;
+                        balanceList.push([debtor, toRetrieve, creditor]);
+                    } else {
+                        accounts[creditor] = accounts[creditor] - toGive;
+                        accounts[debtor] = 0;
+                        balanceList.push([debtor, toGive, creditor]);
+                    }
+                }
+            }
+        }
+    }
+    return balanceList;
 }
+
