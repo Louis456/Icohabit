@@ -36,9 +36,24 @@
       </div>
     </nav>
     <div class="starter-template ">
-
       <!-- Ajouter le html ici -->
+      <div class="teamForms">  
+        <div class="team">
+          <h2>Créer un groupe</h2>
+          <form action="createTeam" name="createTeam" class="teamForm" method="post">
+            <input type="text" id="newTeam" name="newTeam" placeholder="Nom du groupe" required oninvalid="this.setCustomValidity('Veuillez choisir un nom de groupe')" oninput="setCustomValidity('')">
+            <input id="Soumettre" type="submit" value="Créer">
+          </form>
+        </div>
 
+        <div class="team">
+          <h2>Rejoindre un groupe</h2>
+          <form action="joinTeam" name="joinTeam" class="teamForm" method="post">
+            <input type="text" id="teamName" name="teamName" placeholder="Nom du groupe" required oninvalid="this.setCustomValidity('Veuillez choisir un nom de groupe')" oninput="setCustomValidity('')">
+            <input id="Soumettre" type="submit" value="Rejoindre">
+          </form>
+        </div>
+      </div>
     </div>
   </body>
 </html>

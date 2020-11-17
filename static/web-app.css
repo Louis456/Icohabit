@@ -10,12 +10,18 @@ body {
 
 }
 
-h3 {
-	font-family: "Comic Sans MS", cursive, sans-serif;
+h1,h2{
+	font-family: "Fira Sans", serif ;
+	font-style: italic;
+	text-decoration: underline;
 }
 
 p{
-	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-family: "Fira Sans", serif ;	
+}
+
+.teamForms {
+	margin-top: 670px;
 }
 
 .divider {
@@ -46,21 +52,63 @@ p{
   width: 30%;
 }
 
+.account{
+	margin-top: 35px;
+}
+
+.accountForm {
+	margin-top: 20px;
+}
+
+
+.accountForm input{
+	display:inline-block;
+}
+
+::placeholder{
+	color:white;
+}
+
+form input[type = "text"], form input[type = "password"], form input[type = email], form textarea{
+	border: 0;
+	background: none;
+	margin: 10px auto;
+	text-align: center;
+	border: 2px solid #3489db;
+	width: 200px;
+	outline: none;
+	color: black;
+	border-radius: 25px;
+	transition: 0.30s
+}
+
+.accountForm input[type = "text"], .accountForm input[type = "password"], .accountForm input[type = email], .accountForm textarea, .accountForm input[type= "submit"]{
+	display: block;
+}
+
+.teamForm input[type = "text"], .teamForm input[type = "password"], .teamForm input[type = email], .teamForm textarea, .teamForm input[type= "submit"]{
+	display: inline;
+}
+
+form input[type = "text"]:focus, form input[type = "password"]:focus, form input[type = email]:focus, form textarea:focus{
+	width: 280px;
+	border-color: #00FA9A
+}
 
 
 
 /*Bouton*/
-.clicktoadd  {
-  position: fixed;
+.accountForm input[type= "submit"] {
+  	position: relative;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
 }
 
-a.clicktoadd {
+form input[type= "submit"] {
+	margin-top: 30px;
 	background: none;
-	display: block;
 	width: 200px;
 	height: 40px;
 	line-height:40px;
@@ -69,39 +117,46 @@ a.clicktoadd {
 	text-transform: uppercase;
 	text-decoration: none;
 	letter-spacing: 1px;
-	border: 2px solid #000000;
+	border: 2px solid white;
 	text-align: center;
 	position: relative;
 	transition: color 0.30s linear;
-	color: #DC143C
+	color: white;
 }
 
-a.clicktoadd:hover {
-	color: #fff;
+.teamForm input[type="submit"] {
+	margin-left: 20px;
+}
+
+form input[type= "submit"]:hover {
+	color: black;
+	background-color: white;
   text-decoration: none;
 }
 
-a.clicktoadd::before {
+form input[type= "submit"]::before {
 	content: "";
-	position: absolute;
+	position: relative;
 	left: 0;
 	top: 0;
 	width: 100%;
 	height: 100%;
-	background: #000000;
-	transition: transform 0.30s;
+	background:white;
 	z-index: -1;
+	transition: transform 0.30s;
 	transform-origin: 0 0;
 	transition-timing-function: cubic-bezier(0.4 0 0.2 1)
 }
 
-a.clicktoadd::before {
+form input[type= "submit"]::before {
 	transform: scaleX(0);
 }
 
-a.clicktoadd:hover::before {
+
+form input[type= "submit"]:hover::before {
 	transform: scaleX(1)
 }
+
 
 .box {
   margin-top: 470px;
