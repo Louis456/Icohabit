@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="/web-app.css">
+    <link rel="stylesheet" href="/inside-group.css">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -17,9 +17,6 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/">Accueil</a>
-          </li>
           <li class="nav-item active">
             <a class="nav-link active" href="/groupes">Groupes</a>
           </li>
@@ -37,11 +34,12 @@
     </nav>
     <div class="starter-template ">
       <!-- Ajouter le html ici -->
-      <div class="teamForms">  
+      <div class="teamForms">
         <div class="team">
           <h2>Créer un groupe</h2>
           <form action="createTeam" name="createTeam" class="teamForm" method="post">
             <input type="text" id="newTeam" name="newTeam" placeholder="Nom du groupe" required oninvalid="this.setCustomValidity('Veuillez choisir un nom de groupe')" oninput="setCustomValidity('')">
+            <input type="password" id="newpwdTeam" name="newpwdTeam" placeholder="Mot de passe" required oninvalid="this.setCustomValidity('Veuillez choisir un mot de passe')" oninput="setCustomValidity('')"><br>
             <input id="Soumettre" type="submit" value="Créer">
           </form>
         </div>
@@ -49,7 +47,8 @@
         <div class="team">
           <h2>Rejoindre un groupe</h2>
           <form action="joinTeam" name="joinTeam" class="teamForm" method="post">
-            <input type="text" id="teamName" name="teamName" placeholder="Nom du groupe" required oninvalid="this.setCustomValidity('Veuillez choisir un nom de groupe')" oninput="setCustomValidity('')">
+            <input type="text" id="teamName" name="teamName" placeholder="Nom du groupe" required>
+            <input type="password" id="pwdTeam" name="pwTeam" placeholder="Mot de passe "required><br>
             <input id="Soumettre" type="submit" value="Rejoindre">
           </form>
         </div>

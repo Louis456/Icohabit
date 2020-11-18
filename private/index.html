@@ -59,18 +59,21 @@
       <div>
         <h1 id="identification">S'identifier ou s'inscrire</h1>
 
-        <div class="account">  
+        <div class="account">
           <h2>Compte existant</h2>
+          <div class="alert alert-danger" style={{displayError}}>
+            Le nom d'utilisateur et le mot de passe <strong>ne correspondent pas</strong>.
+          </div>
           <form action="submitLogIn" name="identify" class="accountForm" method="post">
             <input type="text" id="usernamealready" name="usernamealready" placeholder="Nom d'utilisateur" required><br>
-            <input type="password" id="pwdalready" name="pwdalready" placeholder="Mot de passe "required><br>
+            <input type="password" id="pwdalready" name="pwdalready" placeholder="Mot de passe" required><br>
             <input id="Soumettre" type="submit" value="S'identifier">
           </form>
         </div>
 
-        
 
-        <div class="account"> 
+
+        <div class="account">
           <h2>Nouveau compte</h2>
           <form action="submitRegister" name="register" class="accountForm" method="post">
             <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required oninvalid="this.setCustomValidity('Veuillez choisir un pseudo')" oninput="setCustomValidity('')"><br>
@@ -79,11 +82,11 @@
             <input type="email" id="mail" name="mail" placeholder="Adresse e-mail" required oninvalid="this.setCustomValidity('Veuillez indiquer votre adresse mail')" oninput="setCustomValidity('')"><br>
             <input id="Soumettre" type="submit" value="S'enregistrer">
           </form>
-        </div> 
+        </div>
       </div>
 
 
-      
+
 
     </div>
   </body>

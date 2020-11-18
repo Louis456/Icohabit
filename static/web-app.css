@@ -2,7 +2,7 @@ body {
    padding-top: 100px;
    color: white;
    background-color: black;
-   background-image: url(red-bg.png);
+   background-image: url(red-bg-crop.png);
    background-repeat: no-repeat;
    background-attachment: scroll;
    background-position: center top;
@@ -17,7 +17,7 @@ h1,h2{
 }
 
 p{
-	font-family: "Fira Sans", serif ;	
+	font-family: "Fira Sans", serif ;
 }
 
 .teamForms {
@@ -29,7 +29,7 @@ p{
 	background-color: white;
 	height: 420px;
 	content:'';
-	
+
 }
 
 .starter-template {
@@ -71,13 +71,13 @@ p{
 
 form input[type = "text"], form input[type = "password"], form input[type = email], form textarea{
 	border: 0;
-	background: none;
+  background-color: black;
 	margin: 10px auto;
 	text-align: center;
 	border: 2px solid #3489db;
 	width: 200px;
 	outline: none;
-	color: black;
+	color: white;
 	border-radius: 25px;
 	transition: 0.30s
 }
@@ -93,13 +93,14 @@ form input[type = "text"], form input[type = "password"], form input[type = emai
 form input[type = "text"]:focus, form input[type = "password"]:focus, form input[type = email]:focus, form textarea:focus{
 	width: 280px;
 	border-color: #00FA9A
+
 }
 
 
 
 /*Bouton*/
 .accountForm input[type= "submit"] {
-  	position: relative;
+  position: relative;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);

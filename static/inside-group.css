@@ -1,0 +1,95 @@
+/* Entête */
+h1, label[for='add-task'] {
+  color: #333;
+  font-size: 25px;
+  font-weight:600;
+  padding: 30px 0 10px;
+  margin: 0;
+  text-transform: uppercase;
+  border-bottom: 4mm ridge rgb(17, 50, 220, .6);
+}
+
+input[type="text"], input[type="date"], input[type="accountant"] {
+  font-size: 15px;
+  height: 15px;
+  line-height: 15px;
+  margin: 0;
+  padding: 10px;
+  border: 2px solid #708090;
+  background: #fff;
+  border-radius: 6px;
+  font-family: sans-serif;
+  color: black;
+}
+
+input[type="text"], input[type="date"], input[type="accountant"] {
+  color: #333;
+}
+
+/* Nouvelle tâche */
+label[for='add-task'] {
+  display: block;
+  margin: 0 0 18px;
+}
+
+input#add-task {
+  float: left;
+  width: 300px;
+}
+
+p > button:hover {
+  color: #48D1CC;
+}
+
+/*Todo List*/
+li {
+  overflow: auto;
+  border-bottom: 2px solid grey;
+  padding: 20px 0;
+}
+
+li > input[type="checkbox"] {
+  position: relative;
+  top: 15px;
+  margin: 0 10px;
+}
+
+body {
+  background: #fff;
+  color: #333;
+  font-family: sans-serif
+}
+
+.container {
+  display: block;
+  width: 300px;
+  margin: 100px auto 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li, h1 {
+  clear: both;
+  list-style: none;
+}
+
+li * {
+  float: left;
+}
+
+button {
+  background: none;
+  border: 0px;
+  color: #888;
+  font-size: 15px;
+  font-family: sans-serif;
+  margin: 10px 0 0;
+  width: 50px;
+}
+
+button:hover {
+  color: #333;
+}

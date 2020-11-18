@@ -23,7 +23,11 @@ app.use(session({
         maxAge: 3600000
     }
 }));
-
+/**
+*
+* Erreur lorsqu'il y a un nom d'utilisateur qui n'existe pas.
+*
+*/
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
 
 MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true }, (err, db) => {
@@ -32,12 +36,37 @@ MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUni
 
     // Home page
     app.get('/', (req, res) => {
-        res.render('index.html', {IdButtonText: idButton(req)});
+        if (isConnected(req)) {
+            res.redirect('/groupes')
+        } else {
+            res.render('index.html', {
+                IdButtonText: idButton(req),
+                displayError: badCredentials(req)
+            });
+        }
     });
 
     // Groups page
     app.get('/groupes', (req, res) => {
-        res.render('groupes.html', {IdButtonText: idButton(req)});
+        if (isConnected(req)) {
+            res.render('groupes.html', { IdButtonText: idButton(req) });
+        } else {
+            res.redirect('/')
+        }
+
+    });
+
+    // Button to log in with username and password
+    app.post('/submitLogIn', function (req, res) {
+        connect(req, res, dbo);
+    });
+
+    app.post('/submitRegister', function (req, res) {
+        register(req, res, dbo);
+    });
+
+    app.post('/createTeam', function (req, res) {
+        create(req, res, dbo);
     });
 
     https.createServer({
@@ -50,16 +79,52 @@ MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUni
 });
 
 
-
-
 //            Les Fonctions
+
+function create(req, res, dbo) {
+    dbo.collection('groupes').findOne({ "id_": 0 }, function (err, ids) {
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(req.body.newpwdTeam, salt, function (err, encrypted) {
+                dbo.collection('groupes').insertOne({
+                    "groupname": req.body.newTeam,
+                    "password": encrypted,
+                    "_id": ids.idcount,
+                    "members": [req.session.username]
+                });
+                dbo.collection('users').updateOne(
+                    { "username": req.session.username },
+                    { $addToSet: { "members": ids.idcount } }
+                );
+                dbo.collection('groupes').updateOne(
+                    { "_id": 0 },
+                    { $inc: { "idcount": 1 } }
+                );
+            });
+        });
+    });
+
+}
+
+function badCredentials(req) {
+    /**
+     * Display an error message if the password is incorrect by changing div style in index.html
+     * @return "display:none" except when password is incorrect, then it returns "display:block"
+     */
+    if (req.session.badcredentials) {
+        req.session.badcredentials = null;
+        return "display:block";
+    }
+    return "display:none";
+}
+
 
 function isConnected(req) {
     /**
      * Return a boolean
      * @return True if the user is connected, otherwise false
      */
-    return !(req.session.username == null);
+    if (req.session.username) return true;
+    return false;
 }
 
 function idButton(req) {
@@ -67,19 +132,70 @@ function idButton(req) {
      * Return the string to be displayed on the upper right side of the screen.
      * @return The username if the user is connected, else ID_BUTTON_TEXT string.
      */
-    if (req.session.username) return req.session.username;
+    if (isConnected(req)) return req.session.username;
     return ID_BUTTON_TEXT
+}
+
+function connect(req, res, dbo) {
+    /**
+     * Compare the user's password with the hash stored in the database.
+     * If it's correct then create cookie and redirect to home page.
+     * Else refresh the page.
+     */
+    dbo.collection('users').findOne({ "username": req.body.usernamealready }, function (err, user) {
+        if (user != null) {
+            bcrypt.compare(req.body.pwdalready, user.password, function (err, result) {
+                if (result) {
+                    req.session.username = req.body.usernamealready //create cookie
+                    res.redirect('/groupes');
+                } else {
+                    req.session.badcredentials = "bad";
+                    res.redirect('/#identification');
+                }
+            });
+        } else {
+
+        }
+    });
+}
+
+function register(req, res, dbo) {
+    /**
+     * If username already exist, then refresh the page.
+     * Else insert a new document into the database with the user's input datas (password encrypted),
+     * then create a cookie and redirect to the home page.
+     */
+    dbo.collection('users').findOne({ "username": req.body.username }, function (err, user) {
+        if (user === null) {
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(req.body.pwd, salt, function (err, encrypted) {
+                    dbo.collection("users").insertOne({
+                        "username": req.body.username,
+                        "password": encrypted,
+                        "entireName": req.body.name,
+                        "email": req.body.mail,
+                        "groupes": []
+                    })
+                });
+            })
+
+            req.session.username = req.body.username
+            res.redirect('/groupes');
+        } else {
+            res.redirect('/#identification');
+        }
+    });
 }
 
 function balance(expenses) {
     /**
      * Take the expenses as inputs and returns the transactions that should be done for everyone to get their money back.
-     * 
+     *
      * @param {list} expenses : List of lists of expenses.
      * Example: [["Louis", 5, ["Simon", "Maxime", "Louis"]], [...]]      --> 5€ paid by Louis for Simon, Maxime and Louis.
-     * 
-     * @return {list}   A list of tuples representing who owes how much to whom.
-     * Example: [("Louis", 5, "Simon"), ("Louis", 10, "Maxime")]   --> Louis owes 5€ to Simon and Louis owes 10€ to Maxime.
+     *
+     * @return {list}   A list of lists representing who owes how much to whom.
+     * Example: [["Louis", 5, "Simon"], ["Louis", 10, "Maxime"]]   --> Louis owes 5€ to Simon and Louis owes 10€ to Maxime.
      */
     function addToAccount(person, amount) {
         if (person in accounts) return accounts[person] + amount;
@@ -114,4 +230,3 @@ function balance(expenses) {
     }
     return balanceList;
 }
-
