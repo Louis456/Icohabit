@@ -1,167 +1,180 @@
 body {
-   padding-top: 100px;
-   color: white;
-   background-color: black;
-   background-image: url(red-bg-crop.png);
-   background-repeat: no-repeat;
-   background-attachment: scroll;
-   background-position: center top;
-   background-size: 100%;
-
+  padding-top: 50px;
+  color: white;
+  background-color: black;
+  background-image: url(background.png);
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-position: center top;
+  background-size: 100%;
 }
 
-h1,h2{
-	font-family: "Fira Sans", serif ;
-	font-style: italic;
-	text-decoration: underline;
+#slogan {
+  padding-top: 80px;
 }
 
-p{
-	font-family: "Fira Sans", serif ;
+h1, h2 {
+  font-family: "Fira Sans", serif;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+p {
+  font-family: "Fira Sans", serif;
+}
+
+.Teams {
+  display: block;
+  width: 150px;
+  text-align: center;
+  vertical-align: middle;
+  margin: auto;
+  padding: 15px;
+  background: none;
+  color: white;
+  margin: 10px;
 }
 
 .teamForms {
-	margin-top: 670px;
+  margin-top: 20%;
 }
 
 .divider {
-	width:2px;
-	background-color: white;
-	height: 420px;
-	content:'';
-
+  width: 2px;
+  background-color: white;
+  height: 420px;
+  content: '';
 }
 
 .starter-template {
-	text-align: center;
- }
+  text-align: center;
+}
 
 .container {
   padding: 15px;
-  margin-top: 650px;
+  margin-top: 23%;
   display: flex;
   flex: 1;
   justify-content: center;
   align-items: flex-start;
-  color:white;
+  color: white;
 }
 
 .container .item {
-  margin:15px;
+  margin: 15px;
   flex-grow: 1;
   width: 30%;
 }
 
-.account{
-	margin-top: 35px;
+.account {
+  margin-top: 35px;
 }
 
 .accountForm {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
-
-.accountForm input{
-	display:inline-block;
+.accountForm input {
+  display: inline-block;
 }
 
-::placeholder{
-	color:white;
+::placeholder {
+  color: white;
 }
 
-form input[type = "text"], form input[type = "password"], form input[type = email], form textarea{
-	border: 0;
+form input[type="text"], form input[type="password"], form input[type=email], form textarea {
+  border: 0;
   background-color: black;
-	margin: 10px auto;
-	text-align: center;
-	border: 2px solid #3489db;
-	width: 200px;
-	outline: none;
-	color: white;
-	border-radius: 25px;
-	transition: 0.30s
+  margin: 10px auto;
+  text-align: center;
+  border: 2px solid #3489db;
+  width: 200px;
+  outline: none;
+  color: white;
+  border-radius: 25px;
+  transition: 0.30s
 }
 
-.accountForm input[type = "text"], .accountForm input[type = "password"], .accountForm input[type = email], .accountForm textarea, .accountForm input[type= "submit"]{
-	display: block;
+.accountForm input[type="text"], .accountForm input[type="password"], .accountForm input[type=email], .accountForm textarea, .accountForm input[type="submit"] {
+  display: block;
 }
 
-.teamForm input[type = "text"], .teamForm input[type = "password"], .teamForm input[type = email], .teamForm textarea, .teamForm input[type= "submit"]{
-	display: inline;
+.teamForm input[type="text"], .teamForm input[type="password"], .teamForm input[type=email], .teamForm textarea, .teamForm input[type="submit"] {
+  display: inline;
 }
 
-form input[type = "text"]:focus, form input[type = "password"]:focus, form input[type = email]:focus, form textarea:focus{
-	width: 280px;
-	border-color: #00FA9A
-
+form input[type="text"]:focus, form input[type="password"]:focus, form input[type=email]:focus, form textarea:focus {
+  width: 280px;
+  border-color: #00FA9A
 }
-
-
 
 /*Bouton*/
-.accountForm input[type= "submit"] {
+.accountForm input[type="submit"] {
   position: relative;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	text-align: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-form input[type= "submit"] {
-	margin-top: 30px;
-	background: none;
-	width: 200px;
-	height: 40px;
-	line-height:40px;
-	font-size: 18px;
-	font-family: sans-serif;
-	text-transform: uppercase;
-	text-decoration: none;
-	letter-spacing: 1px;
-	border: 2px solid white;
-	text-align: center;
-	position: relative;
-	transition: color 0.30s linear;
-	color: white;
+form input[type="submit"] {
+  margin-top: 30px;
+  background: none;
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 18px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1px;
+  border: 2px solid white;
+  text-align: center;
+  position: relative;
+  transition: color 0.30s linear;
+  color: white;
 }
 
 .teamForm input[type="submit"] {
-	margin-left: 20px;
+  margin-left: 20px;
 }
 
-form input[type= "submit"]:hover {
-	color: black;
-	background-color: white;
+form input[type="submit"]:hover {
+  color: black;
+  background-color: white;
   text-decoration: none;
 }
 
-form input[type= "submit"]::before {
-	content: "";
-	position: relative;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background:white;
-	z-index: -1;
-	transition: transform 0.30s;
-	transform-origin: 0 0;
-	transition-timing-function: cubic-bezier(0.4 0 0.2 1)
+form input[type="submit"]::before {
+  content: "";
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: -1;
+  transition: transform 0.30s;
+  transform-origin: 0 0;
+  transition-timing-function: cubic-bezier(0.4 0 0.2 1)
 }
 
-form input[type= "submit"]::before {
-	transform: scaleX(0);
+form input[type="submit"]::before {
+  transform: scaleX(0);
 }
 
-
-form input[type= "submit"]:hover::before {
-	transform: scaleX(1)
+form input[type="submit"]:hover::before {
+  transform: scaleX(1)
 }
-
 
 .box {
   margin-top: 470px;
-  display:flex;
+  display: flex;
   align-items: flex-start;
   justify-content: space-between;
+}
+
+.alert {
+  width: 40%;
+  margin: auto;
 }

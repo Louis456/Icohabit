@@ -1,93 +1,100 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FixMyLLNV2 - Accueil</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="/web-app.css">
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <a class="navbar-brand" href="/">FixMyLLNV2</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link active" href="/">Accueil</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#identification">{{IdButtonText}}<span class="sr-only">(current)</span></a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <div class="starter-template ">
-      <div class="container">
-        <div class="item">
-          <h2>Description</h2>
-          <p>Bienvenue sur Inserer_Un_Nom. Parfois la vie en colocation ou en groupe peut être compliquée. Peut-être vous demandez-vous comment améliorer votre vie commune,
-            mieux vous organiser. La question est vite répondue. Avec notre application, vous pouvez créer ou rejoindre des groupes : que ce soit pour un camp scout, la famille, un kot-à-projet ou encore des vacances.
-            Nous proposons donc 3 fonctionnalités différentes, une Todo-list, un planning des activités ou rendez-vous et pour finir un compte commun des dépenses et des remboursements.</p>
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FixMyLLNV2 - Accueil</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="/web-app.css">
+</head>
 
-            <h2>Todo-list</h2>
-            <p>Cet outil vous permet d'ajouter à une liste des tâches ménagères ou autre choses à faire. Vous pouvez biensûr préciser qui doit effectuer quelle tâche et quand.
-            Une fois la tâche réalisée, cette dernière peut être cochée et supprimée de la liste.</p>
-
-        </div>
-        <div class="divider"></div>
-        <div class="item">
-
-          <h2>Planning</h2>
-          <p>De la même manière que la Todo-list, vous pouvez ajouter à un liste des activités ou rendez-vous futurs. Vous pouvez également préciser les personnes concernées.
-            Une fois la date d'un évènement dépassée, celui-ci est automatiquement supprimée du planning.</p>
-
-          <h2>Dépenses et remboursements</h2>
-          <p>Last but not least, ce dernier outil vous permet d'ajouter des dépenses, de voir qui a payé ainsi que les participants. Vous pouvez également voir les dettes de chacun
-            et indiquer un montant d'un remboursement une fois la dette payée envers une personne.</p>
-
-
-        </div>
-      </div>
-      <div>
-        <h1 id="identification">S'identifier ou s'inscrire</h1>
-
-        <div class="account">
-          <h2>Compte existant</h2>
-          <div class="alert alert-danger" style={{displayError}}>
-            Le nom d'utilisateur et le mot de passe <strong>ne correspondent pas</strong>.
-          </div>
-          <form action="submitLogIn" name="identify" class="accountForm" method="post">
-            <input type="text" id="usernamealready" name="usernamealready" placeholder="Nom d'utilisateur" required><br>
-            <input type="password" id="pwdalready" name="pwdalready" placeholder="Mot de passe" required><br>
-            <input id="Soumettre" type="submit" value="S'identifier">
-          </form>
-        </div>
-
-
-
-        <div class="account">
-          <h2>Nouveau compte</h2>
-          <form action="submitRegister" name="register" class="accountForm" method="post">
-            <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required oninvalid="this.setCustomValidity('Veuillez choisir un pseudo')" oninput="setCustomValidity('')"><br>
-            <input type="password" id="pwd" name="pwd" placeholder="Mot de passe" required oninvalid="this.setCustomValidity('Veuillez choisir un mot de passe')" oninput="setCustomValidity('')"><br>
-            <input type="text" id="name" name="name" placeholder="Nom complet" required oninvalid="this.setCustomValidity('Veuillez indiquer votre nom')" oninput="setCustomValidity('')"><br>
-            <input type="email" id="mail" name="mail" placeholder="Adresse e-mail" required oninvalid="this.setCustomValidity('Veuillez indiquer votre adresse mail')" oninput="setCustomValidity('')"><br>
-            <input id="Soumettre" type="submit" value="S'enregistrer">
-          </form>
-        </div>
-      </div>
-
-
-
-
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="/">FixMyLLNV2</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link active" href="/">Accueil</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#identification">{{IdButtonText}}<span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
     </div>
-  </body>
+  </nav>
+  <div class="starter-template ">
+    <h1 id="slogan">Mets un slogan ici gros con</h1>
+    <div class="container">
+      <div class="item">
+        <h2>Description</h2>
+        <p>Bienvenue sur Inserer_Un_Nom. Parfois la vie en colocation ou en groupe peut être compliquée. Peut-être vous demandez-vous comment améliorer votre vie commune,
+          mieux vous organiser. La question est vite répondue. Avec notre application, vous pouvez créer ou rejoindre des groupes : que ce soit pour un camp scout, la famille, un kot-à-projet ou encore des vacances.
+          Nous proposons donc 3 fonctionnalités différentes, une Todo-list, un planning des activités ou rendez-vous et pour finir un compte commun des dépenses et des remboursements.</p>
+
+
+        <h2>Todo-list</h2>
+        <p>Cet outil vous permet d'ajouter à une liste des tâches ménagères ou autre choses à faire. Vous pouvez biensûr préciser qui doit effectuer quelle tâche et quand.
+          Une fois la tâche réalisée, cette dernière peut être cochée et supprimée de la liste.</p>
+
+      </div>
+      <div class="divider"></div>
+      <div class="item">
+
+        <h2>Planning</h2>
+        <p>De la même manière que la Todo-list, vous pouvez ajouter à un liste des activités ou rendez-vous futurs. Vous pouvez également préciser les personnes concernées.
+          Une fois la date d'un évènement dépassée, celui-ci est automatiquement supprimée du planning.</p>
+
+        <h2>Dépenses et remboursements</h2>
+        <p>Last but not least, ce dernier outil vous permet d'ajouter des dépenses, de voir qui a payé ainsi que les participants. Vous pouvez également voir les dettes de chacun
+          et indiquer un montant d'un remboursement une fois la dette payée envers une personne.</p>
+
+
+      </div>
+    </div>
+    <div>
+      <h1 id="identification">S'identifier ou s'inscrire</h1>
+
+      <div class="account">
+        <h2>Compte existant</h2>
+        <div class="alert alert-danger" style={{displayErrorConnect}}>
+            {{badCredentialsMsg}}
+        </div>
+        <form action="submitLogIn" name="identify" class="accountForm" method="post">
+          <input type="text" id="usernamealready" name="usernamealready" placeholder="Nom d'utilisateur" required><br>
+          <input type="password" id="pwdalready" name="pwdalready" placeholder="Mot de passe" required><br>
+          <input id="Soumettre" type="submit" value="S'identifier">
+        </form>
+      </div>
+
+
+
+      <div class="account">
+        <h2>Nouveau compte</h2>
+        <div class="alert alert-danger" style={{displayErrorRegister}}>
+            {{usernameAlreadyExistMsg}}
+        </div>
+        <form action="submitRegister" name="register" class="accountForm" method="post">
+          <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required oninvalid="this.setCustomValidity('Veuillez choisir un pseudo')" oninput="setCustomValidity('')"><br>
+          <input type="password" id="pwd" name="pwd" placeholder="Mot de passe" required oninvalid="this.setCustomValidity('Veuillez choisir un mot de passe')" oninput="setCustomValidity('')"><br>
+          <input type="text" id="name" name="name" placeholder="Nom complet" required oninvalid="this.setCustomValidity('Veuillez indiquer votre nom')" oninput="setCustomValidity('')"><br>
+          <input type="email" id="mail" name="mail" placeholder="Adresse e-mail" required oninvalid="this.setCustomValidity('Veuillez indiquer votre adresse mail')" oninput="setCustomValidity('')"><br>
+          <input id="Soumettre" type="submit" value="S'enregistrer">
+        </form>
+      </div>
+    </div>
+
+
+
+
+  </div>
+</body>
+
 </html>

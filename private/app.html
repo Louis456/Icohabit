@@ -1,35 +1,37 @@
-<!doctype html>
-<html lang="fr">
-  <!-- Todo List -->
-  <head>
-    <title>Todo List</title>
-    <link rel="stylesheet" href="/web-app.css">
-  </head>
-  <body>
-    <div class="container">
-      <p>
-        <label for="add-task">Nouvelle tâche</label>
-        <input id="add-task" type="text">
-        <label for="date">Date : </label>
-        <input type="date" id ="date" name="date">
-        <label for="accountant">Responsable</label>
-        <input type="accountant" name="accountant">
-        <button>Ajouter</button>
-      </p>
-      <h1>À faire</h1>
-      <ul id="unfulfilled-tasks">
-        <li><input type="checkbox">
-          <button class="edit">Modifier</button>
-          <button class="delete">Supprimer</button>
-        </li>
-      </ul>
-      <h1>Accomplies</h1>
-      <ul id="completed-tasks">
-        <li><input type="checkbox">
-          <button class="edit">Modifier</button>
-          <button class="delete">Supprimer</button>
-        </li>
-      </ul>
-    </div>
-  </body>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Todo List</title>
+  <link rel="stylesheet" href="/inside-group.css">
+</head>
+
+<body>
+  <div class="container">
+    <p>
+      <label for="add-task">Nouvelle tâche</label>
+      <input id="add-task" type="text" placeholder="mets une tâche gros con">
+      <label for="date">Date : </label>
+      <input type="date" id="date" name="date">
+      <label for="accountant">Responsable : </label>
+      <input type="accountant" name="accountant" placeholder="Nom">
+      <button>Ajouter</button>
+    </p>
+    <h1>À faire</h1>
+    <ul id="unfulfilled-tasks">
+      <li><input type="checkbox">
+        <button class="edit">Modifier</button>
+        <button class="delete">Supprimer</button>
+      </li>
+    </ul>
+    <h1>Accomplies</h1>
+    <ul id="completed-tasks">
+      <li><input type="checkbox">
+        <button class="edit">Modifier</button>
+        <button class="delete">Supprimer</button>
+      </li>
+    </ul>
+  </div>
+</body>
+
 </html>

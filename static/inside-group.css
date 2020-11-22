@@ -1,29 +1,35 @@
 /* Entête */
 h1, label[for='add-task'] {
-  color: #333;
-  font-size: 25px;
-  font-weight:600;
-  padding: 30px 0 10px;
+  color: #133da8;
+  font-size: 30px;
+  font-weight: 500;
+  padding: 30px 0 0px;
   margin: 0;
   text-transform: uppercase;
-  border-bottom: 4mm ridge rgb(17, 50, 220, .6);
+  border-bottom: 2mm solid #3f5762;
+  border-radius: 8px;
+  font-family: monospace;
+  letter-spacing: 0.5mm;
 }
 
 input[type="text"], input[type="date"], input[type="accountant"] {
   font-size: 15px;
   height: 15px;
-  line-height: 15px;
-  margin: 0;
+  line-height: 20px;
+  margin: 10px;
   padding: 10px;
-  border: 2px solid #708090;
-  background: #fff;
-  border-radius: 6px;
+  border: 3px solid #133da8;
+  background: white;
+  border-radius: 8px;
   font-family: sans-serif;
-  color: black;
+  display: block;
+  float: none;
+  color: #333;
+  width: 200px;
 }
 
-input[type="text"], input[type="date"], input[type="accountant"] {
-  color: #333;
+input[type="text"]:focus, input[type="date"]:focus, input[type="accountant"]:focus {
+  border-color: blue;
 }
 
 /* Nouvelle tâche */
@@ -37,8 +43,8 @@ input#add-task {
   width: 300px;
 }
 
-p > button:hover {
-  color: #48D1CC;
+p>button:hover {
+  color: #1f64ff;
 }
 
 /*Todo List*/
@@ -48,22 +54,44 @@ li {
   padding: 20px 0;
 }
 
-li > input[type="checkbox"] {
+li>input[type="checkbox"] {
   position: relative;
   top: 15px;
   margin: 0 10px;
 }
 
+li>.delete:hover {
+  color: #bb0909;
+}
+
+li>input[type="text"] {
+  width: 200px;
+}
+
+li>label {
+  font-size: 18px;
+  width: 220px;
+  padding: 0 0 0 10px;
+  line-height: 35px;
+}
+
+/*Accomplies*/
+#completed-tasks label {
+  color: black;
+  text-decoration: line-through;
+}
+
+/*Corps principal*/
 body {
-  background: #fff;
-  color: #333;
+  background: linear-gradient(black, #1f1f20);
+  color: #7d7b7b;
   font-family: sans-serif
 }
 
 .container {
   display: block;
-  width: 300px;
-  margin: 100px auto 0;
+  width: 350px;
+  margin: 120px auto 100px;
 }
 
 ul {
@@ -83,11 +111,11 @@ li * {
 button {
   background: none;
   border: 0px;
-  color: #888;
+  color: #7d7b7b;
   font-size: 15px;
   font-family: sans-serif;
-  margin: 10px 0 0;
-  width: 50px;
+  margin: 12px 0 0;
+  width: 60px;
 }
 
 button:hover {
