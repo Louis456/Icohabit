@@ -1,5 +1,7 @@
 # Projet Final
 
+
+
 ## Installation
 1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js, toutes les etapes indiquees dans les slides des semaines precedentes
 sont primordiales pour le bon fonctionnement de l'application.
@@ -13,6 +15,8 @@ sont primordiales pour le bon fonctionnement de l'application.
       $ mongo
       $ use database
       $ db.createCollection("users")
+      $ db.createCollection("groupes")
+      $ db.groupes.insert({"_id":0, "idcount":1})
       ```
       (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
 
