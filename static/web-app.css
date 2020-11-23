@@ -23,20 +23,9 @@ p {
   font-family: "Fira Sans", serif;
 }
 
-.Teams {
-  display: block;
-  width: 150px;
-  text-align: center;
-  vertical-align: middle;
-  margin: auto;
-  padding: 15px;
-  background: none;
-  color: white;
-  margin: 10px;
-}
 
 .teamForms {
-  margin-top: 20%;
+  margin-top: 25%;
 }
 
 .divider {
@@ -46,8 +35,32 @@ p {
   content: '';
 }
 
+
+
 .starter-template {
   text-align: center;
+}
+
+#myGroup {
+  margin-top: 1%;
+  margin-left: 2%;
+  text-align: left;
+}
+
+.Teams {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-left: 1%;
+}
+
+.TeamButton {
+  margin:15px;
+  width: 150px;
+  height: 150px;
+  color: white;
+  background-color: rgb(0, 0, 0);
+  border: 3px solid white;
 }
 
 .container {

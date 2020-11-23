@@ -79,6 +79,12 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     });
 
+    app.get('/app', (req, res) => {
+        res.render('app.html', {
+            IdButtonText: idButton(req)
+        });
+    });
+
     // Button to log in with username and password
     app.post('/submitLogIn', function (req, res) {
         connect(req, res, dbo);

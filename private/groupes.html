@@ -36,15 +36,20 @@
   </nav>
   <div class="starter-template ">
     <!-- Ajouter le html ici -->
+    <div id="myGroup">
+      <h1>Mes groupes</h1>
+    </div>
     <div class="Teams">
       {{#groupes}}
-      <form class="" action="DisplayGroup" method="post">
-        <input type="hidden" name="team_ID" value="{{_id}}">
-        <button type="submit">
-          {{groupname}}<br>
-          id : {{_id}}
-        </button>
-      </form>
+      <div> 
+        <form action="DisplayGroup" method="post">
+          <input type="hidden" name="team_ID" value="{{_id}}">
+          <button class="TeamButton" type="submit">
+            {{groupname}}<br>
+            id : {{_id}}
+          </button>
+        </form>
+      </div>
       {{/groupes}}
     </div>
 
