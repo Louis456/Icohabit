@@ -145,7 +145,6 @@ function joinGroup(req, res, dbo) {
                 }
             });
         } else {
-            console.log('cacou')
             res.redirect('/groupes#createorjoin');
         }
     });
