@@ -15,7 +15,6 @@ sont primordiales pour le bon fonctionnement de l'application.
       $ mongo
       $ use database
       $ db.createCollection("users")
-      $ db.createCollection("groupes")
       $ db.groupes.insert({"_id":0, "idcount":1})
       ```
       (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
