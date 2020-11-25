@@ -118,10 +118,20 @@ MongoClient.connect('mongodb://localhost:27017', {
         }
     });
 
+    app.post('/checkTask', function(req, res){
+        checkTask(req, res, dbo);
+    })
 
+    app.post('/deleteTaskDone', function (req, res){
+        deleteTask(req, res, dbo, { "tasksDone": {"_id":Number(req.body.task_id)}});
+    })
 
     app.post('/addTask', function (req, res) {
         addTask(req, res, dbo);
+    })
+
+    app.post('/deleteTask', function (req, res){
+        deleteTask(req, res, dbo, { "tasksTodo": {"_id":Number(req.body.task_id)}});
     })
 
     app.post('/submitLogIn', function (req, res) {
@@ -170,22 +180,70 @@ function addTask(req, res, dbo) {
         if (todoList === null) {
             dbo.collection('todo').insertOne({
                 "groupe": req.session.team_ID,
-                "tasks": [{ "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task }]
-            })
-            res.redirect('/todolist');
+                "taskTodo_id":0,
+                "taskDone_id":0,
+                "tasksTodo": [{ "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task, "_id":0}],
+                "tasksDone":[]
+            }, function(err,_){
+                dbo.collection('todo').updateOne(
+                    {"groupe": req.session.team_ID},
+                    { $inc: {"taskTodo_id":1}
+                    }, function (err, _) {
+                        if (err) throw err;
+                        res.redirect('/todolist');
+                        
+                    }
+                );
+            });   
         } else {
             dbo.collection('todo').updateOne(
                 { "groupe": req.session.team_ID },
-                {
-                    $addToSet: {
-                        "tasks": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task }
-                    }
-                }
+                { $addToSet: {"tasksTodo": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskTodo_id }},
+                  $inc: {"taskTodo_id":1}    
+                }, function (err, _){
+                    if (err) throw err;
+                    res.redirect('/todolist');
+                }   
             );
-            res.redirect('/todolist');
+            
         }
     });
 }
+
+function deleteTask(req, res, dbo, query) {
+    dbo.collection('todo').updateOne(
+        {"groupe": req.session.team_ID},
+        { $pull:query
+        }, function (err, _) {
+            if (err) throw err;
+            res.redirect('/todolist');
+        }
+    );
+}
+
+function checkTask(req, res, dbo) {
+    dbo.collection('todo').findOne({"groupe":req.session.team_ID}, function(err, todoList){
+        dbo.collection('todo').updateOne(
+            { "groupe": req.session.team_ID },
+            { $addToSet: {"tasksDone": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskDone_id }},
+              $inc: {"taskDone_id":1}    
+            }
+        );
+        dbo.collection('todo').updateOne(
+            {"groupe": req.session.team_ID},
+            { $pull:{"tasksTodo": {"_id":Number(req.body.task_id)}}
+            }, function (err, _) {
+                if (err) throw err;
+                res.redirect('/todolist');
+            }
+        );
+    })
+    
+}
+
+
+
+
 
 function createGroup(req, res, dbo) {
     dbo.collection('groupes').findOne({

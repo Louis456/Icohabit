@@ -49,13 +49,13 @@
         <label for="add-task">Nouvelle tâche</label>
         <div class="form-group row">
           <div class="col-sm-4">
-            <input class="form-control" type="text" id="task" name="task" placeholder="mets une tâche gros con">
+            <input class="form-control" type="text" id="task" name="task" placeholder="mets une tâche gros con" required>
           </div>
           <div class="col-sm-4">
-            <input class="form-control" type="date" id="date" name="date">
+            <input class="form-control" type="date" id="date" name="date" required>
           </div>
           <div class="col-sm-4">
-            <select name="accountant" class="custom-select">
+            <select name="accountant" class="custom-select" required>
               <option selected>Choisir un responsable</option>
               {{#names}}
               <option value="{{.}}">{{.}}</option>
@@ -70,20 +70,37 @@
       <h1>À faire</h1>
       <ul id="unfulfilled-tasks">
         {{#tasklist}}
-          {{#tasks}}
+          {{#tasksTodo}}
           <li class="taskitem">
             <p>Tâche:{{task}}  |  Responsable:{{accountant}}  |  date:{{date}}  |  </p>
-            <form class="" action="DeleteTask" method="post">
+            <form class="" action="deleteTask" method="post">
+              <input type="hidden" name="task_id" value="{{_id}}">
               <button type="submit" name="Delete">Delete</button>
             </form>
+            <form class="" action="checkTask" method="post">
+              <input type="hidden" name="task" value="{{task}}">
+              <input type="hidden" name="accountant" value="{{accountant}}">
+              <input type="hidden" name="date" value="{{date}}">
+              <input type="hidden" name="task_id" value="{{_id}}">
+              <button type="submit" name="Check">Done</button>
+            </form>
           </li>
-          {{/tasks}}
+          {{/tasksTodo}}
         {{/tasklist}}
       </ul>
       <h1>Accomplies</h1>
       <ul id="completed-tasks">
-        <li>
+        {{#tasklist}}
+          {{#tasksDone}}
+        <li class="taskitem">
+          <p>Tâche:{{task}}  |  Responsable:{{accountant}}  |  date:{{date}}  |  </p>
+          <form class="" action="deleteTaskDone" method="post">
+            <input type="hidden" name="task_id" value="{{_id}}">
+            <button type="submit" name="Delete">Delete</button>
+          </form>
         </li>
+          {{/tasksDone}} 
+        {{/tasklist}}
       </ul>
     </div>
   </div>
