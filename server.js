@@ -114,12 +114,11 @@ MongoClient.connect('mongodb://localhost:27017', {
     });
 
 
+
     app.post('/addTask', function (req, res) {
         addTask(req, res, dbo);
     })
 
-
-    // Button to log in with username and password
     app.post('/submitLogIn', function (req, res) {
         connect(req, res, dbo);
     });
@@ -155,6 +154,8 @@ MongoClient.connect('mongodb://localhost:27017', {
 
 });
 
+
+
 /*-------------------------------------
  *            Les Fonctions
  *-------------------------------------*/
@@ -178,6 +179,38 @@ function addTask(req, res, dbo) {
             );
             res.redirect('/todolist');
         }
+    });
+}
+
+function createGroup(req, res, dbo) {
+    dbo.collection('groupes').findOne({
+        "_id": 0
+    }, function (err, ids) {
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(req.body.newpwdTeam, salt, function (err, encrypted) {
+                dbo.collection('groupes').insertOne({
+                    "groupname": req.body.newTeam,
+                    "password": encrypted,
+                    "_id": ids.idcount,
+                    "members": [req.session.username]
+                });
+                dbo.collection('users').updateOne({
+                    "username": req.session.username
+                }, {
+                    $addToSet: {
+                        "groupes": ids.idcount
+                    }
+                });
+                dbo.collection('groupes').updateOne({
+                    "_id": 0
+                }, {
+                    $inc: {
+                        "idcount": 1
+                    }
+                });
+                res.redirect('/groupes');
+            });
+        });
     });
 }
 
@@ -215,39 +248,61 @@ function joinGroup(req, res, dbo) {
     });
 }
 
-function createGroup(req, res, dbo) {
+function register(req, res, dbo) {
+    /**
+     * If username already exist, then refresh the page.
+     * Else insert a new document into the database with the user's input datas (password encrypted),
+     * then create a cookie and redirect to the home page.
+     */
+    dbo.collection('users').findOne({
+        "username": req.body.username
+    }, function (err, user) {
+        if (user === null) {
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(req.body.pwd, salt, function (err, encrypted) {
+                    dbo.collection("users").insertOne({
+                        "username": req.body.username,
+                        "password": encrypted,
+                        "entireName": req.body.name,
+                        "email": req.body.mail,
+                        "groupes": []
+                    })
+                });
+            })
 
-
-    dbo.collection('groupes').findOne({
-        "_id": 0
-    }, function (err, ids) {
-        bcrypt.genSalt(10, function (err, salt) {
-            bcrypt.hash(req.body.newpwdTeam, salt, function (err, encrypted) {
-                dbo.collection('groupes').insertOne({
-                    "groupname": req.body.newTeam,
-                    "password": encrypted,
-                    "_id": ids.idcount,
-                    "members": [req.session.username]
-                });
-                dbo.collection('users').updateOne({
-                    "username": req.session.username
-                }, {
-                    $addToSet: {
-                        "groupes": ids.idcount
-                    }
-                });
-                dbo.collection('groupes').updateOne({
-                    "_id": 0
-                }, {
-                    $inc: {
-                        "idcount": 1
-                    }
-                });
-                res.redirect('/groupes');
-            });
-        });
+            req.session.username = req.body.username
+            res.redirect('/groupes');
+        } else {
+            req.session.userntaken = "alreadyused";
+            res.redirect('/#identification');
+        }
     });
+}
 
+function connect(req, res, dbo) {
+    /**
+     * Compare the user's password with the hash stored in the database.
+     * If it's correct then create cookie and redirect to home page.
+     * Else refresh the page.
+     */
+    dbo.collection('users').findOne({
+        "username": req.body.usernamealready
+    }, function (err, user) {
+        if (user != null) {
+            bcrypt.compare(req.body.pwdalready, user.password, function (err, result) {
+                if (result) {
+                    req.session.username = req.body.usernamealready //create cookie
+                    res.redirect('/groupes');
+                } else {
+                    req.session.badcredentials = "badPassword";
+                    res.redirect('/#identification');
+                }
+            });
+        } else {
+            req.session.badcredentials = "badUsername";
+            res.redirect('/#identification');
+        }
+    });
 }
 
 function badCredentials(req) {
@@ -284,7 +339,6 @@ function usernAlreadyTaken(req) {
     return "display:none";
 }
 
-
 function isConnected(req) {
     /**
      * Return a boolean
@@ -301,63 +355,6 @@ function idButton(req) {
      */
     if (isConnected(req)) return req.session.username;
     return ID_BUTTON_TEXT
-}
-
-function connect(req, res, dbo) {
-    /**
-     * Compare the user's password with the hash stored in the database.
-     * If it's correct then create cookie and redirect to home page.
-     * Else refresh the page.
-     */
-    dbo.collection('users').findOne({
-        "username": req.body.usernamealready
-    }, function (err, user) {
-        if (user != null) {
-            bcrypt.compare(req.body.pwdalready, user.password, function (err, result) {
-                if (result) {
-                    req.session.username = req.body.usernamealready //create cookie
-                    res.redirect('/groupes');
-                } else {
-                    req.session.badcredentials = "badPassword";
-                    res.redirect('/#identification');
-                }
-            });
-        } else {
-            req.session.badcredentials = "badUsername";
-            res.redirect('/#identification');
-        }
-    });
-}
-
-function register(req, res, dbo) {
-    /**
-     * If username already exist, then refresh the page.
-     * Else insert a new document into the database with the user's input datas (password encrypted),
-     * then create a cookie and redirect to the home page.
-     */
-    dbo.collection('users').findOne({
-        "username": req.body.username
-    }, function (err, user) {
-        if (user === null) {
-            bcrypt.genSalt(10, function (err, salt) {
-                bcrypt.hash(req.body.pwd, salt, function (err, encrypted) {
-                    dbo.collection("users").insertOne({
-                        "username": req.body.username,
-                        "password": encrypted,
-                        "entireName": req.body.name,
-                        "email": req.body.mail,
-                        "groupes": []
-                    })
-                });
-            })
-
-            req.session.username = req.body.username
-            res.redirect('/groupes');
-        } else {
-            req.session.userntaken = "alreadyused";
-            res.redirect('/#identification');
-        }
-    });
 }
 
 function balance(expenses) {
