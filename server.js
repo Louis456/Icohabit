@@ -7,7 +7,8 @@ var session = require('express-session');
 var bodyParser = require("body-parser");
 var https = require('https');
 var fs = require('fs');
-var bcrypt = require('bcrypt')
+var bcrypt = require('bcrypt');
+const cons = require('consolidate');
 
 app.engine('html', consolidate.hogan);
 app.set('views', 'private');
@@ -100,14 +101,18 @@ MongoClient.connect('mongodb://localhost:27017', {
     // TodoList page
     app.get('/todolist', (req, res) => {
         if (isConnected(req)) {
-            dbo.collection('todo').find().toArray(function(err, tasks) {
-                res.render('todolist.html', {
-                IdButtonText: idButton(req),
-                groupName: req.session.team_name,
-                tasklist:tasks
+            dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
+                if (err) throw err;
+                dbo.collection('todo').find().toArray(function (err, tasks) {
+                    if (err) throw err;
+                    res.render('todolist.html', {
+                        IdButtonText: idButton(req),
+                        groupName: req.session.team_name,
+                        tasklist: tasks,
+                        names: groupe.members
+                    });
                 });
-            })
-
+            });
         } else {
             res.redirect('/');
         }

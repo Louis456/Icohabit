@@ -12,6 +12,7 @@ h1, label[for='add-task'] {
   letter-spacing: 0.5mm;
 }
 
+/*
 input[type="text"], input[type="date"] {
   font-size: 15px;
   height: 15px;
@@ -31,6 +32,7 @@ input[type="text"], input[type="date"] {
 input[type="text"]:focus, input[type="date"]:focus {
   border-color: blue;
 }
+*/
 
 /* Nouvelle tâche */
 label[for='add-task'] {
@@ -109,18 +111,4 @@ li, h1 {
 
 li * {
   float: left;
-}
-
-.buttonTask {
-  background: none;
-  border: 0px;
-  color: #7d7b7b;
-  font-size: 15px;
-  font-family: sans-serif;
-  margin: 12px 0 0;
-  width: 60px;
-}
-
-.buttonTask:hover {
-  color: #333;
 }
