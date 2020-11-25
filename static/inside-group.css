@@ -12,7 +12,7 @@ h1, label[for='add-task'] {
   letter-spacing: 0.5mm;
 }
 
-input[type="text"], input[type="date"], input[type="accountant"] {
+input[type="text"], input[type="date"], {
   font-size: 15px;
   height: 15px;
   line-height: 20px;
@@ -28,7 +28,7 @@ input[type="text"], input[type="date"], input[type="accountant"] {
   width: 200px;
 }
 
-input[type="text"]:focus, input[type="date"]:focus, input[type="accountant"]:focus {
+input[type="text"]:focus, input[type="date"]:focus, {
   border-color: blue;
 }
 
@@ -43,12 +43,12 @@ input#add-task {
   width: 300px;
 }
 
-p>button:hover {
+form>button:hover {
   color: #1f64ff;
 }
 
 /*Todo List*/
-li {
+.taskitem {
   overflow: auto;
   border-bottom: 2px solid grey;
   padding: 20px 0;
@@ -84,14 +84,17 @@ li>label {
 /*Corps principal*/
 body {
   background: linear-gradient(black, #1f1f20);
+}
+
+.starter-template {
   color: #7d7b7b;
   font-family: sans-serif
 }
 
 .container {
-  display: block;
-  width: 350px;
-  margin: 120px auto 100px;
+  padding: 15px;
+  margin-top: 12%;
+  justify-content: center;
 }
 
 ul {
@@ -108,7 +111,7 @@ li * {
   float: left;
 }
 
-button {
+.buttonTask {
   background: none;
   border: 0px;
   color: #7d7b7b;
@@ -118,6 +121,6 @@ button {
   width: 60px;
 }
 
-button:hover {
+.buttonTask:hover {
   color: #333;
 }

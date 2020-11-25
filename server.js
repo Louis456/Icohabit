@@ -34,6 +34,7 @@ const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte 
 const BAD_USERNAME_MSG = "Le nom d'utilisateur n'existe pas."
 const BAD_PASSWORD_MSG = "Le mot de passe ne correspond pas."
 const USERNAME_ALREADY_EXIST = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
+const BAD_ID_MSG = "Cet ID ne correspond à aucun groupe."
 
 MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
@@ -67,8 +68,13 @@ MongoClient.connect('mongodb://localhost:27017', {
                 "members": req.session.username
             }).toArray(function (err, groupes) {
                 if (err) throw err;
+                let idOrPwdIncorrect = badCredentials(req);
+                let displayOrNot = idOrPwdIncorrect[0];
+                let msgToDisplay = idOrPwdIncorrect[1];
                 res.render('groupes.html', {
                     IdButtonText: idButton(req),
+                    displayErrorJoin: displayOrNot,
+                    badIdMsg: msgToDisplay,
                     groupes: groupes
                 });
             });
@@ -79,11 +85,39 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     });
 
+    // App page
     app.get('/app', (req, res) => {
-        res.render('app.html', {
-            IdButtonText: idButton(req)
-        });
+        if (isConnected(req)) {
+            res.render('app.html', {
+                IdButtonText: idButton(req),
+                groupName: req.session.team_name
+            });
+        } else {
+            res.redirect('/');
+        }
     });
+
+    // TodoList page
+    app.get('/todolist', (req, res) => {
+        if (isConnected(req)) {
+            dbo.collection('todo').find().toArray(function(err, tasks) {
+                res.render('todolist.html', {
+                IdButtonText: idButton(req),
+                groupName: req.session.team_name,
+                tasklist:tasks
+                });
+            })
+
+        } else {
+            res.redirect('/');
+        }
+    });
+
+
+    app.post('/addTask', function (req, res) {
+        addTask(req, res, dbo);
+    })
+
 
     // Button to log in with username and password
     app.post('/submitLogIn', function (req, res) {
@@ -102,9 +136,14 @@ MongoClient.connect('mongodb://localhost:27017', {
         joinGroup(req, res, dbo);
     });
 
-    app.post('/DisplayGroup', function(req, res){
+    app.post('/DisplayTools', function (req, res) {
         req.session.team_ID = req.body.team_ID
-        res.redirect('/app')
+        dbo.collection('groupes').findOne({
+            "_id": Number(req.body.team_ID)
+        }, function (err, group) {
+            req.session.team_name = group.groupname;
+            res.redirect('/app')
+        });
     });
 
     https.createServer({
@@ -116,8 +155,32 @@ MongoClient.connect('mongodb://localhost:27017', {
 
 });
 
+/*-------------------------------------
+ *            Les Fonctions
+ *-------------------------------------*/
 
-//            Les Fonctions
+function addTask(req, res, dbo) {
+    dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
+        if (todoList === null) {
+            dbo.collection('todo').insertOne({
+                "groupe": req.session.team_ID,
+                "tasks": [{ "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task }]
+            })
+            res.redirect('/todolist');
+        } else {
+            dbo.collection('todo').updateOne(
+                { "groupe": req.session.team_ID },
+                {
+                    $addToSet: {
+                        "tasks": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task }
+                    }
+                }
+            );
+            res.redirect('/todolist');
+        }
+    });
+}
+
 function joinGroup(req, res, dbo) {
     dbo.collection('groupes').findOne({
         "_id": Number(req.body.teamID)
@@ -141,10 +204,12 @@ function joinGroup(req, res, dbo) {
                     });
                     res.redirect('/groupes');
                 } else {
+                    req.session.badcredentials = "badPassword";
                     res.redirect('/groupes#createorjoin');
                 }
             });
         } else {
+            req.session.badcredentials = "badId";
             res.redirect('/groupes#createorjoin');
         }
     });
@@ -199,6 +264,10 @@ function badCredentials(req) {
         req.session.badcredentials = null;
         displayAndMsg[0] = "display:block";
         displayAndMsg[1] = BAD_USERNAME_MSG;
+    } else if (req.session.badcredentials === "badId") {
+        req.session.badcredentials = null;
+        displayAndMsg[0] = "display:block";
+        displayAndMsg[1] = BAD_ID_MSG;
     }
     return displayAndMsg;
 }
