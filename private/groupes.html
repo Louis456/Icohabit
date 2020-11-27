@@ -78,8 +78,8 @@
             {{badIdMsg}}
         </div>
         <form action="joinTeam" name="joinTeam" class="teamForm" method="post">
-          <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" required>
-          <input type="password" id="pwdTeam" name="pwdTeam" placeholder="Mot de passe " required><br>
+          <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
+          <input type="password" id="pwdTeam" name="pwdTeam" placeholder="Mot de passe " required oninvalid="this.setCustomValidity('Veuillez entrer le mot de passe')" oninput="setCustomValidity('')"><br>
           <input id="Soumettre" type="submit" value="Rejoindre">
         </form>
       </div>
