@@ -225,17 +225,17 @@ form input[type="submit"]:hover::before {
   padding-top: 50px;
 }
 
-#post-it {
-  background-image: url(post-it.png);
-  width: 50px;
+#postit {
+  background-image: url(postit.png);
+  width: 150px;
 }
 
 #planning {
   background-image: url(planning.png);
-  width: 50px;
+  width: 150px;
 }
 
 #expenses {
   background-image: url(expenses.png);
-  width: 50px;
+  width: 150px;
 }
