@@ -1,5 +1,5 @@
 /* Entête */
-h1, label[for='add-task'] {
+h1, .title {
   color: #133da8;
   font-size: 30px;
   font-weight: 500;
@@ -12,42 +12,12 @@ h1, label[for='add-task'] {
   letter-spacing: 0.5mm;
 }
 
-/*
-input[type="text"], input[type="date"] {
-  font-size: 15px;
-  height: 15px;
-  line-height: 20px;
-  margin: 10px;
-  padding: 10px;
-  border: 3px solid #133da8;
-  background: white;
-  border-radius: 8px;
-  font-family: sans-serif;
-  display: block;
-  float: none;
-  color: #333;
-  width: 200px;
-}
-
-input[type="text"]:focus, input[type="date"]:focus {
-  border-color: blue;
-}
-*/
-
 /* Nouvelle tâche */
-label[for='add-task'] {
+.title {
   display: block;
   margin: 0 0 18px;
 }
 
-input#add-task {
-  float: left;
-  width: 300px;
-}
-
-form>button:hover {
-  color: #1f64ff;
-}
 
 /*Todo List*/
 .taskitem {
@@ -56,31 +26,13 @@ form>button:hover {
   padding: 20px 0;
 }
 
-
-li>input[type="checkbox"] {
-  position: relative;
-  top: 15px;
-  margin: 0 10px;
-}
-
-li>.delete:hover {
-  color: #bb0909;
-}
-
-li>input[type="text"] {
-  width: 200px;
-}
-
-li>label {
-  font-size: 18px;
-  width: 220px;
-  padding: 0 0 0 10px;
-  line-height: 35px;
+.todo {
+  color: white;
 }
 
 /*Accomplies*/
-#completed-tasks label {
-  color: black;
+.done {
+  color: grey;
   text-decoration: line-through;
 }
 

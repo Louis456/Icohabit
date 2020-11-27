@@ -14,7 +14,7 @@ sont primordiales pour le bon fonctionnement de l'application.
       ```sh
       $ mongo
       $ use database
-      $ db.createCollection("users")
+      $ db.createCollection("users") ??
       $ db.groupes.insert({"_id":0, "idcount":1})
       ```
       (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")

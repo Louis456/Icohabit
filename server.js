@@ -79,7 +79,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                     groupes: groupes
                 });
             });
-            req.session.team_id = null;
+            req.session.team_ID = null;
         } else {
             res.redirect('/')
         }
@@ -118,6 +118,42 @@ MongoClient.connect('mongodb://localhost:27017', {
         }
     });
 
+    app.get('/planning', (req, res) => {
+        if (isConnected(req)) {
+            filterPassedEvents(req, res, dbo);
+            dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
+                res.render('planning.html', {
+                    IdButtonText: idButton(req),
+                    groupName: req.session.team_name,
+                    names: groupe.members
+                });
+            });
+
+        } else {
+            res.redirect('/');
+        }
+    })
+
+    app.get('/depenses', (req, res) => {
+        if (isConnected(req)) {
+            //dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
+                res.render('expenses.html', {
+                    IdButtonText: idButton(req),
+                    groupName: req.session.team_name,
+                    //names: groupe.members
+                });
+            //});
+        } else {
+            res.redirect('/');
+        }
+    })
+
+
+
+    app.post('/addEvent', function(req, res) {
+        addEvent(req, res, dbo);
+    })
+
     app.post('/checkTask', function(req, res){
         checkTask(req, res, dbo);
     })
@@ -150,7 +186,7 @@ MongoClient.connect('mongodb://localhost:27017', {
         joinGroup(req, res, dbo);
     });
 
-    app.post('/DisplayTools', function (req, res) {
+    app.post('/displayTools', function (req, res) {
         req.session.team_ID = req.body.team_ID
         dbo.collection('groupes').findOne({
             "_id": Number(req.body.team_ID)
@@ -158,6 +194,13 @@ MongoClient.connect('mongodb://localhost:27017', {
             req.session.team_name = group.groupname;
             res.redirect('/app')
         });
+    });
+
+    app.post('/disconnect', function (req, res) {
+        req.session.username = null;
+        req.session.team_ID = null;
+        req.session.team_name = null;
+        res.redirect('/');
     });
 
     https.createServer({
@@ -175,6 +218,50 @@ MongoClient.connect('mongodb://localhost:27017', {
  *            Les Fonctions
  *-------------------------------------*/
 
+function filterPassedEvents(req, res, dbo) {
+    dbo.collection('planning').findOne({"groupe": req.session.team_ID}, function (err, planning) {
+        if (err) throw err;
+        events = planning.eventsToCome;
+        console.log(events);
+        console.log(events[0]);
+        console.log(events[0].date);
+    });
+}
+
+function addEvent(req, res, dbo) {
+    dbo.collection('planning').findOne({"groupe": req.session.team_ID}, function (err, planning) {
+        console.log(req.body.participants)
+        if (planning === null) {
+            dbo.collection('planning').insertOne({
+                "groupe": req.session.team_ID,
+                "eventsToCome_id":0,
+                "eventsPassed_id":0,
+                "eventsToCome": [{"date":req.body.date, "participants":req.body.participants, "event":req.body.event, "_id":0}],
+                "eventsPassed":[]
+            }, function(err,_) {
+                dbo.collection('planning').updateOne(
+                    {"groupe": req.session.team_ID},
+                    { $inc: {"eventsToCome_id":1}
+                    }, function(err,_) {
+                      if (err) throw err;
+                      res.redirect('/planning');
+                    }
+                );
+            });
+        } else {
+            dbo.collection('planning').updateOne(
+                {"groupe": req.session.team_ID},
+                { $addToSet: {"eventsToCome": {"date":req.body.date, "participants":req.body.participants, "event":req.body.event, "_id":planning.eventsToCome_id}},
+                  $inc: {"eventsToCome_id":1}
+                }, function(err,_){
+                    if (err) throw err;
+                    res.redirect('/planning');
+                }
+            );
+        }
+    });
+}
+
 function addTask(req, res, dbo) {
     dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
         if (todoList === null) {
@@ -191,21 +278,20 @@ function addTask(req, res, dbo) {
                     }, function (err, _) {
                         if (err) throw err;
                         res.redirect('/todolist');
-                        
                     }
                 );
-            });   
+            });
         } else {
             dbo.collection('todo').updateOne(
                 { "groupe": req.session.team_ID },
                 { $addToSet: {"tasksTodo": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskTodo_id }},
-                  $inc: {"taskTodo_id":1}    
+                  $inc: {"taskTodo_id":1}
                 }, function (err, _){
                     if (err) throw err;
                     res.redirect('/todolist');
-                }   
+                }
             );
-            
+
         }
     });
 }
@@ -226,22 +312,22 @@ function checkTask(req, res, dbo) {
         dbo.collection('todo').updateOne(
             { "groupe": req.session.team_ID },
             { $addToSet: {"tasksDone": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskDone_id }},
-              $inc: {"taskDone_id":1}    
+              $inc: {"taskDone_id":1}
+            }, function (err,_) {
+                dbo.collection('todo').updateOne(
+                    {"groupe": req.session.team_ID},
+                    { $pull:{"tasksTodo": {"_id":Number(req.body.task_id)}}
+                    }, function (err, _) {
+                        if (err) throw err;
+                        res.redirect('/todolist');
+                    }
+                );
             }
         );
-        dbo.collection('todo').updateOne(
-            {"groupe": req.session.team_ID},
-            { $pull:{"tasksTodo": {"_id":Number(req.body.task_id)}}
-            }, function (err, _) {
-                if (err) throw err;
-                res.redirect('/todolist');
-            }
-        );
+
     })
-    
+
 }
-
-
 
 
 
@@ -278,6 +364,11 @@ function createGroup(req, res, dbo) {
 }
 
 function joinGroup(req, res, dbo) {
+    /**
+     * Check if the group exist and if the password is correct.
+     * if correct, add the user to group's member list and the group to the user's group list.
+     * if not, display "badPassword" or "badId".
+    */
     dbo.collection('groupes').findOne({
         "_id": Number(req.body.teamID)
     }, function (err, group) {
