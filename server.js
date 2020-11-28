@@ -36,6 +36,7 @@ const BAD_USERNAME_MSG = "Le nom d'utilisateur n'existe pas."
 const BAD_PASSWORD_MSG = "Le mot de passe ne correspond pas."
 const USERNAME_ALREADY_EXIST = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
 const BAD_ID_MSG = "Cet ID ne correspond à aucun groupe."
+const NOT_IN_GROUP_MSG = "Vous n'êtes pas membre de ce groupe."
 
 MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
@@ -69,15 +70,28 @@ MongoClient.connect('mongodb://localhost:27017', {
                 "members": req.session.username
             }).toArray(function (err, groupes) {
                 if (err) throw err;
-                let idOrPwdIncorrect = badCredentials(req);
-                let displayOrNot = idOrPwdIncorrect[0];
-                let msgToDisplay = idOrPwdIncorrect[1];
-                res.render('groupes.html', {
-                    IdButtonText: idButton(req),
-                    displayErrorJoin: displayOrNot,
-                    badIdMsg: msgToDisplay,
-                    groupes: groupes
-                });
+                let getRes = badCredentials(req);
+                let displayOrNot = getRes[0];
+                let msgToDisplay = getRes[1];
+                if (getRes[2] === "first") {
+                  res.render('groupes.html', {
+                      IdButtonText: idButton(req),
+                      displayErrorJoin: displayOrNot,
+                      badIdMsg: msgToDisplay,
+                      displayErrorLeave: "display:none",
+                      badGroupMsg: "",
+                      groupes: groupes
+                  });
+                } else {
+                    res.render('groupes.html', {
+                        IdButtonText: idButton(req),
+                        displayErrorJoin: "display:none",
+                        badIdMsg: "",
+                        displayErrorLeave: displayOrNot,
+                        badGroupMsg: msgToDisplay,
+                        groupes: groupes
+                    });
+                }
             });
             req.session.team_ID = null;
         } else {
@@ -186,6 +200,10 @@ MongoClient.connect('mongodb://localhost:27017', {
         joinGroup(req, res, dbo);
     });
 
+    app.post('/leaveTeam', function (req, res) {
+        leaveGroup(req, res, dbo);
+    });
+
     app.post('/displayTools', function (req, res) {
         req.session.team_ID = req.body.team_ID
         dbo.collection('groupes').findOne({
@@ -230,7 +248,6 @@ function filterPassedEvents(req, res, dbo) {
 
 function addEvent(req, res, dbo) {
     dbo.collection('planning').findOne({"groupe": req.session.team_ID}, function (err, planning) {
-        console.log(req.body.participants)
         if (planning === null) {
             dbo.collection('planning').insertOne({
                 "groupe": req.session.team_ID,
@@ -265,11 +282,12 @@ function addEvent(req, res, dbo) {
 function addTask(req, res, dbo) {
     dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
         if (todoList === null) {
+            console.log('salut')
             dbo.collection('todo').insertOne({
                 "groupe": req.session.team_ID,
                 "taskTodo_id":0,
                 "taskDone_id":0,
-                "tasksTodo": [{ "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task, "_id":0}],
+                "tasksTodo": [{ "date": req.body.date, "tasks":[{"accountant":req.body.accountant, "task":req.body.task, "_id":0}]}],
                 "tasksDone":[]
             }, function(err,_){
                 dbo.collection('todo').updateOne(
@@ -282,16 +300,34 @@ function addTask(req, res, dbo) {
                 );
             });
         } else {
-            dbo.collection('todo').updateOne(
-                { "groupe": req.session.team_ID },
-                { $addToSet: {"tasksTodo": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskTodo_id }},
-                  $inc: {"taskTodo_id":1}
-                }, function (err, _){
-                    if (err) throw err;
-                    res.redirect('/todolist');
+            dbo.collection('todo').findOne({"groupe": req.session.team_ID, "taskTodo.date":req.body.date}, function(err, todoContainingDate){
+                console.log(todoContainingDate);
+                console.log(req.body.date);
+                if (todoContainingDate === null) {
+                  console.log('cacou')
+                  dbo.collection('todo').updateOne(
+                      { "groupe": req.session.team_ID, "taskTodo.date":req.body.date},
+                      { $push: {"tasksTodo": { "date": req.body.date, "tasks":[]}},
+                        $push: {"tasksTodo.$.tasks": {"accountant":req.body.accountant, "task":req.body.task, "_id":todoList.taskTodo_id}},
+                        $inc: {"taskTodo_id":1}
+                      }, function (err, _){
+                          if (err) throw err;
+                          res.redirect('/todolist');
+                      }
+                  );
+                } else {
+                    console.log('caca')
+                    dbo.collection('todo').updateOne(
+                        { "groupe": req.session.team_ID, "taskTodo.date":req.body.date},
+                        { $push: {"tasksTodo.$.tasks": {"accountant":req.body.accountant, "task":req.body.task, "_id":todoList.taskTodo_id}},
+                          $inc: {"taskTodo_id":1}
+                        }, function (err, _){
+                            if (err) throw err;
+                            res.redirect('/todolist');
+                        }
+                    );
                 }
-            );
-
+            });
         }
     });
 }
@@ -402,6 +438,42 @@ function joinGroup(req, res, dbo) {
     });
 }
 
+function leaveGroup(req, res, dbo) {
+    /**
+     * Check if the group exist and if the user is a member of it.
+     * if correct, remove the user from group's member list and the group from the user's group list.
+    */
+    dbo.collection('groupes').findOne({
+        "_id": Number(req.body.teamID)
+    }, function (err, group) {
+        if (group != null) {
+            if (group.members.includes(req.session.username)) {
+                dbo.collection('users').updateOne({
+                    "username": req.session.username
+                }, {
+                    $pull: {
+                        "groupes": group._id
+                    }
+                });
+                dbo.collection('groupes').updateOne({
+                    "_id": group._id
+                }, {
+                    $pull: {
+                        "members": req.session.username
+                    }
+                });
+                res.redirect('/groupes');
+            } else {
+                req.session.badcredentials = "notInGroup";
+                res.redirect('/groupes#leave');
+            }
+        } else {
+            req.session.badcredentials = "badIdGroup";
+            res.redirect('/groupes#leave');
+        }
+    });
+}
+
 function register(req, res, dbo) {
     /**
      * If username already exist, then refresh the page.
@@ -464,7 +536,7 @@ function badCredentials(req) {
      * Display an error message if the password is incorrect by changing div style in index.html (66)
      * @return a list ["display:none", ""] except when password is incorrect, then it returns ["display:block", the message].
      */
-    let displayAndMsg = ["display:none", ""];
+    let displayAndMsg = ["display:none", "", "first"];
     if (req.session.badcredentials === "badPassword") {
         req.session.badcredentials = null;
         displayAndMsg[0] = "display:block";
@@ -477,6 +549,16 @@ function badCredentials(req) {
         req.session.badcredentials = null;
         displayAndMsg[0] = "display:block";
         displayAndMsg[1] = BAD_ID_MSG;
+    } else if (req.session.badcredentials === "badIdLeave") {
+        req.session.badcredentials = null;
+        displayAndMsg[0] = "display:block";
+        displayAndMsg[1] = BAD_ID_MSG;
+        displayAndMsg[2] = "second";
+    } else if (req.session.badcredentials === "notInGroup") {
+        req.session.badcredentials = null;
+        displayAndMsg[0] = "display:block";
+        displayAndMsg[1] = NOT_IN_GROUP_MSG;
+        displayAndMsg[2] = "second";
     }
     return displayAndMsg;
 }

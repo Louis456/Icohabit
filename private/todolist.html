@@ -57,13 +57,13 @@
         <label for="add-task" class="title">Nouvelle tâche</label>
         <div class="form-group row">
           <div class="col-sm-4">
-            <input class="form-control" type="text" id="task" name="task" placeholder="mets une tâche gros con" required>
+            <input class="form-control" type="text" id="task" name="task" placeholder="mets une tâche gros con" maxlength="40" required oninvalid="this.setCustomValidity('Veuillez indiquer un titre')" oninput="setCustomValidity('')">
           </div>
           <div class="col-sm-4">
-            <input class="form-control" type="date" id="date" name="date" required>
+            <input class="form-control" type="date" id="date" name="date" required oninvalid="this.setCustomValidity('Veuillez choisir une date')" oninput="setCustomValidity('')">
           </div>
           <div class="col-sm-4">
-            <select name="accountant" class="custom-select" required>
+            <select name="accountant" class="custom-select" required oninvalid="this.setCustomValidity('Veuillez choisir un responsable')" oninput="setCustomValidity('')">
               <option selected>Choisir un responsable</option>
               {{#names}}
               <option value="{{.}}">{{.}}</option>

@@ -53,7 +53,36 @@
   </nav>
   <div class="starter-template ">
     <div class="container">
-      <p>Remplir la page ici</p>
+      <form action="expenses" method="post">
+        <label for="expenses" class="title">Nouvelle dépense</label>
+        <div class="form-group row">
+          <div class="col-sm-4">
+            <input class="form-control" type="text" id="expenses" name="expenses" maxlength="30" placeholder="mets un titre gros con" required oninvalid="this.setCustomValidity('Veuillez choisir un titre pour votre dépense')" oninput="setCustomValidity('')">
+          </div>
+          <div class="col-sm-4">
+            <input class="form-control" type="date" id="date" name="date" required oninvalid="this.setCustomValidity('Veuillez choisir une date')" oninput="setCustomValidity('')">
+          </div>
+          <div class="col-sm-4">
+            <input class="form-control" type="number" id="amount" name="amount" required oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense')" oninput="setCustomValidity('')">
+          <div class="col-sm-4">
+            <select name="accountant" class="custom-select" required oninvalid="this.setCustomValidity('Veuillez choisir un responsable')" oninput="setCustomValidity('')">
+              <option selected>Choisir un responsable</option>
+              {{#names}}
+              <option value="{{.}}">{{.}}</option>
+              {{/names}}
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+      </form>
+      <!--Pas sur de ce que je suis en train de faire-->
+      <h1>Remboursements à effectuer</h1>
+      <button onclick="balance()">Afficher les remboursements</button>
+        <label for="refund"> {{names}} : </label>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="lemontantlàjesaispas" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
