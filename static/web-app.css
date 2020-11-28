@@ -191,6 +191,7 @@ form input[type="submit"]:hover::before {
 .alert {
   width: 40%;
   margin: auto;
+  display: none;
 }
 
 /* Css app.html */

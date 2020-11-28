@@ -75,7 +75,7 @@
       <div class="team">
         <h2>Rejoindre un groupe</h2>
         <div class="alert alert-danger" style={{displayErrorJoin}}>
-            {{badIdMsg}}
+            {{badIdJoinMsg}}
         </div>
         <form action="joinTeam" name="joinTeam" class="teamForm" method="post">
           <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
@@ -86,7 +86,7 @@
       <div class="team">
         <h2 id="leave">Quitter un groupe</h2>
         <div class="alert alert-danger" style={{displayErrorLeave}}>
-            {{badGroupMsg}}
+            {{badIdLeaveMsg}}
         </div>
         <form action="leaveTeam" name="leaveTeam" class="teamForm" method="post">
           <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
