@@ -117,12 +117,12 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (isConnected(req)) {
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                 if (err) throw err;
-                dbo.collection('todo').find().toArray(function (err, tasks) {
+                dbo.collection('todo').findOne({"groupe": req.session.team_ID}, function (err, todoList) {
                     if (err) throw err;
                     res.render('todolist.html', {
                         IdButtonText: idButton(req),
                         groupName: req.session.team_name,
-                        tasklist: tasks,
+                        todoList: todoList,
                         names: groupe.members
                     });
                 });
@@ -173,7 +173,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     })
 
     app.post('/deleteTaskDone', function (req, res){
-        deleteTask(req, res, dbo, { "tasksDone": {"_id":Number(req.body.task_id)}});
+        deleteTaskDone(req, res, dbo);
     })
 
     app.post('/addTask', function (req, res) {
@@ -181,7 +181,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     })
 
     app.post('/deleteTask', function (req, res){
-        deleteTask(req, res, dbo, { "tasksTodo": {"_id":Number(req.body.task_id)}});
+        deleteTaskTodo(req, res, dbo);
     })
 
     app.post('/submitLogIn', function (req, res) {
@@ -282,7 +282,6 @@ function addEvent(req, res, dbo) {
 function addTask(req, res, dbo) {
     dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
         if (todoList === null) {
-            console.log('salut')
             dbo.collection('todo').insertOne({
                 "groupe": req.session.team_ID,
                 "taskTodo_id":0,
@@ -300,15 +299,11 @@ function addTask(req, res, dbo) {
                 );
             });
         } else {
-            dbo.collection('todo').findOne({"groupe": req.session.team_ID, "taskTodo.date":req.body.date}, function(err, todoContainingDate){
-                console.log(todoContainingDate);
-                console.log(req.body.date);
+            dbo.collection('todo').findOne({"groupe": req.session.team_ID, "tasksTodo.date":req.body.date}, function(err, todoContainingDate){
                 if (todoContainingDate === null) {
-                  console.log('cacou')
                   dbo.collection('todo').updateOne(
-                      { "groupe": req.session.team_ID, "taskTodo.date":req.body.date},
-                      { $push: {"tasksTodo": { "date": req.body.date, "tasks":[]}},
-                        $push: {"tasksTodo.$.tasks": {"accountant":req.body.accountant, "task":req.body.task, "_id":todoList.taskTodo_id}},
+                      { "groupe": req.session.team_ID},
+                      { $push: {"tasksTodo": { "date": req.body.date, "tasks":[{"accountant":req.body.accountant, "task":req.body.task, "_id":todoList.taskTodo_id}]}},
                         $inc: {"taskTodo_id":1}
                       }, function (err, _){
                           if (err) throw err;
@@ -316,9 +311,8 @@ function addTask(req, res, dbo) {
                       }
                   );
                 } else {
-                    console.log('caca')
                     dbo.collection('todo').updateOne(
-                        { "groupe": req.session.team_ID, "taskTodo.date":req.body.date},
+                        { "groupe": req.session.team_ID, "tasksTodo.date":req.body.date},
                         { $push: {"tasksTodo.$.tasks": {"accountant":req.body.accountant, "task":req.body.task, "_id":todoList.taskTodo_id}},
                           $inc: {"taskTodo_id":1}
                         }, function (err, _){
@@ -332,37 +326,80 @@ function addTask(req, res, dbo) {
     });
 }
 
-function deleteTask(req, res, dbo, query) {
+function deleteTaskTodo(req, res, dbo) {
     dbo.collection('todo').updateOne(
-        {"groupe": req.session.team_ID},
-        { $pull:query
-        }, function (err, _) {
-            if (err) throw err;
-            res.redirect('/todolist');
+        {"groupe": req.session.team_ID, "tasksTodo.date":req.body.date},
+        { $pull: {"tasksTodo.$.tasks": {"_id": Number(req.body.task_id)}}
+        }, function (err,_){
+            console.log('salut');
+            dbo.collection('todo').updateOne(
+                {"groupe":req.session.team_ID, "tasksTodo.tasks":[]},
+                { $pull: {"tasksTodo": {"date":req.body.date}}
+                }, function (err,_){
+                    if (err) throw err;
+                    console.log('coucou')
+                    res.redirect('/todolist')
+                }
+            )
+        }
+    );
+}
+
+function deleteTaskDone(req, res, dbo) {
+    dbo.collection('todo').updateOne(
+        {"groupe": req.session.team_ID, "tasksDone.date":req.body.date},
+        { $pull: {"tasksDone.$.tasks": {"_id": Number(req.body.task_id)}}
+        }, function (err,_){
+            console.log('salut');
+            dbo.collection('todo').updateOne(
+                {"groupe":req.session.team_ID, "tasksDone.tasks":[]},
+                { $pull: {"tasksDone": {"date":req.body.date}}
+                }, function (err,_){
+                    if (err) throw err;
+                    console.log('coucou')
+                    res.redirect('/todolist')
+                }
+            )
         }
     );
 }
 
 function checkTask(req, res, dbo) {
-    dbo.collection('todo').findOne({"groupe":req.session.team_ID}, function(err, todoList){
+    dbo.collection('todo').findOne({"groupe": req.session.team_ID, "tasksDone.date":req.body.date}, function (err, doneContainingDate){
+        console.log(doneContainingDate);
+        if (doneContainingDate === null) {
+            console.log('cacou')
+            dbo.collection('todo').updateOne(
+                { "groupe": req.session.team_ID},
+                { $push: {"tasksDone": { "date": req.body.date, "tasks":[{"accountant":req.body.accountant, "task":req.body.task, "_id":Number(req.body.task_id)}]}}
+                }
+            );
+        } else {
+            console.log('caca')
+            dbo.collection('todo').updateOne(
+                { "groupe": req.session.team_ID, "tasksDone.date":req.body.date},
+                { $push: {"tasksDone.$.tasks": {"accountant":req.body.accountant, "task":req.body.task, "_id":Number(req.body.task_id)}}} 
+            );
+        }
         dbo.collection('todo').updateOne(
-            { "groupe": req.session.team_ID },
-            { $addToSet: {"tasksDone": { "date": req.body.date, "accountant": req.body.accountant, "task": req.body.task,"_id":todoList.taskDone_id }},
-              $inc: {"taskDone_id":1}
-            }, function (err,_) {
+            {"groupe": req.session.team_ID, "tasksTodo.date":req.body.date},
+            { $pull: {"tasksTodo.$.tasks": {"_id": Number(req.body.task_id)}}
+            }, function (err,result){
+                console.log('salut');
                 dbo.collection('todo').updateOne(
-                    {"groupe": req.session.team_ID},
-                    { $pull:{"tasksTodo": {"_id":Number(req.body.task_id)}}
-                    }, function (err, _) {
+                    {"groupe":req.session.team_ID, "tasksTodo.tasks":[]},
+                    { $pull: {"tasksTodo": {"date":req.body.date}}
+                    }, function (err,_){
                         if (err) throw err;
-                        res.redirect('/todolist');
+                        console.log('coucou')
+                        res.redirect('/todolist')
                     }
-                );
+
+                )
             }
         );
-
-    })
-
+    });
+    
 }
 
 

@@ -23,7 +23,7 @@ h1, .title {
 .taskitem {
   overflow: auto;
   border-bottom: 2px solid grey;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .todo {
@@ -46,6 +46,7 @@ body {
   font-family: sans-serif
 }
 
+
 .container {
   padding: 15px;
   margin-top: 12%;
@@ -64,4 +65,24 @@ li, h1 {
 
 li * {
   float: left;
+}
+
+.tasktable {
+  border: 15px solid rgb(65, 37, 19);
+  background-color: rgb(1, 36, 4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-left: 1%;
+  border-style:inset;
+}
+
+.task {
+  margin:15px;
+  width: 300px;
+  height: 300px;
+  color:black;
+  background-color: rgb(184, 174, 34);
+  border: 5px solid rgb(0, 0, 0);
+  overflow-wrap: break-word;
 }

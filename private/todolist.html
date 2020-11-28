@@ -76,40 +76,64 @@
         <button class="btn btn-outline-primary" type="submit">Ajouter</button>
       </form>
       <h1>À faire</h1>
-      <ul id="unfulfilled-tasks">
-        {{#tasklist}}
+      {{#todoList}}
+        <div class="tasktable">  
           {{#tasksTodo}}
-          <li class="taskitem">
-            <p class="todo">Tâche:{{task}}  |  Responsable:{{accountant}}  |  date:{{date}}  |  </p>
-            <form class="" action="deleteTask" method="post">
-              <input type="hidden" name="task_id" value="{{_id}}">
-              <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
-            </form>
-            <form class="" action="checkTask" method="post">
-              <input type="hidden" name="task" value="{{task}}">
-              <input type="hidden" name="accountant" value="{{accountant}}">
-              <input type="hidden" name="date" value="{{date}}">
-              <input type="hidden" name="task_id" value="{{_id}}">
-              <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
-            </form>
-          </li>
+          <div class="task">  
+            <ul id="unfulfilled-tasks">
+              <li class="taskitem">
+                <p class="todo">date:{{date}}</p>
+              </li>  
+              {{#tasks}}
+              <li class="taskitem">
+                <p class="todo">What?  {{task}}</p><br>
+                <p class="todo">Who?  Responsable:{{accountant}}</p>
+                <form class="" action="deleteTask" method="post">
+                  <input type="hidden" name="task_id" value="{{_id}}">
+                  <input type="hidden" name="date" value="{{date}}">
+                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+                <form class="" action="checkTask" method="post">
+                  <input type="hidden" name="task" value="{{task}}">
+                  <input type="hidden" name="accountant" value="{{accountant}}">
+                  <input type="hidden" name="date" value="{{date}}">
+                  <input type="hidden" name="task_id" value="{{_id}}">
+                  <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
+                </form>
+              </li>
+              {{/tasks}}
+            </ul>
+          </div>
           {{/tasksTodo}}
-        {{/tasklist}}
-      </ul>
+        </div>
+      {{/todoList}}
+      
       <h1>Accomplies</h1>
-      <ul id="completed-tasks">
-        {{#tasklist}}
+      
+      {{#todoList}}  
+        <div class="tasktable">
           {{#tasksDone}}
-        <li class="taskitem">
-          <p class="done">Tâche:{{task}}  |  Responsable:{{accountant}}  |  date:{{date}}  |  </p>
-          <form class="" action="deleteTaskDone" method="post">
-            <input type="hidden" name="task_id" value="{{_id}}">
-            <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
-          </form>
-        </li>
+          <div class="task">
+            <ul id="completed-tasks">
+              <li class="taskitem">
+                <p class="todo">date:{{date}}</p>
+              </li>
+              {{#tasks}}
+              <li class="taskitem">
+                <p class="done">What?  {{task}}</p><br>
+                <p class="done">Who?  {{accountant}}</p>
+                <form class="" action="deleteTaskDone" method="post">
+                  <input type="hidden" name="date" value="{{date}}">
+                  <input type="hidden" name="task_id" value="{{_id}}">
+                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+              </li>
+              {{/tasks}}
+            </ul>
+          </div>
           {{/tasksDone}}
-        {{/tasklist}}
-      </ul>
+        </div>
+      {{/todoList}}
     </div>
   </div>
 </body>
