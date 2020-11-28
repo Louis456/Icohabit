@@ -2,6 +2,9 @@ body {
   padding-top: 50px;
   color: white;
   background-color: black;
+}
+
+.bodyaddimage {
   background-image: url(background.png);
   background-repeat: no-repeat;
   background-attachment: scroll;
@@ -62,6 +65,11 @@ p {
   background-color: rgb(0, 0, 0);
   border: 3px solid white;
   overflow-wrap: break-word;
+}
+
+.TeamButton:hover {
+  opacity: 0.7;
+  transition: 0.25s;
 }
 
 .container {
@@ -199,47 +207,39 @@ form input[type="submit"]:hover::before {
   background: #23244e;
   text-align: center;
   border: 2px solid #0a3c87;
-  width: 300px;
-  height: auto;
+  width: 100%;
+  height: 100%;
   padding: auto;
   color: white;
   outline: none;
   border-radius: 8px;
-  margin: 0 20px 0 20px;
+  margin: 0 1% 0 1%;
   text-decoration: none;
   display: inline-block;
   font-family: sans-serif;
 }
 
 .ButtonTool:hover {
+  opacity: 0.7;
+  transition: 0.25s;
   text-decoration: none;
-  width: 320px;
   border-color: #bf442e;
+  color: white;
 }
 
 .boxapp {
-  width: 1200px;
-  height: 400px;
+  width: 70%;
+  height: 20%;
   background: radial-gradient(#384d7c, #0f0d73);
   border: 1px solid #184850;
   text-align: center;
-  padding: 40px;
-  padding-top: 50px;
+  padding: 4%;
+  padding-top: 5%;
   border-radius: 8px;
-  margin-top: 150px;
+  margin-top: 10%;
 }
 
-#postit:hover {
-  opacity: 0.3;
-  transition: 0.40s;
-}
-
-#planning:hover {
-  opacity: 0.3;
-  transition: 0.40s;
-}
-
-#expenses:hover {
-  opacity: 0.3;
-  transition: 0.40s;
+.appImages {
+  width: 100%;
+  height: auto;
 }
