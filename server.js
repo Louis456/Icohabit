@@ -32,11 +32,10 @@ app.use(session({
  *
  */
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
-const BAD_USERNAME_MSG = "Le nom d'utilisateur n'existe pas."
-const BAD_PASSWORD_MSG = "Le mot de passe ne correspond pas."
-const USERNAME_ALREADY_EXIST = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
-const BAD_ID_MSG = "Cet ID ne correspond à aucun groupe."
-const NOT_IN_GROUP_MSG = "Vous n'êtes pas membre de ce groupe."
+const BAD_CREDENTIALS_MSG = "Le nom d'utilisateur et/ou le mot de passe est incorrect."
+const USERNAME_ALREADY_EXIST_MSG = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
+const BAD_CREDENTIALS_JOIN_GROUP_MSG = "L'id et/ou le mot de passe est incorrect."
+const BAD_ID_LEAVE_GROUP_MSG = "Vous n'êtes pas membre du groupe que vous désirez quitter."
 
 MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
@@ -50,15 +49,12 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (isConnected(req)) {
             res.redirect('/groupes')
         } else {
-            let userOrPwdIncorrect = badCredentials(req);
-            let displayOrNot = userOrPwdIncorrect[0];
-            let msgToDisplay = userOrPwdIncorrect[1];
             res.render('index.html', {
                 IdButtonText: idButton(req),
-                displayErrorConnect: displayOrNot,
-                badCredentialsMsg: msgToDisplay,
-                displayErrorRegister: usernAlreadyTaken(req),
-                usernameAlreadyExistMsg: USERNAME_ALREADY_EXIST
+                displayErrorConnect: displayOrNot(req, "login"),
+                badCredentialsMsg: BAD_CREDENTIALS_MSG,
+                displayErrorRegister: displayOrNot(req, "register"),
+                usernameAlreadyExistMsg: USERNAME_ALREADY_EXIST_MSG
             });
         }
     });
@@ -70,28 +66,14 @@ MongoClient.connect('mongodb://localhost:27017', {
                 "members": req.session.username
             }).toArray(function (err, groupes) {
                 if (err) throw err;
-                let getRes = badCredentials(req);
-                let displayOrNot = getRes[0];
-                let msgToDisplay = getRes[1];
-                if (getRes[2] === "first") {
-                  res.render('groupes.html', {
-                      IdButtonText: idButton(req),
-                      displayErrorJoin: displayOrNot,
-                      badIdMsg: msgToDisplay,
-                      displayErrorLeave: "display:none",
-                      badGroupMsg: "",
-                      groupes: groupes
-                  });
-                } else {
-                    res.render('groupes.html', {
-                        IdButtonText: idButton(req),
-                        displayErrorJoin: "display:none",
-                        badIdMsg: "",
-                        displayErrorLeave: displayOrNot,
-                        badGroupMsg: msgToDisplay,
-                        groupes: groupes
-                    });
-                }
+                res.render('groupes.html', {
+                    IdButtonText: idButton(req),
+                    displayErrorJoin: displayOrNot(req, "join"),
+                    badIdJoinMsg: BAD_CREDENTIALS_JOIN_GROUP_MSG,
+                    displayErrorLeave: displayOrNot(req, "leave"),
+                    badIdLeaveMsg: BAD_ID_LEAVE_GROUP_MSG,
+                    groupes: groupes
+                });
             });
             req.session.team_ID = null;
         } else {
@@ -464,12 +446,12 @@ function joinGroup(req, res, dbo) {
                     });
                     res.redirect('/groupes');
                 } else {
-                    req.session.badcredentials = "badPassword";
+                    req.session.displayJoinGroupError = "yes";
                     res.redirect('/groupes#createorjoin');
                 }
             });
         } else {
-            req.session.badcredentials = "badId";
+            req.session.displayJoinGroupError = "yes";
             res.redirect('/groupes#createorjoin');
         }
     });
@@ -501,11 +483,11 @@ function leaveGroup(req, res, dbo) {
                 });
                 res.redirect('/groupes');
             } else {
-                req.session.badcredentials = "notInGroup";
+                req.session.displayLeaveGroupError = "yes";
                 res.redirect('/groupes#leave');
             }
         } else {
-            req.session.badcredentials = "badIdGroup";
+            req.session.displayLeaveGroupError = "yes";
             res.redirect('/groupes#leave');
         }
     });
@@ -536,7 +518,7 @@ function register(req, res, dbo) {
             req.session.username = req.body.username
             res.redirect('/groupes');
         } else {
-            req.session.userntaken = "alreadyused";
+            req.session.displayRegisterError = "yes";
             res.redirect('/#identification');
         }
     });
@@ -557,59 +539,36 @@ function connect(req, res, dbo) {
                     req.session.username = req.body.usernamealready //create cookie
                     res.redirect('/groupes');
                 } else {
-                    req.session.badcredentials = "badPassword";
+                    req.session.displayLogInError = "yes";
                     res.redirect('/#identification');
                 }
             });
         } else {
-            req.session.badcredentials = "badUsername";
+            req.session.displayLogInError = "yes";
             res.redirect('/#identification');
         }
     });
 }
 
-function badCredentials(req) {
+function displayOrNot(req, type) {
     /**
-     * Display an error message if the password is incorrect by changing div style in index.html (66)
-     * @return a list ["display:none", ""] except when password is incorrect, then it returns ["display:block", the message].
+     * If a cookie has been created then remove the cookie and display, otherwise, hide the message.
+     * @return "display:block" to show the alert in html if the cookie exist, otherwise "display:none" to hide.
      */
-    let displayAndMsg = ["display:none", "", "first"];
-    if (req.session.badcredentials === "badPassword") {
-        req.session.badcredentials = null;
-        displayAndMsg[0] = "display:block";
-        displayAndMsg[1] = BAD_PASSWORD_MSG;
-    } else if (req.session.badcredentials === "badUsername") {
-        req.session.badcredentials = null;
-        displayAndMsg[0] = "display:block";
-        displayAndMsg[1] = BAD_USERNAME_MSG;
-    } else if (req.session.badcredentials === "badId") {
-        req.session.badcredentials = null;
-        displayAndMsg[0] = "display:block";
-        displayAndMsg[1] = BAD_ID_MSG;
-    } else if (req.session.badcredentials === "badIdLeave") {
-        req.session.badcredentials = null;
-        displayAndMsg[0] = "display:block";
-        displayAndMsg[1] = BAD_ID_MSG;
-        displayAndMsg[2] = "second";
-    } else if (req.session.badcredentials === "notInGroup") {
-        req.session.badcredentials = null;
-        displayAndMsg[0] = "display:block";
-        displayAndMsg[1] = NOT_IN_GROUP_MSG;
-        displayAndMsg[2] = "second";
-    }
-    return displayAndMsg;
-}
-
-function usernAlreadyTaken(req) {
-    /**
-     * Display an error message if the user has chosen an username that already exist by changing div style in index.html (80)
-     * @return "display:none" except when username already exist, then it returns "display:block"
-     */
-    if (req.session.userntaken) {
-        req.session.userntaken = null;
+    if (type === "login" && req.session.displayLogInError != null) {
+        req.session.displayLogInError = null;
         return "display:block";
+    } else if (type === "register" && req.session.displayRegisterError != null) {
+        req.session.displayRegisterError = null;
+        return "display:block"
+    } else if (type === "leave" && req.session.displayLeaveGroupError != null) {
+        req.session.displayLeaveGroupError = null;
+        return "display:block"
+    } else if (type === "join" && req.session.displayJoinGroupError != null) {
+        req.session.displayJoinGroupError = null;
+        return "display:block"
     }
-    return "display:none";
+    return "display:none"
 }
 
 function isConnected(req) {

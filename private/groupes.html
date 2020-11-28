@@ -14,7 +14,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body class="bodyaddimage">
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="#">FixMyLLNV2</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
       <div class="team">
         <h2>Rejoindre un groupe</h2>
         <div class="alert alert-danger" style={{displayErrorJoin}}>
-            {{badIdMsg}}
+            {{badIdJoinMsg}}
         </div>
         <form action="joinTeam" name="joinTeam" class="teamForm" method="post">
           <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
@@ -86,7 +86,7 @@
       <div class="team">
         <h2 id="leave">Quitter un groupe</h2>
         <div class="alert alert-danger" style={{displayErrorLeave}}>
-            {{badGroupMsg}}
+            {{badIdLeaveMsg}}
         </div>
         <form action="leaveTeam" name="leaveTeam" class="teamForm" method="post">
           <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
