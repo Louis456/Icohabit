@@ -26,16 +26,14 @@ app.use(session({
         maxAge: 3600000
     }
 }));
-/**
- *
- * Erreur lorsqu'il y a un nom d'utilisateur qui n'existe pas.
- *
- */
+
+
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
 const BAD_CREDENTIALS_MSG = "Le nom d'utilisateur et/ou le mot de passe est incorrect."
 const USERNAME_ALREADY_EXIST_MSG = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
 const BAD_CREDENTIALS_JOIN_GROUP_MSG = "L'id et/ou le mot de passe est incorrect."
 const BAD_ID_LEAVE_GROUP_MSG = "Vous n'êtes pas membre du groupe que vous désirez quitter."
+
 
 MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
@@ -114,6 +112,7 @@ MongoClient.connect('mongodb://localhost:27017', {
         }
     });
 
+    // Planning page
     app.get('/planning', (req, res) => {
         if (isConnected(req)) {
             filterPassedEvents(req, res, dbo);
@@ -130,6 +129,7 @@ MongoClient.connect('mongodb://localhost:27017', {
         }
     })
 
+    // Expenses page
     app.get('/depenses', (req, res) => {
         if (isConnected(req)) {
             //dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
@@ -146,45 +146,31 @@ MongoClient.connect('mongodb://localhost:27017', {
 
 
 
-    app.post('/addEvent', function (req, res) {
-        addEvent(req, res, dbo);
-    })
-
-    app.post('/checkTask', function (req, res) {
-        checkTask(req, res, dbo);
-    })
-
-    app.post('/deleteTaskDone', function (req, res) {
-        deleteTaskDone(req, res, dbo);
-    })
-
-    app.post('/addTask', function (req, res) {
-        addTask(req, res, dbo);
-    })
-
-    app.post('/deleteTask', function (req, res) {
-        deleteTaskTodo(req, res, dbo);
-    })
-
-    app.post('/submitLogIn', function (req, res) {
-        connect(req, res, dbo);
-    });
 
     app.post('/submitRegister', function (req, res) {
         register(req, res, dbo);
     });
+    app.post('/submitLogIn', function (req, res) {
+        connect(req, res, dbo);
+    });
+    app.post('/disconnect', function (req, res) {
+        req.session.username = null;
+        req.session.team_ID = null;
+        req.session.team_name = null;
+        res.redirect('/');
+    });
+    
 
     app.post('/createTeam', function (req, res) {
         createGroup(req, res, dbo);
     });
-
     app.post('/joinTeam', function (req, res) {
         joinGroup(req, res, dbo);
     });
-
     app.post('/leaveTeam', function (req, res) {
         leaveGroup(req, res, dbo);
     });
+
 
     app.post('/displayTools', function (req, res) {
         req.session.team_ID = req.body.team_ID
@@ -196,12 +182,27 @@ MongoClient.connect('mongodb://localhost:27017', {
         });
     });
 
-    app.post('/disconnect', function (req, res) {
-        req.session.username = null;
-        req.session.team_ID = null;
-        req.session.team_name = null;
-        res.redirect('/');
-    });
+
+    app.post('/addTask', function (req, res) {
+        addTask(req, res, dbo);
+    })
+    app.post('/checkTask', function (req, res) {
+        checkTask(req, res, dbo);
+    })
+    app.post('/deleteTask', function (req, res) {
+        deleteTaskTodo(req, res, dbo);
+    })
+    app.post('/deleteTaskDone', function (req, res) {
+        deleteTaskDone(req, res, dbo);
+    })
+
+
+    app.post('/addEvent', function (req, res) {
+        addEvent(req, res, dbo);
+    })
+
+
+
 
     https.createServer({
         key: fs.readFileSync('./key.pem'),
@@ -209,7 +210,6 @@ MongoClient.connect('mongodb://localhost:27017', {
         passphrase: 'm?TbBenEV2v1)vYDf!pJ'
     }, app).listen(8080);
     app.use(express.static('static'));
-
 });
 
 
