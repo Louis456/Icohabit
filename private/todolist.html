@@ -2,140 +2,159 @@
 <html lang="fr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FixMyLLNV2 - {{groupName}} - TodoList</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  <link rel="stylesheet" href="/inside-group.css">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FixMyLLNV2 - {{groupName}} - TodoList</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/inside-group.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">FixMyLLNV2</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/groupes">Groupes</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link active" href="/todolist">TodoList</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/planning">Planning</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/depenses">Dépenses</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
-        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-      </form>
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">{{IdButtonText}}</a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <form class="dropdown-item" action="disconnect" method="post">
-              <button class="btn" type="submit">Se déconnecter</button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">FixMyLLNV2</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/groupes">Groupes</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/todolist">TodoList</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/planning">Planning</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/depenses">Dépenses</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <div class="starter-template ">
-    <div class="container">
-      <form action="addTask" method="post">
-        <label for="add-task" class="title">Nouvelle tâche</label>
-        <div class="form-group row">
-          <div class="col-sm-4">
-            <input class="form-control" type="text" id="task" name="task" placeholder="mets une tâche gros con" maxlength="40" required oninvalid="this.setCustomValidity('Veuillez indiquer un titre')" oninput="setCustomValidity('')">
-          </div>
-          <div class="col-sm-4">
-            <input class="form-control" type="date" id="date" name="date" required oninvalid="this.setCustomValidity('Veuillez choisir une date')" oninput="setCustomValidity('')">
-          </div>
-          <div class="col-sm-4">
-            <select name="accountant" class="custom-select" required oninvalid="this.setCustomValidity('Veuillez choisir un responsable')" oninput="setCustomValidity('')">
-              <option selected>Choisir un responsable</option>
-              {{#names}}
-              <option value="{{.}}">{{.}}</option>
-              {{/names}}
-            </select>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop"
+                        data-toggle="dropdown">{{IdButtonText}}</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <form class="dropdown-item" action="disconnect" method="post">
+                            <button class="btn" type="submit">Se déconnecter</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="starter-template ">
+        <div class="container">
+            <form action="addTask" method="post">
+                <label for="add-task" class="title">Nouvelle tâche</label>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <input class="form-control" type="text" id="task" name="task"
+                            placeholder="mets une tâche gros con" maxlength="40" required
+                            oninvalid="this.setCustomValidity('Veuillez indiquer un titre')"
+                            oninput="setCustomValidity('')">
+                    </div>
+                    <div class="col-sm-4">
+                        <input class="form-control" type="date" id="date" name="date" required
+                            oninvalid="this.setCustomValidity('Veuillez choisir une date')"
+                            oninput="setCustomValidity('')">
+                    </div>
+                    <div class="col-sm-4">
+                        <select name="accountant" class="custom-select" required
+                            oninvalid="this.setCustomValidity('Veuillez choisir un responsable')"
+                            oninput="setCustomValidity('')">
+                            <option selected>Choisir un responsable</option>
+                            {{#names}}
+                            <option value="{{.}}">{{.}}</option>
+                            {{/names}}
+                        </select>
 
 
-          </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+            </form>
+            <h1>À faire</h1>
+            {{#todoList}}
+            <div class="tasktable">
+                {{#tasksTodo}}
+                <div class="task">
+                    <ul id="unfulfilled-tasks">
+                        <li class="taskitem">
+                            <p class="todo">date:{{date}}</p>
+                        </li>
+                        {{#tasks}}
+                        <li class="taskitem">
+                            <p class="todo">What? {{task}}</p><br>
+                            <p class="todo">Who? Responsable:{{accountant}}</p>
+                            <form class="" action="deleteTask" method="post">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <button type="submit" name="Delete"
+                                    class="btn btn-outline-danger btn-sm">Delete</button>
+                            </form>
+                            <form class="" action="checkTask" method="post">
+                                <input type="hidden" name="task" value="{{task}}">
+                                <input type="hidden" name="accountant" value="{{accountant}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
+                            </form>
+                        </li>
+                        {{/tasks}}
+                    </ul>
+                </div>
+                {{/tasksTodo}}
+            </div>
+            {{/todoList}}
+
+            <h1>Accomplies</h1>
+
+            {{#todoList}}
+            <div class="tasktable">
+                {{#tasksDone}}
+                <div class="task">
+                    <ul id="completed-tasks">
+                        <li class="taskitem">
+                            <p class="todo">date:{{date}}</p>
+                        </li>
+                        {{#tasks}}
+                        <li class="taskitem">
+                            <p class="done">What? {{task}}</p><br>
+                            <p class="done">Who? {{accountant}}</p>
+                            <form class="" action="deleteTaskDone" method="post">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <button type="submit" name="Delete"
+                                    class="btn btn-outline-danger btn-sm">Delete</button>
+                            </form>
+                        </li>
+                        {{/tasks}}
+                    </ul>
+                </div>
+                {{/tasksDone}}
+            </div>
+            {{/todoList}}
         </div>
-        <button class="btn btn-outline-primary" type="submit">Ajouter</button>
-      </form>
-      <h1>À faire</h1>
-      {{#todoList}}
-        <div class="tasktable">  
-          {{#tasksTodo}}
-          <div class="task">  
-            <ul id="unfulfilled-tasks">
-              <li class="taskitem">
-                <p class="todo">date:{{date}}</p>
-              </li>  
-              {{#tasks}}
-              <li class="taskitem">
-                <p class="todo">What?  {{task}}</p><br>
-                <p class="todo">Who?  Responsable:{{accountant}}</p>
-                <form class="" action="deleteTask" method="post">
-                  <input type="hidden" name="task_id" value="{{_id}}">
-                  <input type="hidden" name="date" value="{{date}}">
-                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
-                </form>
-                <form class="" action="checkTask" method="post">
-                  <input type="hidden" name="task" value="{{task}}">
-                  <input type="hidden" name="accountant" value="{{accountant}}">
-                  <input type="hidden" name="date" value="{{date}}">
-                  <input type="hidden" name="task_id" value="{{_id}}">
-                  <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
-                </form>
-              </li>
-              {{/tasks}}
-            </ul>
-          </div>
-          {{/tasksTodo}}
-        </div>
-      {{/todoList}}
-      
-      <h1>Accomplies</h1>
-      
-      {{#todoList}}  
-        <div class="tasktable">
-          {{#tasksDone}}
-          <div class="task">
-            <ul id="completed-tasks">
-              <li class="taskitem">
-                <p class="todo">date:{{date}}</p>
-              </li>
-              {{#tasks}}
-              <li class="taskitem">
-                <p class="done">What?  {{task}}</p><br>
-                <p class="done">Who?  {{accountant}}</p>
-                <form class="" action="deleteTaskDone" method="post">
-                  <input type="hidden" name="date" value="{{date}}">
-                  <input type="hidden" name="task_id" value="{{_id}}">
-                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
-                </form>
-              </li>
-              {{/tasks}}
-            </ul>
-          </div>
-          {{/tasksDone}}
-        </div>
-      {{/todoList}}
     </div>
-  </div>
 </body>
 
 </html>

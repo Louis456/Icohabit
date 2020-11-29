@@ -11,33 +11,33 @@ sont primordiales pour le bon fonctionnement de l'application.
 
 2. Installer la base de donnees:
     - Ouvrez un terminal et executez ces commandes :
-      ```sh
-      $ mongo
-      $ use database
-      $ db.createCollection("users") ??
-      $ db.groupes.insert({"_id":0, "idcount":1})
-      ```
-      (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
+        ```sh
+        $ mongo
+        $ use database
+        $ db.createCollection("users") ??
+        $ db.groupes.insert({"_id":0, "idcount":1})
+        ```
+        (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
 
 3. Installer les modules:
     - Ouvrez un terminal et executez ces commandes :
-      ```sh
-      $ npm install express
-      $ npm install hogan
-      $ npm install consolidate
-      $ npm install mongodb
-      $ npm install express-session
-      $ npm install body-parser
-      $ npm install https
-      $ npm install fs
-      $ npm install bcrypt
-      ```
+        ```sh
+        $ npm install express
+        $ npm install hogan
+        $ npm install consolidate
+        $ npm install mongodb
+        $ npm install express-session
+        $ npm install body-parser
+        $ npm install https
+        $ npm install fs
+        $ npm install bcrypt
+        ```
 
     (Pour utiliser les tests :)
-      ```sh
-      $ npm install selenium-webdriver selenium
-      $ npm install jest
-      ```
+        ```sh
+        $ npm install selenium-webdriver selenium
+        $ npm install jest
+        ```
 
 
 

@@ -2,89 +2,109 @@
 <html lang="fr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FixMyLLNV2 - {{groupName}} - TodoList</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  <link rel="stylesheet" href="/inside-group.css">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FixMyLLNV2 - {{groupName}} - TodoList</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/inside-group.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">FixMyLLNV2</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/groupes">Groupes</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link active" href="/todolist">TodoList</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/planning">Planning</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/depenses">Dépenses</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
-        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-      </form>
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">{{IdButtonText}}</a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <form class="dropdown-item" action="disconnect" method="post">
-              <button class="btn" type="submit">Se déconnecter</button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">FixMyLLNV2</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/groupes">Groupes</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/todolist">TodoList</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/planning">Planning</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/depenses">Dépenses</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <div class="starter-template ">
-    <div class="container">
-      <form action="expenses" method="post">
-        <label for="expenses" class="title">Nouvelle dépense</label>
-        <div class="form-group row">
-          <div class="col-sm-4">
-            <input class="form-control" type="text" id="expenses" name="expenses" maxlength="30" placeholder="mets un titre gros con" required oninvalid="this.setCustomValidity('Veuillez choisir un titre pour votre dépense')" oninput="setCustomValidity('')">
-          </div>
-          <div class="col-sm-4">
-            <input class="form-control" type="date" id="date" name="date" required oninvalid="this.setCustomValidity('Veuillez choisir une date')" oninput="setCustomValidity('')">
-          </div>
-          <div class="col-sm-4">
-            <input class="form-control" type="number" id="amount" name="amount" required oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense')" oninput="setCustomValidity('')">
-          <div class="col-sm-4">
-            <select name="accountant" class="custom-select" required oninvalid="this.setCustomValidity('Veuillez choisir un responsable')" oninput="setCustomValidity('')">
-              <option selected>Choisir un responsable</option>
-              {{#names}}
-              <option value="{{.}}">{{.}}</option>
-              {{/names}}
-            </select>
-          </div>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop"
+                        data-toggle="dropdown">{{IdButtonText}}</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <form class="dropdown-item" action="disconnect" method="post">
+                            <button class="btn" type="submit">Se déconnecter</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <button class="btn btn-outline-primary" type="submit">Ajouter</button>
-      </form>
-      <!--Pas sur de ce que je suis en train de faire-->
-      <h1>Remboursements à effectuer</h1>
-      <button onclick="balance()">Afficher les remboursements</button>
-        <label for="refund"> {{names}} : </label>
-        <div class="progress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="lemontantlàjesaispas" aria-valuemin="0" aria-valuemax="100"></div>
+    </nav>
+    <div class="starter-template ">
+        <div class="container">
+            <form action="expenses" method="post">
+                <label for="expenses" class="title">Nouvelle dépense</label>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <input class="form-control" type="text" id="expenses" name="expenses" maxlength="30"
+                            placeholder="mets un titre gros con" required
+                            oninvalid="this.setCustomValidity('Veuillez choisir un titre pour votre dépense')"
+                            oninput="setCustomValidity('')">
+                    </div>
+                    <div class="col-sm-4">
+                        <input class="form-control" type="date" id="date" name="date" required
+                            oninvalid="this.setCustomValidity('Veuillez choisir une date')"
+                            oninput="setCustomValidity('')">
+                    </div>
+                    <div class="col-sm-4">
+                        <input class="form-control" type="number" id="amount" name="amount" required
+                            oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense')"
+                            oninput="setCustomValidity('')">
+                        <div class="col-sm-4">
+                            <select name="accountant" class="custom-select" required
+                                oninvalid="this.setCustomValidity('Veuillez choisir un responsable')"
+                                oninput="setCustomValidity('')">
+                                <option selected>Choisir un responsable</option>
+                                {{#names}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{/names}}
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+            </form>
+            <!--Pas sur de ce que je suis en train de faire-->
+            <h1>Remboursements à effectuer</h1>
+            <button onclick="balance()">Afficher les remboursements</button>
+            <label for="refund"> {{names}} : </label>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    aria-valuenow="lemontantlàjesaispas" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+    </div>
 </body>
 
 </html>

@@ -2,83 +2,93 @@
 <html lang="fr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FixMyLLNV2 - {{groupName}}</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  <link rel="stylesheet" href="/web-app.css">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FixMyLLNV2 - {{groupName}}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/web-app.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="/app">FixMyLLNV2</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link active" href="/groupes">Groupes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/todolist">TodoList</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/planning">Planning</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/depenses">Dépenses</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
-        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-      </form>
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">{{IdButtonText}}</a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <form class="dropdown-item" action="disconnect" method="post">
-              <button class="btn" type="submit">Se déconnecter</button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="/app">FixMyLLNV2</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/groupes">Groupes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/todolist">TodoList</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/planning">Planning</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/depenses">Dépenses</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-          </div>
-        </li>
-      </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop"
+                        data-toggle="dropdown">{{IdButtonText}}</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <form class="dropdown-item" action="disconnect" method="post">
+                            <button class="btn" type="submit">Se déconnecter</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="starter-template">
+        <!-- Ajouter le html ici -->
+        <div class="container boxapp">
+            <div class="row">
+                <div class="col-sm-4">
+                    <a href="/todolist" class="ButtonTool">
+                        <h3>Todo List</h3>
+                        <img src="postit.png" class="appImages" alt="">
+                        <p>Gérez les tâches de vos projets, courses ... </p>
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/planning" class="ButtonTool">
+                        <h3>Planning</h3>
+                        <img src="planning.png" class="appImages" alt="">
+                        <p>Organisez-vous et fixez vos objectifs</p>
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/expenses" class="ButtonTool">
+                        <h3>Dépenses</h3>
+                        <img src="expenses.png" class="appImages" alt="">
+                        <p>Simplifiez les dépenses de groupe</p>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-  </nav>
-  <div class="starter-template">
-    <!-- Ajouter le html ici -->
-    <div class="container boxapp">
-      <div class="row">
-        <div class="col-sm-4">
-          <a href="/todolist" class="ButtonTool">
-            <h3>Todo List</h3>
-            <img src="postit.png" class="appImages" alt="">
-            <p>Gérez les tâches de vos projets, courses ... </p>
-          </a>
-        </div>
-        <div class="col-sm-4">
-          <a href="/planning" class="ButtonTool">
-            <h3>Planning</h3>
-            <img src="planning.png" class="appImages" alt="">
-            <p>Organisez-vous et fixez vos objectifs</p>
-          </a>
-        </div>
-        <div class="col-sm-4">
-          <a href="/expenses" class="ButtonTool">
-            <h3>Dépenses</h3>
-            <img src="expenses.png" class="appImages" alt="">
-            <p>Simplifiez les dépenses de groupe</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>
