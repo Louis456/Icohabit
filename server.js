@@ -8,7 +8,6 @@ var bodyParser = require("body-parser");
 var https = require('https');
 var fs = require('fs');
 var bcrypt = require('bcrypt');
-const cons = require('consolidate');
 
 app.engine('html', consolidate.hogan);
 app.set('views', 'private');
@@ -28,11 +27,18 @@ app.use(session({
 }));
 
 
+// JavaScript files from ./scripts
+var tools = require('./scripts/tools');
+var account = require('./scripts/account');
+var groups = require('./scripts/groups');
+
+// String used through the website
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
 const BAD_CREDENTIALS_MSG = "Le nom d'utilisateur et/ou le mot de passe est incorrect."
 const USERNAME_ALREADY_EXIST_MSG = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
 const BAD_CREDENTIALS_JOIN_GROUP_MSG = "L'id et/ou le mot de passe est incorrect."
 const BAD_ID_LEAVE_GROUP_MSG = "Vous n'êtes pas membre du groupe que vous désirez quitter."
+
 
 
 MongoClient.connect('mongodb://localhost:27017', {
@@ -44,14 +50,14 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // Home page
     app.get('/', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             res.redirect('/groupes')
         } else {
             res.render('index.html', {
-                IdButtonText: idButton(req),
-                displayErrorConnect: displayOrNot(req, "login"),
+                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                displayErrorConnect: tools.displayOrNot(req, "login"),
                 badCredentialsMsg: BAD_CREDENTIALS_MSG,
-                displayErrorRegister: displayOrNot(req, "register"),
+                displayErrorRegister: tools.displayOrNot(req, "register"),
                 usernameAlreadyExistMsg: USERNAME_ALREADY_EXIST_MSG
             });
         }
@@ -59,16 +65,16 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // Groups page
     app.get('/groupes', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             dbo.collection('groupes').find({
                 "members": req.session.username
             }).toArray(function (err, groupes) {
                 if (err) throw err;
                 res.render('groupes.html', {
-                    IdButtonText: idButton(req),
-                    displayErrorJoin: displayOrNot(req, "join"),
+                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                    displayErrorJoin: tools.displayOrNot(req, "join"),
                     badIdJoinMsg: BAD_CREDENTIALS_JOIN_GROUP_MSG,
-                    displayErrorLeave: displayOrNot(req, "leave"),
+                    displayErrorLeave: tools.displayOrNot(req, "leave"),
                     badIdLeaveMsg: BAD_ID_LEAVE_GROUP_MSG,
                     groupes: groupes
                 });
@@ -82,9 +88,9 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // App page
     app.get('/app', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             res.render('app.html', {
-                IdButtonText: idButton(req),
+                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                 groupName: req.session.team_name
             });
         } else {
@@ -94,13 +100,13 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // TodoList page
     app.get('/todolist', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                 if (err) throw err;
                 dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
                     if (err) throw err;
                     res.render('todolist.html', {
-                        IdButtonText: idButton(req),
+                        IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                         groupName: req.session.team_name,
                         todoList: todoList,
                         names: groupe.members
@@ -114,11 +120,11 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // Planning page
     app.get('/planning', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             filterPassedEvents(req, res, dbo);
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                 res.render('planning.html', {
-                    IdButtonText: idButton(req),
+                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                     groupName: req.session.team_name,
                     names: groupe.members
                 });
@@ -131,10 +137,10 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     // Expenses page
     app.get('/depenses', (req, res) => {
-        if (isConnected(req)) {
+        if (tools.isConnected(req)) {
             //dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
             res.render('expenses.html', {
-                IdButtonText: idButton(req),
+                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                 groupName: req.session.team_name,
                 //names: groupe.members
             });
@@ -148,27 +154,24 @@ MongoClient.connect('mongodb://localhost:27017', {
 
 
     app.post('/submitRegister', function (req, res) {
-        register(req, res, dbo);
+        account.register(req, res, dbo);
     });
     app.post('/submitLogIn', function (req, res) {
-        connect(req, res, dbo);
+        account.connect(req, res, dbo);
     });
     app.post('/disconnect', function (req, res) {
-        req.session.username = null;
-        req.session.team_ID = null;
-        req.session.team_name = null;
-        res.redirect('/');
+        account.disconnect(req, res);
     });
     
 
     app.post('/createTeam', function (req, res) {
-        createGroup(req, res, dbo);
+        groups.createGroup(req, res, dbo);
     });
     app.post('/joinTeam', function (req, res) {
-        joinGroup(req, res, dbo);
+        groups.joinGroup(req, res, dbo);
     });
     app.post('/leaveTeam', function (req, res) {
-        leaveGroup(req, res, dbo);
+        groups.leaveGroup(req, res, dbo);
     });
 
 
@@ -396,210 +399,6 @@ function checkTask(req, res, dbo) {
 
 }
 
-
-
-function createGroup(req, res, dbo) {
-    dbo.collection('groupes').findOne({
-        "_id": 0
-    }, function (err, ids) {
-        bcrypt.genSalt(10, function (err, salt) {
-            bcrypt.hash(req.body.newpwdTeam, salt, function (err, encrypted) {
-                dbo.collection('groupes').insertOne({
-                    "groupname": req.body.newTeam,
-                    "password": encrypted,
-                    "_id": ids.idcount,
-                    "members": [req.session.username]
-                });
-                dbo.collection('users').updateOne({
-                    "username": req.session.username
-                }, {
-                    $addToSet: {
-                        "groupes": ids.idcount
-                    }
-                });
-                dbo.collection('groupes').updateOne({
-                    "_id": 0
-                }, {
-                    $inc: {
-                        "idcount": 1
-                    }
-                });
-                res.redirect('/groupes');
-            });
-        });
-    });
-}
-
-function joinGroup(req, res, dbo) {
-    /**
-     * Check if the group exist and if the password is correct.
-     * if correct, add the user to group's member list and the group to the user's group list.
-     * if not, display "badPassword" or "badId".
-    */
-    dbo.collection('groupes').findOne({
-        "_id": Number(req.body.teamID)
-    }, function (err, group) {
-        if (group != null) {
-            bcrypt.compare(req.body.pwdTeam, group.password, function (err, result) {
-                if (result) {
-                    dbo.collection('users').updateOne({
-                        "username": req.session.username
-                    }, {
-                        $addToSet: {
-                            "groupes": group._id
-                        }
-                    });
-                    dbo.collection('groupes').updateOne({
-                        "_id": group._id
-                    }, {
-                        $addToSet: {
-                            "members": req.session.username
-                        }
-                    });
-                    res.redirect('/groupes');
-                } else {
-                    req.session.displayJoinGroupError = "yes";
-                    res.redirect('/groupes#createorjoin');
-                }
-            });
-        } else {
-            req.session.displayJoinGroupError = "yes";
-            res.redirect('/groupes#createorjoin');
-        }
-    });
-}
-
-function leaveGroup(req, res, dbo) {
-    /**
-     * Check if the group exist and if the user is a member of it.
-     * if correct, remove the user from group's member list and the group from the user's group list.
-    */
-    dbo.collection('groupes').findOne({
-        "_id": Number(req.body.teamID)
-    }, function (err, group) {
-        if (group != null) {
-            if (group.members.includes(req.session.username)) {
-                dbo.collection('users').updateOne({
-                    "username": req.session.username
-                }, {
-                    $pull: {
-                        "groupes": group._id
-                    }
-                });
-                dbo.collection('groupes').updateOne({
-                    "_id": group._id
-                }, {
-                    $pull: {
-                        "members": req.session.username
-                    }
-                });
-                res.redirect('/groupes');
-            } else {
-                req.session.displayLeaveGroupError = "yes";
-                res.redirect('/groupes#leave');
-            }
-        } else {
-            req.session.displayLeaveGroupError = "yes";
-            res.redirect('/groupes#leave');
-        }
-    });
-}
-
-function register(req, res, dbo) {
-    /**
-     * If username already exist, then refresh the page.
-     * Else insert a new document into the database with the user's input datas (password encrypted),
-     * then create a cookie and redirect to the home page.
-     */
-    dbo.collection('users').findOne({
-        "username": req.body.username
-    }, function (err, user) {
-        if (user === null) {
-            bcrypt.genSalt(10, function (err, salt) {
-                bcrypt.hash(req.body.pwd, salt, function (err, encrypted) {
-                    dbo.collection("users").insertOne({
-                        "username": req.body.username,
-                        "password": encrypted,
-                        "entireName": req.body.name,
-                        "email": req.body.mail,
-                        "groupes": []
-                    })
-                });
-            })
-
-            req.session.username = req.body.username
-            res.redirect('/groupes');
-        } else {
-            req.session.displayRegisterError = "yes";
-            res.redirect('/#identification');
-        }
-    });
-}
-
-function connect(req, res, dbo) {
-    /**
-     * Compare the user's password with the hash stored in the database.
-     * If it's correct then create cookie and redirect to home page.
-     * Else refresh the page.
-     */
-    dbo.collection('users').findOne({
-        "username": req.body.usernamealready
-    }, function (err, user) {
-        if (user != null) {
-            bcrypt.compare(req.body.pwdalready, user.password, function (err, result) {
-                if (result) {
-                    req.session.username = req.body.usernamealready //create cookie
-                    res.redirect('/groupes');
-                } else {
-                    req.session.displayLogInError = "yes";
-                    res.redirect('/#identification');
-                }
-            });
-        } else {
-            req.session.displayLogInError = "yes";
-            res.redirect('/#identification');
-        }
-    });
-}
-
-function displayOrNot(req, type) {
-    /**
-     * If a cookie has been created then remove the cookie and display, otherwise, hide the message.
-     * @return "display:block" to show the alert in html if the cookie exist, otherwise "display:none" to hide.
-     */
-    if (type === "login" && req.session.displayLogInError != null) {
-        req.session.displayLogInError = null;
-        return "display:block";
-    } else if (type === "register" && req.session.displayRegisterError != null) {
-        req.session.displayRegisterError = null;
-        return "display:block"
-    } else if (type === "leave" && req.session.displayLeaveGroupError != null) {
-        req.session.displayLeaveGroupError = null;
-        return "display:block"
-    } else if (type === "join" && req.session.displayJoinGroupError != null) {
-        req.session.displayJoinGroupError = null;
-        return "display:block"
-    }
-    return "display:none"
-}
-
-function isConnected(req) {
-    /**
-     * Return a boolean
-     * @return True if the user is connected, otherwise false
-     */
-    if (req.session.username) return true;
-    return false;
-}
-
-function idButton(req) {
-    /**
-     * Return the string to be displayed on the upper right side of the screen.
-     * @return The username if the user is connected, else ID_BUTTON_TEXT string.
-     */
-    if (isConnected(req)) return req.session.username;
-    return ID_BUTTON_TEXT
-}
 
 function balance(expenses) {
     /**
