@@ -64,8 +64,8 @@ module.exports = {
 
     disconnect: function (req, res) {
         /**
-         * 
-         * 
+         * Disconnect the user.
+         * It removes all the cookies and redirect to the home page.
          */
         req.session.username = null;
         req.session.team_ID = null;
