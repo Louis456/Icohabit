@@ -35,7 +35,7 @@ var todolist = require('./scripts/todolist');
 var planning = require('./scripts/planning');
 var expenses = require('./scripts/expenses');
 
-// String used through the website
+// Strings used through the website
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
 const BAD_CREDENTIALS_MSG = "Le nom d'utilisateur et/ou le mot de passe est incorrect."
 const USERNAME_ALREADY_EXIST_MSG = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
@@ -48,7 +48,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err, db) => {
-    dbo = db.db("database");
+    dbo = db.db("testdb");
     if (err) throw err;
 
     /* ----------------
@@ -85,6 +85,12 @@ MongoClient.connect('mongodb://localhost:27017', {
                     badIdLeaveMsg: BAD_ID_LEAVE_GROUP_MSG,
                     groupes: groupes
                 });
+            });
+            dbo.collection('groupes').findOne({
+                "_id": 0
+            }, function (err, ids) {
+                // Add the counter if db is empty
+                if (ids == null) dbo.collection('groupes').insertOne({ "_id": 0, "idcount": 1 });
             });
             req.session.team_ID = null;
         } else {
@@ -128,7 +134,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     // Planning page
     app.get('/planning', (req, res) => {
         if (tools.isConnected(req)) {
-            filterPassedEvents(req, res, dbo);
+            planning.filterPassedEvents(req, res, dbo);
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                 res.render('planning.html', {
                     IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),

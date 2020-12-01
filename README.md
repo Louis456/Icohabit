@@ -10,16 +10,7 @@ sont primordiales pour le bon fonctionnement de l'application.
     - [**MongoDB**](https://www.mongodb.com/try/download/community)
     - [**Node.js**](https://nodejs.org)
 
-2. Installer la base de donnees:
-    - Ouvrez un terminal et executez ces commandes :
-        ```sh
-        $ mongo
-        $ use database
-        $ db.groupes.insert({"_id":0, "idcount":1})
-        ```
-        (assurez-vous de ne pas deja avoir une base de donnees du meme nom `database`)
-
-3. Installer les modules:
+2. Installer les modules:
     - Ouvrez un terminal et executez ces commandes :
         ```sh
         $ npm install express
