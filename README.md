@@ -3,21 +3,21 @@
 
 
 ## Installation
-1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js, toutes les etapes indiquees dans les slides des semaines precedentes
+1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js, toutes les etapes <br>
+indiquees dans les slides des semaines precedentes
 sont primordiales pour le bon fonctionnement de l'application.
 
-    - **MongoDB** : https://www.mongodb.com/try/download/community
-    - **Node.js** : https://nodejs.org
+    - [**MongoDB**](https://www.mongodb.com/try/download/community)
+    - [**Node.js**](https://nodejs.org)
 
 2. Installer la base de donnees:
     - Ouvrez un terminal et executez ces commandes :
         ```sh
         $ mongo
         $ use database
-        $ db.createCollection("users") ??
         $ db.groupes.insert({"_id":0, "idcount":1})
         ```
-        (assurez-vous de ne pas deja avoir une base de donnees du meme nom "database")
+        (assurez-vous de ne pas deja avoir une base de donnees du meme nom `database`)
 
 3. Installer les modules:
     - Ouvrez un terminal et executez ces commandes :
@@ -51,7 +51,29 @@ sont primordiales pour le bon fonctionnement de l'application.
 
 
 ## Application
-* La page d'accueil contient une description et permet de se connecter ou de se creer un compte.
+*  #### Accueil
+    La page contient notre slogan, une description generale du site, des descriptions de nos 3 fonctionnalites ainsi <br>
+    que les champs pour se connecter et se creer un compte.
+    
+*  #### Groupes
+    La page contient tous les groupes dont l'utilisateur fait parti ainsi que les champs pour pouvoir creer, <br>
+    se connecter ou quitter un groupe.
+
+*  #### App
+    La page contient 3 boutons permettant de choisir entre la todolist, le planning ou les depenses.
+
+*  #### Todolist
+    La page affiche les taches a faire et les taches deja faites et permet d'ajouter, de marquer comme realisees <br>
+    ou de supprimer des taches
+
+*  #### Planning
+    La page affiche les evenements a venir et permet d'en ajouter des nouveaux ou d'en supprimer
+
+*  #### Depenses
+    La page affiche les depenses et permet d'ajouter ou de supprimer des depenses, elle affiche aussi les <br>
+    transactions a realiser pour que tout le monde recupere son argent.
+
+
 
 
 
