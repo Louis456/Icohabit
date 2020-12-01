@@ -24,7 +24,7 @@ sont primordiales pour le bon fonctionnement de l'application.
         $ npm install bcrypt
         ```
 
-    (Pour utiliser les tests :)
+    - (Pour utiliser les tests :)
         ```sh
         $ npm install selenium-webdriver selenium
         $ npm install jest
