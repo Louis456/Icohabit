@@ -3,8 +3,11 @@ module.exports = {
 
     addExpense: function (req, res, dbo) {
         /**
-         *
-         *
+         * Add an expense to the database.
+         * 
+         * If the group doesn't already have a document in the database then it creates a new one with an id set to 0.
+         * If the group is in the database then it updates group's document to add the new expense to the expensesArray.
+         * Then refresh the page.
          */
         dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
             let receivers = req.body.receveurs;
@@ -45,7 +48,7 @@ module.exports = {
         /**
          * Delete the expense correspondig with the argument from the database.
          *
-         * @param {int}   An integer corresponding to the expense to be deleted.
+         * @param {int}  Integer corresponding to the expense to be deleted.
          * Then refresh the page
          */
         dbo.collection('expenses').updateOne({
