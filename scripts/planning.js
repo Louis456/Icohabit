@@ -11,7 +11,7 @@ module.exports = {
                 dbo.collection('planning').insertOne({
                     "groupe": req.session.team_ID,
                     "eventsToCome_id": 0,
-                    "eventsToCome": [{ "date": req.body.date, "events":[{"participants": req.body.participants, "event": req.body.event, "_id": 0}] }],
+                    "eventsToCome": [{ "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "events":[{"participants": req.body.participants, "event": req.body.event, "_id": 0}] }],
                     "eventsPassed": []
                 }, function (err, _) {
                     dbo.collection('planning').updateOne(
@@ -30,7 +30,7 @@ module.exports = {
                         dbo.collection('planning').updateOne(
                             { "groupe": req.session.team_ID },
                             {
-                                $push: { "eventsToCome": { "date": req.body.date, "events":[{"participants": req.body.participants, "event": req.body.event, "_id": planning.eventsToCome_id}] } },
+                                $push: { "eventsToCome": { "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "events":[{"participants": req.body.participants, "event": req.body.event, "_id": planning.eventsToCome_id}] } },
                                 $inc: { "eventsToCome_id": 1 }
                             }, function (err, _) {
                                 if (err) throw err;
@@ -61,8 +61,15 @@ module.exports = {
          *
         **/
         let filteredPassedEvents = events.filter(function(eventsForGivenDate){
-                return Date(eventsForGivenDate.date).getTime() < today.now();
+                return eventsForGivenDate.dateGetTime < Date.now();
             });
+        dbo.collection('planning').updateOne(
+            {"groupe":req.session.team_ID},
+            {
+                $push: {"eventsPassed": { $each: filteredPassedEvents}},
+                $pull: {"eventsToCome": {"dateGetTime": {$lt: Date.now()}}}
+            }
+        );        
     }
 
 };

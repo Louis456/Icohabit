@@ -138,16 +138,26 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (tools.isConnected(req)) {
 
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
-                dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, planning){
+                dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl){
                     let today = new Date();
-                    let events = planning.eventsToCome;
-                    filterPassedEvents(today,events,dbo,req)
-                    res.render('planning.html', {
-                        IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                        groupName: req.session.team_name,
-                        minDate: today.toISOString().substring(0, 10),
-                        names: groupe.members
-                    });
+                    if (pl === null) {
+                        res.render('planning.html', {
+                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            groupName: req.session.team_name,
+                            minDate: today.toISOString().substring(0, 10),
+                            names: groupe.members
+                        });
+                    } else {
+                        let events = pl.eventsToCome;
+                        planning.filterPassedEvents(today,events,dbo,req);
+                        res.render('planning.html', {
+                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            groupName: req.session.team_name,
+                            minDate: today.toISOString().substring(0, 10),
+                            names: groupe.members,
+                            pl: pl
+                        });
+                    }
                 });
             });
 

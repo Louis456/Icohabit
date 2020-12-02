@@ -19,12 +19,6 @@ h1, .title {
 }
 
 
-/*Todo List*/
-.taskitem {
-  overflow: auto;
-  border-bottom: 2px solid grey;
-  padding: 10px 0;
-}
 
 .todo {
   color: white;
@@ -54,17 +48,24 @@ body {
 }
 
 ul {
-  margin: 0;
-  padding: 0;
+  border-bottom: 2px solid #133da8;
+  margin-bottom: 0px;
+}
+
+h4 {
+  font-weight:bold;
+  margin:15px;
+}
+
+li {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 15px;
 }
 
 li, h1 {
   clear: both;
   list-style: none;
-}
-
-li * {
-  float: left;
 }
 
 .tasktable {
@@ -85,4 +86,16 @@ li * {
   background-color: rgb(184, 174, 34);
   border: 5px solid rgb(0, 0, 0);
   overflow-wrap: break-word;
+}
+
+.eventsContainer {
+  flex-direction: column;
+  display: flex;
+}
+
+.events{
+  margin-top: 15px;
+  background-color: rgb(164, 166, 168);
+  color: rgb(31, 29, 29);
+  border-left: 10px solid #133da8;
 }
