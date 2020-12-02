@@ -173,9 +173,9 @@ MongoClient.connect('mongodb://localhost:27017', {
                         res.render('expenses.html', {
                             IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                             groupName: req.session.team_name,
-                            expensesList: expenses.expenseToArray(req, dbo),
-                            accounts: expenses.makeAccounts(req, dbo),
-                            balance: expenses.balance(req, dbo),
+                            expenses: expenses.listOfExpenses(req, dbo),
+                            accounts: expenses.listOfAccounts(req, dbo),
+                            refunds: expenses.listOfRefunds(req, dbo),
                             names: groupe.members
                         });
                     }

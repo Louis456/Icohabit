@@ -41,17 +41,19 @@ module.exports = {
     },
 
 
-    deleteExpense: function (req, res, dbo) {
+    deleteExpense: function (req, res, dbo, expense_id) {
         /**
+         * Delete the expense correspondig with the argument from the database.
          *
-         *
+         * @param {int}   An integer corresponding to the expense to be deleted.
+         * Then refresh the page
          */
         dbo.collection('expenses').updateOne({
             "groupe": req.session.team_ID
         }, {
             $pull: {
                 "expensesArray": {
-                    "_id": Number(req.body.expense_id)
+                    "_id": expense_id
                 }
             }
         });
@@ -59,10 +61,12 @@ module.exports = {
     },
 
 
-    expenseToArray: function (req, dbo) {
+    listOfExpenses: function (req, dbo) {
         /**
+         * Returns the list of all the expenses of the database for this group.
          *
-         *
+         * @return {list}   A list of dictionaries to use with moustache, representing all the expenses made in the group.
+         * Example: {"whoPaid" : "Simon", "amount": 50, "receivers": ["Louis", "Antoine"]}   --> Simon paid 50€ for Louis and Antoine.
          */
         let depenses = [];
         dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
@@ -74,11 +78,11 @@ module.exports = {
     },
 
 
-    makeAccounts: function (req, dbo) {
+    listOfAccounts: function (req, dbo) {
         /**
-         * Returns the people associated with his money (positive or negative).
+         * Returns a list of people associated with their money (positive or negative).
          *
-         * @return {dictionary}   A dictionary representing who has how much money in positive or negative.
+         * @return {list}   A list of dictionaries to use with moustache, representing who has how much money in positive or negative.
          * Example: {"Louis" : 20, "Simon": -10, "Fred": -10}   --> Louis needs to get 20€ back, Simon has to give 10€ back, same for Fred.
          */
         function addToAccount(person, amount) {
@@ -105,11 +109,11 @@ module.exports = {
     },
 
 
-    balance: function (req, dbo) {
+    listOfRefunds: function (req, dbo) {
         /**
-         * Returns the transactions that should be done for everyone to get their money back.
+         * Returns the list of transactions that should be done for everyone to get their money back.
          *
-         * @return {list}   A list of dictionaries representing who owes how much to whom.
+         * @return {list}   A list of dictionaries to use with moustache, representing who owes how much to whom.
          * Example: [{"debtor": "Louis", "howMuch": 5, "creditor": "Simon"}, {...}]   --> Louis owes 5€ to Simon.
          */
         function addToAccount(person, amount) {
