@@ -3,15 +3,14 @@ module.exports = {
 
     addTask: function (req, res, dbo) {
         /**
-         * 
-         * 
+         *
+         *
          */
         dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
             if (todoList === null) {
                 dbo.collection('todo').insertOne({
                     "groupe": req.session.team_ID,
                     "taskTodo_id": 0,
-                    "taskDone_id": 0,
                     "tasksTodo": [{ "date": req.body.date, "tasks": [{ "accountant": req.body.accountant, "task": req.body.task, "_id": 0 }] }],
                     "tasksDone": []
                 }, function (err, _) {
@@ -58,8 +57,8 @@ module.exports = {
 
     deleteTaskTodo: function (req, res, dbo) {
         /**
-         * 
-         * 
+         *
+         *
          */
         dbo.collection('todo').updateOne(
             { "groupe": req.session.team_ID, "tasksTodo.date": req.body.date },
@@ -84,8 +83,8 @@ module.exports = {
 
     deleteTaskDone: function (req, res, dbo) {
         /**
-         * 
-         * 
+         *
+         *
          */
         dbo.collection('todo').updateOne(
             { "groupe": req.session.team_ID, "tasksDone.date": req.body.date },
@@ -110,13 +109,12 @@ module.exports = {
 
     checkTask: function (req, res, dbo) {
         /**
-         * 
-         * 
+         *
+         *
          */
         dbo.collection('todo').findOne({ "groupe": req.session.team_ID, "tasksDone.date": req.body.date }, function (err, doneContainingDate) {
             console.log(doneContainingDate);
             if (doneContainingDate === null) {
-                console.log('cacou')
                 dbo.collection('todo').updateOne(
                     { "groupe": req.session.team_ID },
                     {
@@ -124,7 +122,6 @@ module.exports = {
                     }
                 );
             } else {
-                console.log('caca')
                 dbo.collection('todo').updateOne(
                     { "groupe": req.session.team_ID, "tasksDone.date": req.body.date },
                     { $push: { "tasksDone.$.tasks": { "accountant": req.body.accountant, "task": req.body.task, "_id": Number(req.body.task_id) } } }
@@ -142,7 +139,6 @@ module.exports = {
                             $pull: { "tasksTodo": { "date": req.body.date } }
                         }, function (err, _) {
                             if (err) throw err;
-                            console.log('coucou')
                             res.redirect('/todolist')
                         }
 

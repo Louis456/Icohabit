@@ -34,11 +34,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/groupes">Groupes</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link active" href="/todolist">TodoList</a>
-                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/planning">Planning</a>
+                    <a class="nav-link" href="/todolist">TodoList</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/planning">Planning</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/depenses">Dépenses</a>
@@ -76,16 +76,18 @@
                     <div class="col-sm-4">
                         <input class="form-control" type="date" id="date" name="date" required
                             oninvalid="this.setCustomValidity('Veuillez choisir une date')"
-                            oninput="setCustomValidity('')">
+                            oninput="setCustomValidity('')"
+                            min={{minDate}}>
                     </div>
                     <div class="col-sm-4">
                         <select id="participants" name="participants" class="custom-select" multiple required
                             oninvalid="this.setCustomValidity('Veuillez choisir un ou des participants')"
                             oninput="setCustomValidity('')">
-                            <option selected>Choisir un/des participant(s)</option>
-                            {{#names}}
-                            <option value="{{.}}">{{.}}</option>
-                            {{/names}}
+                            <optgroup label="Choisir un/des participant(s)">
+                                {{#names}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{/names}}
+                            </optgroup>
                         </select>
                     </div>
                 </div>

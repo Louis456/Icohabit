@@ -48,7 +48,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err, db) => {
-    dbo = db.db("testdb");
+    dbo = db.db("database");
     if (err) throw err;
 
     /* ----------------
@@ -118,10 +118,12 @@ MongoClient.connect('mongodb://localhost:27017', {
                 if (err) throw err;
                 dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
                     if (err) throw err;
+                    let today = new Date();
                     res.render('todolist.html', {
                         IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                         groupName: req.session.team_name,
                         todoList: todoList,
+                        minDate: today.toISOString().substring(0, 10),
                         names: groupe.members
                     });
                 });
@@ -134,12 +136,18 @@ MongoClient.connect('mongodb://localhost:27017', {
     // Planning page
     app.get('/planning', (req, res) => {
         if (tools.isConnected(req)) {
-            planning.filterPassedEvents(req, res, dbo);
+
             dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
-                res.render('planning.html', {
-                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                    groupName: req.session.team_name,
-                    names: groupe.members
+                dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, planning){
+                    let today = new Date();
+                    let events = planning.eventsToCome;
+                    filterPassedEvents(today,events,dbo,req)
+                    res.render('planning.html', {
+                        IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                        groupName: req.session.team_name,
+                        minDate: today.toISOString().substring(0, 10),
+                        names: groupe.members
+                    });
                 });
             });
 
@@ -180,7 +188,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.post('/disconnect', function (req, res) {
         account.disconnect(req, res);
     });
-    
+
 
     app.post('/createTeam', function (req, res) {
         groups.createGroup(req, res, dbo);
@@ -221,6 +229,18 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.post('/addEvent', function (req, res) {
         planning.addEvent(req, res, dbo);
     })
+
+
+    app.post('/addExpense', function (req, res) {
+        expenses.addExpense(req, res, dbo);
+    })
+    app.post('/deleteExpense', function (req, res) {
+        expenses.addExpense(req, res, dbo);
+    })
+    app.post('/resolveExpenses', function (req, res) {
+        expenses.addExpense(req, res, dbo);
+    })
+
 
 
 

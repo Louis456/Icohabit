@@ -75,16 +75,18 @@
                     <div class="col-sm-4">
                         <input class="form-control" type="date" id="date" name="date" required
                             oninvalid="this.setCustomValidity('Veuillez choisir une date')"
-                            oninput="setCustomValidity('')">
+                            oninput="setCustomValidity('')"
+                            min={{minDate}}>
                     </div>
                     <div class="col-sm-4">
-                        <select name="accountant" class="custom-select" required
+                        <select name="accountant" class="custom-select" multiple required
                             oninvalid="this.setCustomValidity('Veuillez choisir un responsable')"
                             oninput="setCustomValidity('')">
-                            <option selected>Choisir un responsable</option>
-                            {{#names}}
-                            <option value="{{.}}">{{.}}</option>
-                            {{/names}}
+                            <optgroup label="Choisir un responsable">
+                                {{#names}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{/names}}
+                            </optgroup>
                         </select>
 
 

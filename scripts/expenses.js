@@ -1,6 +1,69 @@
 module.exports = {
 
 
+    addExpense: function (req, res, dbo) {
+        /**
+         *
+         *
+         */
+        dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
+            if (expenses === null) {
+                dbo.collection('expenses').insertOne({
+                    "groupe": req.session.team_ID,
+                    "expense_id": 0,
+                    "expensesArray": [{"_id": 0, "title": req.body.expenseTitle, "date": req.body.date, "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": req.body.receveurs}]
+                }, function (err, _) {
+                    dbo.collection('expenses').updateOne(
+                        { "groupe": req.session.team_ID },
+                        {
+                            $inc: { "expense_id": 1 }
+                        }, function (err, _) {
+                            if (err) throw err;
+                            res.redirect('/depenses');
+                        }
+                    );
+                });
+            } else {
+                dbo.collection('expenses').updateOne(
+                    { "groupe": req.session.team_ID },
+                    {
+                        $push: { "expensesArray": {"_id": expenses.expense_id, "title": req.body.expenseTitle, "date": req.body.date, "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": req.body.receveurs} },
+                        $inc: { "expense_id": 1 }
+                    }, function (err, _) {
+                        if (err) throw err;
+                        res.redirect('/depenses');
+                    }
+                );
+            }
+        });
+    },
+
+
+    deleteExpense: function (req, res, dbo) {
+        /**
+         *
+         *
+         */
+        dbo.collection('expenses').updateOne({
+            "groupe": req.session.team_ID
+        }, {
+            $pull: {
+                "expensesArray": { "_id": Number(req.body.expense_id)
+            }
+        });
+        res.redirect('/depenses')
+    },
+
+
+    resolveExpense: function (req, res, dbo) {
+        /**
+         *
+         *
+         */
+        res.redirect('/depenses')
+    },
+
+
     balance: function (expenses) {
         /**
          * Take the expenses as inputs and returns the transactions that should be done for everyone to get their money back.

@@ -2,12 +2,11 @@ var bcrypt = require('bcrypt');
 
 module.exports = {
 
-
     createGroup: function (req, res, dbo) {
         /**
-         * 
-         * 
-         * 
+         *
+         *
+         *
          */
         dbo.collection('groupes').findOne({
             "_id": 0

@@ -34,14 +34,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/groupes">Groupes</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link active" href="/todolist">TodoList</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/todolist">TodoList</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/planning">Planning</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/depenses">Dépenses</a>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/depenses">Dépenses</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearch" method="post">
@@ -63,40 +63,54 @@
     </nav>
     <div class="starter-template ">
         <div class="container">
-            <form action="expenses" method="post">
+            <form action="addExpense" method="post">
                 <label for="expenses" class="title">Nouvelle dépense</label>
                 <div class="form-group row">
-                    <div class="col-sm-4">
-                        <input class="form-control" type="text" id="expenses" name="expenses" maxlength="30"
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" id="expenseTitle" name="expenseTitle" maxlength="30"
                             placeholder="mets un titre gros con" required
                             oninvalid="this.setCustomValidity('Veuillez choisir un titre pour votre dépense')"
                             oninput="setCustomValidity('')">
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <input class="form-control" type="date" id="date" name="date" required
                             oninvalid="this.setCustomValidity('Veuillez choisir une date')"
                             oninput="setCustomValidity('')">
                     </div>
-                    <div class="col-sm-4">
-                        <input class="form-control" type="number" id="amount" name="amount" required
+                    <div class="col-sm-2">
+                        <input class="form-control" type="number" step="any" id="amount" name="amount"
+                            placeholder="Montant" required
                             oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense')"
                             oninput="setCustomValidity('')">
-                        <div class="col-sm-4">
-                            <select name="accountant" class="custom-select" required
-                                oninvalid="this.setCustomValidity('Veuillez choisir un responsable')"
-                                oninput="setCustomValidity('')">
-                                <option selected>Choisir un responsable</option>
-                                {{#names}}
-                                <option value="{{.}}">{{.}}</option>
-                                {{/names}}
-                            </select>
-                        </div>
                     </div>
-                    <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+                    <div class="col-sm-2">
+                        <select id="payeur" name="payeur" class="custom-select" required
+                            oninvalid="this.setCustomValidity('Veuillez choisir la personne qui a payé')"
+                            oninput="setCustomValidity('')">
+                            <optgroup label="Par qui?">
+                              {{#names}}
+                              <option value="{{.}}">{{.}}</option>
+                              {{/names}}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id="receveurs" name="receveurs" class="custom-select" multiple required
+                            oninvalid="this.setCustomValidity('Veuillez choisir les personnes pour qui il a payé')"
+                            oninput="setCustomValidity('')">
+                            <optgroup label="Pour qui?">
+                              {{#names}}
+                              <option value="{{.}}">{{.}}</option>
+                              {{/names}}
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
             <!--Pas sur de ce que je suis en train de faire-->
             <h1>Remboursements à effectuer</h1>
-            <button onclick="balance()">Afficher les remboursements</button>
+            <button class="btn btn-outline-primary" onclick="balance()">Afficher les remboursements</button>
             <label for="refund"> {{names}} : </label>
             <div class="progress">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"

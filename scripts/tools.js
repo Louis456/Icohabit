@@ -4,7 +4,7 @@ module.exports = {
     isConnected: function (req) {
         /**
          * Return a boolean.
-         * 
+         *
          * @return True if the user is connected, otherwise false.
          */
         if (req.session.username) return true;
@@ -15,9 +15,9 @@ module.exports = {
     idButton: function (req, text) {
         /**
          * Return the string to be displayed on the upper right side of the screen.
-         * 
+         *
          * @param {string} text : The message to be displayed when the user isn't connected.
-         * 
+         *
          * @return The username if the user is connected, otherwise 'text' string.
          */
         if (this.isConnected(req)) return req.session.username;
@@ -28,9 +28,9 @@ module.exports = {
     displayOrNot: function (req, where) {
         /**
          * If a cookie has been created then remove the cookie and display, otherwise, hide the message.
-         * 
+         *
          * @param {string} where : Represents where the alert message should be displayed.
-         * 
+         *
          * @return "display:block" to show the alert in html if the cookie exist, otherwise "display:none" to hide.
          */
         if (where === "login" && req.session.displayLogInError != null) {
@@ -48,5 +48,6 @@ module.exports = {
         }
         return "display:none"
     }
+
 
 };
