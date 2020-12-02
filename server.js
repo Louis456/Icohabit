@@ -160,11 +160,26 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.get('/depenses', (req, res) => {
         if (tools.isConnected(req)) {
             dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
-                res.render('expenses.html', {
-                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                    groupName: req.session.team_name,
-                    names: groupe.members
-                });
+                if (err) throw err;
+                dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, depenses) {
+                    if (err) throw err;
+                    if (depenses === null) {
+                        res.render('expenses.html', {
+                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            groupName: req.session.team_name,
+                            names: groupe.members
+                        });
+                    } else {
+                        res.render('expenses.html', {
+                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            groupName: req.session.team_name,
+                            expensesList: expenses.expenseToArray(req, dbo),
+                            accounts: expenses.makeAccounts(req, dbo),
+                            balance: expenses.balance(req, dbo),
+                            names: groupe.members
+                        });
+                    }
+                })
             });
         } else {
             res.redirect('/');

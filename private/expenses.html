@@ -108,14 +108,36 @@
                 </div>
                 <button class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
-            <!--Pas sur de ce que je suis en train de faire-->
+
+            <h1>Liste des dépenses</h1>
+            <ul>
+            {{#expensesList}}
+                <li>{{whoPaid}} {{amount}} {{receivers}}</li>
+            {{/expensesList}}
+            </ul>
+
+            <h1>Liste des comptes</h1>
+            <ul>
+            {{#accounts}}
+                <li>{{people}} {{money}}</li>
+            {{/accounts}}
+            </ul>
+
             <h1>Remboursements à effectuer</h1>
-            <button class="btn btn-outline-primary" onclick="balance()">Afficher les remboursements</button>
+            <ul>
+            {{#balance}}
+                <li>{{debtor}} {{howMuch}} {{creditor}}</li>
+            {{/balance}}
+            </ul>
+
+            <!--
+            <button class="btn btn-warning" onclick="balance()">Afficher les remboursements</button>
             <label for="refund"> {{names}} : </label>
             <div class="progress">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                     aria-valuenow="lemontantlàjesaispas" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
+            -->
         </div>
     </div>
     </div>
