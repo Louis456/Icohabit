@@ -226,14 +226,8 @@ MongoClient.connect('mongodb://localhost:27017', {
     });
 
 
-    app.post('/displayTools', function (req, res) {
-        req.session.team_ID = req.body.team_ID
-        dbo.collection('groupes').findOne({
-            "_id": Number(req.body.team_ID)
-        }, function (err, group) {
-            req.session.team_name = group.groupname;
-            res.redirect('/app')
-        });
+    app.post('/launchAppPage', function (req, res) {
+        tools.launchAppPage(req, res, dbo);
     });
 
 
@@ -260,14 +254,8 @@ MongoClient.connect('mongodb://localhost:27017', {
         expenses.addExpense(req, res, dbo);
     })
     app.post('/deleteExpense', function (req, res) {
-        expenses.addExpense(req, res, dbo);
+        expenses.deleteExpense(req, res, dbo);
     })
-    app.post('/resolveExpenses', function (req, res) {
-        expenses.addExpense(req, res, dbo);
-    })
-
-
-
 
 
 

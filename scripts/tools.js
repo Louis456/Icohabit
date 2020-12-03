@@ -47,6 +47,18 @@ module.exports = {
             return "display:block"
         }
         return "display:none"
+    },
+
+
+    launchAppPage: function (req, res, dbo) {
+        /**
+         * Create two new cookies (team_ID & team_name) and redirect to the App page.
+         */
+        req.session.team_ID = req.body.team_ID
+        dbo.collection('groupes').findOne({"_id": Number(req.body.team_ID)}, function (err, group) {
+            req.session.team_name = group.groupname;
+            res.redirect('/app')
+        });
     }
 
 
