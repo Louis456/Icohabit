@@ -96,33 +96,31 @@
             </form>
             <h1>À faire</h1>
             {{#todoList}}
-            <div class="tasktable">
+            <div class="DateContainer">
                 {{#tasksTodo}}
-                <div class="task">
-                    <ul class="listdesign" id="unfulfilled-tasks">
-                        <li class="taskitem">
-                            <p class="todo">date:{{date}}</p>
-                        </li>
+                <div class="eachDate">
+                    <h4>Date {{date}}</h4>
                         {{#tasks}}
-                        <li class="taskitem">
-                            <p class="todo">What? {{task}}</p><br>
-                            <p class="todo">Who? Responsable:{{accountant}}</p>
-                            <form class="" action="deleteTask" method="post">
-                                <input type="hidden" name="task_id" value="{{_id}}">
-                                <input type="hidden" name="date" value="{{date}}">
-                                <button type="submit" name="Delete"
-                                    class="btn btn-outline-danger btn-sm">Delete</button>
-                            </form>
-                            <form class="" action="checkTask" method="post">
-                                <input type="hidden" name="task" value="{{task}}">
-                                <input type="hidden" name="accountant" value="{{accountant}}">
-                                <input type="hidden" name="date" value="{{date}}">
-                                <input type="hidden" name="task_id" value="{{_id}}">
-                                <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
-                            </form>
-                        </li>
+                        <ul class="listdesign line_underneath" id="unfulfilled-tasks">
+                            <li>What? {{task}}</li>
+                            <li>Who? {{accountant}}</li>
+                            <li>
+                                <form class="" action="deleteTask" method="post">
+                                    <input type="hidden" name="task_id" value="{{_id}}">
+                                    <input type="hidden" name="date" value="{{date}}">
+                                    <button type="submit" name="Delete"
+                                        class="btn btn-outline-danger btn-sm">Delete</button>
+                                </form>
+                                <form class="" action="checkTask" method="post">
+                                    <input type="hidden" name="task" value="{{task}}">
+                                    <input type="hidden" name="accountant" value="{{accountant}}">
+                                    <input type="hidden" name="date" value="{{date}}">
+                                    <input type="hidden" name="task_id" value="{{_id}}">
+                                    <button type="submit" name="Check" class="btn btn-outline-success btn-sm">Done</button>
+                                </form>
+                            </li>            
+                        </ul>
                         {{/tasks}}
-                    </ul>
                 </div>
                 {{/tasksTodo}}
             </div>
@@ -131,26 +129,24 @@
             <h1>Accomplies</h1>
 
             {{#todoList}}
-            <div class="tasktable">
+            <div class="DateContainer">
                 {{#tasksDone}}
-                <div class="task">
-                    <ul class="listdesign" id="completed-tasks">
-                        <li class="taskitem">
-                            <p class="todo">date:{{date}}</p>
-                        </li>
+                <div class="eachDate">
+                    <h4>Date {{date}}</h4>
                         {{#tasks}}
-                        <li class="taskitem">
-                            <p class="done">What? {{task}}</p><br>
-                            <p class="done">Who? {{accountant}}</p>
-                            <form class="" action="deleteTaskDone" method="post">
-                                <input type="hidden" name="date" value="{{date}}">
-                                <input type="hidden" name="task_id" value="{{_id}}">
-                                <button type="submit" name="Delete"
-                                    class="btn btn-outline-danger btn-sm">Delete</button>
-                            </form>
-                        </li>
+                        <ul class="listdesign line_underneath" id="completed-tasks">
+                            <li>What? {{task}}</li>
+                            <li>Who? {{accountant}}</li>
+                            <li>    
+                                <form class="" action="deleteTaskDone" method="post">
+                                    <input type="hidden" name="date" value="{{date}}">
+                                    <input type="hidden" name="task_id" value="{{_id}}">
+                                    <button type="submit" name="Delete"
+                                        class="btn btn-outline-danger btn-sm">Delete</button>
+                                </form>
+                            </li>
+                        </ul>
                         {{/tasks}}
-                    </ul>
                 </div>
                 {{/tasksDone}}
             </div>

@@ -96,15 +96,15 @@
 
             <h1>Evènements passés</h1>
             {{#pl}}
-            <div class="eventsContainer">
+            <div class="DateContainer">
                 {{#eventsPassed}}
-                <div class="events">
+                <div class="eachDate">
                     <h4>Date {{date}}</h4>
                         {{#events}}
                         <ul class="listdesign line_underneath" id="unfulfilled-tasks">
                             <li><b>What?</b> {{event}}</li>
                             <li><b>Who?</b> {{participants}}</li>
-                            <li><form class="" action="deleteEvent" method="post">
+                            <li><form class="" action="deletePassedEvent" method="post">
                                     <input type="hidden" name="event_id" value="{{_id}}">
                                     <input type="hidden" name="date" value="{{date}}">
                                     <button type="submit" name="Delete"
@@ -121,15 +121,15 @@
 
             <h1>Evènements à venir</h1>
             {{#pl}}
-            <div class="eventsContainer">
+            <div class="DateContainer">
                 {{#eventsToCome}}
-                <div class="events">
+                <div class="eachDate">
                     <h4>Date  {{date}}</h4>
                         {{#events}}
                         <ul class="listdesign line_underneath" id="unfulfilled-tasks">
                             <li><b>What?</b> {{event}}</li>
                             <li><b>Who?</b> {{participants}}</li>
-                            <li><form class="" action="deleteEvent" method="post">
+                            <li><form class="" action="deleteEventToCome" method="post">
                                     <input type="hidden" name="event_id" value="{{_id}}">
                                     <input type="hidden" name="date" value="{{date}}">
                                     <button type="submit" name="Delete"

@@ -68,32 +68,14 @@ h4 {
   list-style: none;
 }
 
-.tasktable {
-  border: 15px solid rgb(65, 37, 19);
-  background-color: rgb(1, 36, 4);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-left: 1%;
-  border-style:inset;
-}
 
-.task {
-  margin:15px;
-  width: 300px;
-  height: 300px;
-  color:black;
-  background-color: rgb(184, 174, 34);
-  border: 5px solid rgb(0, 0, 0);
-  overflow-wrap: break-word;
-}
 
-.eventsContainer {
+.DateContainer {
   flex-direction: column;
   display: flex;
 }
 
-.events{
+.eachDate{
   margin-top: 15px;
   background-color: rgb(164, 166, 168);
   color: rgb(31, 29, 29);

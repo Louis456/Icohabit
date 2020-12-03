@@ -65,14 +65,13 @@ module.exports = {
             {
                 $pull: { "tasksTodo.$.tasks": { "_id": Number(req.body.task_id) } }
             }, function (err, _) {
-                console.log('salut');
+                if (err) throw err;
                 dbo.collection('todo').updateOne(
                     { "groupe": req.session.team_ID, "tasksTodo.tasks": [] },
                     {
                         $pull: { "tasksTodo": { "date": req.body.date } }
                     }, function (err, _) {
                         if (err) throw err;
-                        console.log('coucou')
                         res.redirect('/todolist')
                     }
                 )
@@ -91,14 +90,13 @@ module.exports = {
             {
                 $pull: { "tasksDone.$.tasks": { "_id": Number(req.body.task_id) } }
             }, function (err, _) {
-                console.log('salut');
+                if (err) throw err;
                 dbo.collection('todo').updateOne(
                     { "groupe": req.session.team_ID, "tasksDone.tasks": [] },
                     {
                         $pull: { "tasksDone": { "date": req.body.date } }
                     }, function (err, _) {
                         if (err) throw err;
-                        console.log('coucou')
                         res.redirect('/todolist')
                     }
                 )

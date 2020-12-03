@@ -149,13 +149,14 @@ MongoClient.connect('mongodb://localhost:27017', {
                         });
                     } else {
                         let events = pl.eventsToCome;
-                        planning.filterPassedEvents(today,events,dbo,req);
-                        res.render('planning.html', {
-                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                            groupName: req.session.team_name,
-                            minDate: today.toISOString().substring(0, 10),
-                            names: groupe.members,
-                            pl: pl
+                        planning.filterPassedEvents(events,dbo,req, () => {
+                            res.render('planning.html', {
+                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                groupName: req.session.team_name,
+                                minDate: today.toISOString().substring(0, 10),
+                                names: groupe.members,
+                                pl: pl
+                            });
                         });
                     }
                 });
@@ -239,32 +240,40 @@ MongoClient.connect('mongodb://localhost:27017', {
 
     app.post('/addTask', function (req, res) {
         todolist.addTask(req, res, dbo);
-    })
+    });
     app.post('/checkTask', function (req, res) {
         todolist.checkTask(req, res, dbo);
-    })
+    });
     app.post('/deleteTask', function (req, res) {
         todolist.deleteTaskTodo(req, res, dbo);
-    })
+    });
     app.post('/deleteTaskDone', function (req, res) {
         todolist.deleteTaskDone(req, res, dbo);
-    })
+    });
 
 
     app.post('/addEvent', function (req, res) {
         planning.addEvent(req, res, dbo);
-    })
+    });
+
+    app.post('/deletePassedEvent', function(req, res) {
+        planning.deletePassedEvent(req, res, dbo);
+    });
+
+    app.post('/deleteEventToCome', function (req, res) {
+        planning.deleteEventToCome(req, res, dbo);
+    });
 
 
     app.post('/addExpense', function (req, res) {
         expenses.addExpense(req, res, dbo);
-    })
+    });
     app.post('/deleteExpense', function (req, res) {
         expenses.addExpense(req, res, dbo);
-    })
+    });
     app.post('/resolveExpenses', function (req, res) {
         expenses.addExpense(req, res, dbo);
-    })
+    });
 
 
 
