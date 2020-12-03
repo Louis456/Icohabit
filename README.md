@@ -55,14 +55,16 @@ sont primordiales pour le bon fonctionnement de l'application.
 
 *  #### Todolist
     La page affiche les taches a faire et les taches deja faites et permet d'ajouter, de marquer comme realisees <br>
-    ou de supprimer des taches
+    ou de supprimer des taches.
 
 *  #### Planning
-    La page affiche les evenements a venir et permet d'en ajouter des nouveaux ou d'en supprimer
+    La page affiche les evenements a venir et permet d'en ajouter des nouveaux ou d'en supprimer.
 
 *  #### Depenses
-    La page affiche les depenses et permet d'ajouter ou de supprimer des depenses, elle affiche aussi les <br>
-    transactions a realiser pour que tout le monde recupere son argent.
+    La page affiche les depenses et permet d'ajouter ou de supprimer des depenses, elle affiche aussi de <br>
+    combien les personnes sont en positif ou negatif ainsi que les transactions a realiser pour que tout <br>
+    le monde recupere son argent.
+    
 
 
 

@@ -38,8 +38,9 @@ module.exports = {
     connect: function (req, res, dbo) {
         /**
          * Compare the user's password with the hash stored in the database.
-         * If it's correct then create cookie and redirect to home page.
-         * Else refresh the page.
+         * If it's correct then create cookie with user's username and redirect to Groups page.
+         * Else create a cookie to use with tools.displayOrNot() to display an error message
+         * after the page is refreshed.
          */
         dbo.collection('users').findOne({
             "username": req.body.usernamealready

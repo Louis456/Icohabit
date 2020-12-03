@@ -43,8 +43,9 @@ module.exports = {
     joinGroup: function (req, res, dbo) {
         /**
          * Check if the group exist and if the password is correct.
-         * if correct, add the user to group's member list and the group to the user's group list.
-         * if not, display "badPassword" or "badId".
+         * If correct, add the user to group's members list, the group to user's group list and then refresh the page.
+         * Else, create a cookie to use with tools.displayOrNot() to display an error message
+         * after the page is refreshed.
         */
         dbo.collection('groupes').findOne({
             "_id": Number(req.body.teamID)
@@ -83,7 +84,9 @@ module.exports = {
     leaveGroup: function (req, res, dbo) {
         /**
          * Check if the group exist and if the user is a member of it.
-         * if correct, remove the user from group's member list and the group from the user's group list.
+         * If correct, remove the user from group's members list, the group from the user's group list and then refresh the page.
+         * Else, create a cookie to use with tools.displayOrNot() to display an error message
+         * after the page is refreshed.
         */
         dbo.collection('groupes').findOne({
             "_id": Number(req.body.teamID)
