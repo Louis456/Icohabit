@@ -47,7 +47,7 @@ body {
   justify-content: center;
 }
 
-ul {
+.line_underneath {
   border-bottom: 2px solid #133da8;
   margin-bottom: 0px;
 }
@@ -57,13 +57,13 @@ h4 {
   margin:15px;
 }
 
-li {
+.listdesign > li {
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: 15px;
 }
 
-li, h1 {
+.listdesign > li, h1 {
   clear: both;
   list-style: none;
 }

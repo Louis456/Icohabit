@@ -93,7 +93,7 @@
                 </div>
                 <button class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
-            
+
             <h1>Evènements passés</h1>
             {{#pl}}
             <div class="eventsContainer">
@@ -101,7 +101,7 @@
                 <div class="events">
                     <h4>Date {{date}}</h4>
                         {{#events}}
-                        <ul id="unfulfilled-tasks">
+                        <ul class="listdesign line_underneath" id="unfulfilled-tasks">
                             <li><b>What?</b> {{event}}</li>
                             <li><b>Who?</b> {{participants}}</li>
                             <li><form class="" action="deleteEvent" method="post">
@@ -110,7 +110,7 @@
                                     <button type="submit" name="Delete"
                                         class="btn btn-outline-danger btn-sm">Delete</button>
                                 </form>
-                            </li>    
+                            </li>
                         </ul>
                         {{/events}}
                     </ul>
@@ -118,7 +118,7 @@
                 {{/eventsPassed}}
             </div>
             {{/pl}}
-            
+
             <h1>Evènements à venir</h1>
             {{#pl}}
             <div class="eventsContainer">
@@ -126,7 +126,7 @@
                 <div class="events">
                     <h4>Date  {{date}}</h4>
                         {{#events}}
-                        <ul id="unfulfilled-tasks">
+                        <ul class="listdesign line_underneath" id="unfulfilled-tasks">
                             <li><b>What?</b> {{event}}</li>
                             <li><b>Who?</b> {{participants}}</li>
                             <li><form class="" action="deleteEvent" method="post">
@@ -135,7 +135,7 @@
                                     <button type="submit" name="Delete"
                                         class="btn btn-outline-danger btn-sm">Delete</button>
                                 </form>
-                            </li>    
+                            </li>
                         </ul>
                         {{/events}}
                 </div>
@@ -143,7 +143,7 @@
             </div>
             {{/pl}}
 
-            
+
 
         </div>
 

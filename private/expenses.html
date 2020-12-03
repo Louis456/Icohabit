@@ -110,21 +110,21 @@
             </form>
 
             <h1>Liste des dépenses</h1>
-            <ul>
+            <ul class="listdesign">
             {{#expenses}}
                 <li>{{whoPaid}} a payé {{amount}}€ pour {{receivers}}</li>
             {{/expenses}}
             </ul>
 
             <h1>Liste des comptes</h1>
-            <ul>
+            <ul class="listdesign">
             {{#accounts}}
                 <li>{{people}} est à {{money}}€</li>
             {{/accounts}}
             </ul>
 
             <h1>Remboursements à effectuer</h1>
-            <ul>
+            <ul class="listdesign">
             {{#refunds}}
                 <li>{{debtor}} doit {{howMuch}}€ à {{creditor}}</li>
             {{/refunds}}
