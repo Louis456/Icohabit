@@ -263,16 +263,8 @@ MongoClient.connect('mongodb://localhost:27017', {
         expenses.addExpense(req, res, dbo);
     });
     app.post('/deleteExpense', function (req, res) {
-<<<<<<< HEAD
-        expenses.addExpense(req, res, dbo);
-    });
-    app.post('/resolveExpenses', function (req, res) {
-        expenses.addExpense(req, res, dbo);
-    });
-=======
         expenses.deleteExpense(req, res, dbo);
-    })
->>>>>>> 5b654b32d00329ed98006dd1ec5fdb36cb07bf9c
+    });
 
 
 
