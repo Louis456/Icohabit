@@ -18,8 +18,6 @@ h1, .title {
   margin: 0 0 18px;
 }
 
-
-
 .todo {
   color: white;
 }
@@ -39,7 +37,6 @@ body {
   color: #7d7b7b;
   font-family: sans-serif
 }
-
 
 .container {
   padding: 15px;
@@ -68,11 +65,11 @@ h4 {
   list-style: none;
 }
 
-
-
 .DateContainer {
   flex-direction: column;
   display: flex;
+  margin: auto;
+  overflow-wrap: break-word;
 }
 
 .eachDate{
@@ -80,4 +77,8 @@ h4 {
   background-color: rgb(164, 166, 168);
   color: rgb(31, 29, 29);
   border-left: 10px solid #133da8;
+}
+
+.maclasse {
+  margin: 10px;
 }

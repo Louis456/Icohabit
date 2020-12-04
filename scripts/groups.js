@@ -43,6 +43,7 @@ module.exports = {
     joinGroup: function (req, res, dbo) {
         /**
          * Check if the group exist and if the password is correct.
+         * Check if the user is already in the group, if it is then just refresh the page.
          * If correct, add the user to group's members list, the group to user's group list and then refresh the page.
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
@@ -51,28 +52,33 @@ module.exports = {
             "_id": Number(req.body.teamID)
         }, function (err, group) {
             if (group != null) {
-                bcrypt.compare(req.body.pwdTeam, group.password, function (err, result) {
-                    if (result) {
-                        dbo.collection('users').updateOne({
-                            "username": req.session.username
-                        }, {
-                            $addToSet: {
-                                "groupes": group._id
-                            }
-                        });
-                        dbo.collection('groupes').updateOne({
-                            "_id": group._id
-                        }, {
-                            $addToSet: {
-                                "members": req.session.username
-                            }
-                        });
-                        res.redirect('/groupes');
-                    } else {
-                        req.session.displayJoinGroupError = "yes";
-                        res.redirect('/groupes#createorjoin');
-                    }
-                });
+                if (!group.members.includes(req.session.username)) {
+                    bcrypt.compare(req.body.pwdTeam, group.password, function (err, result) {
+                        if (result) {
+                            dbo.collection('users').updateOne({
+                                "username": req.session.username
+                            }, {
+                                $addToSet: {
+                                    "groupes": group._id
+                                }
+                            });
+                            dbo.collection('groupes').updateOne({
+                                "_id": group._id
+                            }, {
+                                $addToSet: {
+                                    "members": req.session.username
+                                }
+                            });
+                            res.redirect('/groupes');
+                        } else {
+                            req.session.displayJoinGroupError = "yes";
+                            res.redirect('/groupes#createorjoin');
+                        }
+                    });
+                } else {
+                    req.session.displayAlreadyInGroupError = "yes";
+                    res.redirect('/groupes#createorjoin');
+                }
             } else {
                 req.session.displayJoinGroupError = "yes";
                 res.redirect('/groupes#createorjoin');

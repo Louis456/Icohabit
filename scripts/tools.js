@@ -11,6 +11,16 @@ module.exports = {
         return false;
     },
 
+    hasChosenGroup: function (req) {
+        /**
+         * Return a boolean.
+         *
+         * @return True if the user has chosen a group, otherwise false.
+         */
+        if (req.session.team_ID) return true;
+        return false;
+    },
+
 
     idButton: function (req, text) {
         /**
@@ -44,6 +54,8 @@ module.exports = {
             return "display:block"
         } else if (where === "join" && req.session.displayJoinGroupError != null) {
             req.session.displayJoinGroupError = null;
+            return "display:block"
+        } else if (where === "join" && req.session.displayAlreadyInGroupError != null) {
             return "display:block"
         }
         return "display:none"

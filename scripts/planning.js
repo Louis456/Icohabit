@@ -55,7 +55,7 @@ module.exports = {
     },
 
 
-    filterPassedEvents: function (events,dbo,req, callback) {
+    filterPassedEvents: function (events,dbo,req) {
         /**
          *
          *
@@ -68,11 +68,8 @@ module.exports = {
             {
                 $push: {"eventsPassed": { $each: filteredPassedEvents}},
                 $pull: {"eventsToCome": {"dateGetTime": {$lt: Date.now()}}}
-            }, function (err,_){
-                if (err) throw err;
-                callback();
-            }    
-        );     
+            }
+        );
     },
 
     deletePassedEvent: function(req,res,dbo) {
@@ -80,12 +77,12 @@ module.exports = {
          * function associated with action "deletePassedEvent" in planning.html
          * remove in collection 'planning' an event in eventsPassed array related to a certain date in a group document
          * after removal, if the array 'events' at a certain date is empty, remove from the array 'eventsPassed' the subdocument of this date
-         * 
+         *
         **/
        dbo.collection('planning').updateOne(
            {"groupe":req.session.team_ID, "eventsPassed.date":req.body.date},
            {
-               $pull: {"eventsPassed.$.events": {"_id":Number(req.body.event_id)}}     
+               $pull: {"eventsPassed.$.events": {"_id":Number(req.body.event_id)}}
            }, function(err,_) {
                if (err) throw err;
                dbo.collection('planning').updateOne(
@@ -106,12 +103,12 @@ module.exports = {
          * function associated with action "deleteEventToCome" in planning.html
          * remove in collection 'planning' an event in eventsToCome array related to a certain date in a group document
          * after removal, if array 'events' at a certain date is empty, remove from the array 'eventsToCome' the subdocument of this date
-         * 
+         *
         **/
         dbo.collection('planning').updateOne(
             {"groupe":req.session.team_ID, "eventsToCome.date":req.body.date},
             {
-                $pull: {"eventsToCome.$.events": {"_id":Number(req.body.event_id)}}     
+                $pull: {"eventsToCome.$.events": {"_id":Number(req.body.event_id)}}
             }, function(err,_) {
                 if (err) throw err;
                 dbo.collection('planning').updateOne(
@@ -125,7 +122,7 @@ module.exports = {
                 );
             }
         );
-        
+
     }
 
 };

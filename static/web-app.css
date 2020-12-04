@@ -16,16 +16,28 @@ body {
   padding-top: 80px;
 }
 
-h1, h2 {
+h1 {
   font-family: "Fira Sans", serif;
   font-style: italic;
   text-decoration: underline;
 }
 
-p {
+h2 {
   font-family: "Fira Sans", serif;
+  font-style: bold;
+  text-decoration: underline solid #3489db;
+  letter-spacing: 3px;
+  padding-top: 10px;
 }
 
+#oui {
+  margin-top: 80px;
+}
+
+p {
+  font-family: "Fira Sans", serif;
+  text-align: justify;
+}
 
 .teamForms {
   margin-top: 25%;
@@ -37,8 +49,6 @@ p {
   height: 420px;
   content: '';
 }
-
-
 
 .starter-template {
   text-align: center;
@@ -65,6 +75,7 @@ p {
   background-color: rgb(0, 0, 0);
   border: 3px solid white;
   overflow-wrap: break-word;
+  cursor: pointer;
 }
 
 .TeamButton:hover {
@@ -80,6 +91,9 @@ p {
   justify-content: center;
   align-items: flex-start;
   color: white;
+  background: #051d25;
+  margin-bottom: 15%;
+  border: 2px solid white;
 }
 
 .container .item {
@@ -165,6 +179,7 @@ form input[type="submit"]:hover {
   color: black;
   background-color: white;
   text-decoration: none;
+  cursor: pointer;
 }
 
 form input[type="submit"]::before {

@@ -40,6 +40,7 @@ const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte 
 const BAD_CREDENTIALS_MSG = "Le nom d'utilisateur et/ou le mot de passe est incorrect."
 const USERNAME_ALREADY_EXIST_MSG = "Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre."
 const BAD_CREDENTIALS_JOIN_GROUP_MSG = "L'id et/ou le mot de passe est incorrect."
+const USER_ALREADY_IN_GROUP_MSG = "Vous faites déjà parti de ce groupe."
 const BAD_ID_LEAVE_GROUP_MSG = "Vous n'êtes pas membre du groupe que vous désirez quitter."
 
 
@@ -77,10 +78,15 @@ MongoClient.connect('mongodb://localhost:27017', {
                 "members": req.session.username
             }).toArray(function (err, groupes) {
                 if (err) throw err;
+                let joinMessage = BAD_CREDENTIALS_JOIN_GROUP_MSG
+                if (req.session.displayAlreadyInGroupError != null) {
+                    joinMessage = USER_ALREADY_IN_GROUP_MSG;
+                    req.session.displayLeaveGroupError = null;
+                }
                 res.render('groupes.html', {
                     IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                     displayErrorJoin: tools.displayOrNot(req, "join"),
-                    badIdJoinMsg: BAD_CREDENTIALS_JOIN_GROUP_MSG,
+                    badIdJoinMsg: joinMessage,
                     displayErrorLeave: tools.displayOrNot(req, "leave"),
                     badIdLeaveMsg: BAD_ID_LEAVE_GROUP_MSG,
                     groupes: groupes
@@ -102,10 +108,14 @@ MongoClient.connect('mongodb://localhost:27017', {
     // App page
     app.get('/app', (req, res) => {
         if (tools.isConnected(req)) {
-            res.render('app.html', {
-                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                groupName: req.session.team_name
-            });
+            if (tools.hasChosenGroup(req)) {
+                res.render('app.html', {
+                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                    groupName: req.session.team_name
+                });
+            } else {
+                res.redirect('/groupes');
+            }
         } else {
             res.redirect('/');
         }
@@ -114,20 +124,24 @@ MongoClient.connect('mongodb://localhost:27017', {
     // TodoList page
     app.get('/todolist', (req, res) => {
         if (tools.isConnected(req)) {
-            dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
-                if (err) throw err;
-                dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
+            if (tools.hasChosenGroup(req)) {
+                dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                     if (err) throw err;
-                    let today = new Date();
-                    res.render('todolist.html', {
-                        IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                        groupName: req.session.team_name,
-                        todoList: todoList,
-                        minDate: today.toISOString().substring(0, 10),
-                        names: groupe.members
+                    dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
+                        if (err) throw err;
+                        let today = new Date();
+                        res.render('todolist.html', {
+                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            groupName: req.session.team_name,
+                            todoList: todoList,
+                            minDate: today.toISOString().substring(0, 10),
+                            names: groupe.members
+                        });
                     });
                 });
-            });
+            } else {
+                res.redirect('/groupes');
+            }
         } else {
             res.redirect('/');
         }
@@ -136,32 +150,35 @@ MongoClient.connect('mongodb://localhost:27017', {
     // Planning page
     app.get('/planning', (req, res) => {
         if (tools.isConnected(req)) {
-
-            dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
-                dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl){
-                    let today = new Date();
-                    if (pl === null) {
-                        res.render('planning.html', {
-                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                            groupName: req.session.team_name,
-                            minDate: today.toISOString().substring(0, 10),
-                            names: groupe.members
-                        });
-                    } else {
-                        let events = pl.eventsToCome;
-                        planning.filterPassedEvents(events,dbo,req, () => {
+            if (tools.hasChosenGroup(req)) {
+                dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
+                    dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl){
+                        let today = new Date();
+                        if (pl === null) {
                             res.render('planning.html', {
                                 IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
                                 groupName: req.session.team_name,
                                 minDate: today.toISOString().substring(0, 10),
-                                names: groupe.members,
-                                pl: pl
+                                names: groupe.members
                             });
-                        });
-                    }
+                        } else {
+                            let events = pl.eventsToCome;
+                            planning.filterPassedEvents(events,dbo,req);
+                            dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl2){
+                                res.render('planning.html', {
+                                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                    groupName: req.session.team_name,
+                                    minDate: today.toISOString().substring(0, 10),
+                                    names: groupe.members,
+                                    pl: pl2
+                                });
+                            });
+                        }
+                    });
                 });
-            });
-
+            } else {
+                res.redirect('/groupes');
+            }
         } else {
             res.redirect('/');
         }
@@ -170,28 +187,32 @@ MongoClient.connect('mongodb://localhost:27017', {
     // Expenses page
     app.get('/depenses', (req, res) => {
         if (tools.isConnected(req)) {
-            dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
-                if (err) throw err;
-                dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, depenses) {
+            if (tools.hasChosenGroup(req)) {
+                dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
                     if (err) throw err;
-                    if (depenses === null) {
-                        res.render('expenses.html', {
-                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                            groupName: req.session.team_name,
-                            names: groupe.members
-                        });
-                    } else {
-                        res.render('expenses.html', {
-                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
-                            groupName: req.session.team_name,
-                            expenses: expenses.listOfExpenses(req, dbo),
-                            accounts: expenses.listOfAccounts(req, dbo),
-                            refunds: expenses.listOfRefunds(req, dbo),
-                            names: groupe.members
-                        });
-                    }
-                })
-            });
+                    dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, depenses) {
+                        if (err) throw err;
+                        if (depenses === null) {
+                            res.render('expenses.html', {
+                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                groupName: req.session.team_name,
+                                names: groupe.members
+                            });
+                        } else {
+                            res.render('expenses.html', {
+                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                groupName: req.session.team_name,
+                                expenses: expenses.listOfExpenses(req, dbo),
+                                accounts: expenses.listOfAccounts(req, dbo),
+                                refunds: expenses.listOfRefunds(req, dbo),
+                                names: groupe.members
+                            });
+                        }
+                    })
+                });
+            } else {
+                res.redirect('/groupes');
+            }
         } else {
             res.redirect('/');
         }
