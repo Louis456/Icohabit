@@ -10,11 +10,13 @@ module.exports = {
             dbo.collection('groupes').find({"_id": {$in: groupIds} }).toArray(function (err, userGroups) {
                 let result = [];
                 for (docu of userGroups) {
-                    let query = req.body.groupTextSearch.toLowerCase()
-                    let group_name = docu["groupname"].toLowerCase()
-                    let group_id = docu["_id"].toString()
-                    if (group_name.includes(query) || group_id.includes(query)) {
-                        result.push(docu);
+                    let queries = req.body.groupTextSearch.toLowerCase().split(' ');
+                    let group_name = docu["groupname"].toLowerCase();
+                    let group_id = docu["_id"].toString();
+                    for (query of queries) {
+                        if (group_name.includes(query) || group_id.includes(query)) {
+                            result.push(docu);
+                        }
                     }
                 }
                 res.render('groupes.html', {
