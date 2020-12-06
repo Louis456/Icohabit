@@ -22,19 +22,6 @@ module.exports = {
     },
 
 
-    idButton: function (req, text) {
-        /**
-         * Return the string to be displayed on the upper right side of the screen.
-         *
-         * @param {string} text : The message to be displayed when the user isn't connected.
-         *
-         * @return The username if the user is connected, otherwise 'text' string.
-         */
-        if (this.isConnected(req)) return req.session.username;
-        return text
-    },
-
-
     displayOrNot: function (req, where) {
         /**
          * If a cookie has been created then remove the cookie and display, otherwise, hide the message.

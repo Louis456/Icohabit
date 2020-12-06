@@ -33,6 +33,7 @@ module.exports = {
                             "idcount": 1
                         }
                     });
+                    dbo.collection('groupes').createIndex({groupname: "text", _id: "text"});
                     res.redirect('/groupes');
                 });
             });

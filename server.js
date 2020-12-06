@@ -34,6 +34,7 @@ var groups = require('./scripts/groups');
 var todolist = require('./scripts/todolist');
 var planning = require('./scripts/planning');
 var expenses = require('./scripts/expenses');
+var search = require('./scripts/search');
 
 // Strings used through the website
 const ID_BUTTON_TEXT = "Créez-vous un compte ou connectez-vous à votre compte existant"
@@ -62,7 +63,7 @@ MongoClient.connect('mongodb://localhost:27017', {
             res.redirect('/groupes')
         } else {
             res.render('index.html', {
-                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                IdButtonText: ID_BUTTON_TEXT,
                 displayErrorConnect: tools.displayOrNot(req, "login"),
                 badCredentialsMsg: BAD_CREDENTIALS_MSG,
                 displayErrorRegister: tools.displayOrNot(req, "register"),
@@ -84,7 +85,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                     req.session.displayLeaveGroupError = null;
                 }
                 res.render('groupes.html', {
-                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                    IdButtonText: req.session.username,
                     displayErrorJoin: tools.displayOrNot(req, "join"),
                     badIdJoinMsg: joinMessage,
                     displayErrorLeave: tools.displayOrNot(req, "leave"),
@@ -110,7 +111,7 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (tools.isConnected(req)) {
             if (tools.hasChosenGroup(req)) {
                 res.render('app.html', {
-                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                    IdButtonText: req.session.username,
                     groupName: req.session.team_name
                 });
             } else {
@@ -131,7 +132,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                         if (err) throw err;
                         let today = new Date();
                         res.render('todolist.html', {
-                            IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                            IdButtonText: req.session.username,
                             groupName: req.session.team_name,
                             todoList: todoList,
                             minDate: today.toISOString().substring(0, 10),
@@ -156,7 +157,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                         let today = new Date();
                         if (pl === null) {
                             res.render('planning.html', {
-                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
                                 minDate: today.toISOString().substring(0, 10),
                                 names: groupe.members
@@ -166,7 +167,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                             planning.filterPassedEvents(events,dbo,req);
                             dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl2){
                                 res.render('planning.html', {
-                                    IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                    IdButtonText: req.session.username,
                                     groupName: req.session.team_name,
                                     minDate: today.toISOString().substring(0, 10),
                                     names: groupe.members,
@@ -194,13 +195,13 @@ MongoClient.connect('mongodb://localhost:27017', {
                         if (err) throw err;
                         if (depenses === null) {
                             res.render('expenses.html', {
-                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
                                 names: groupe.members
                             });
                         } else {
                             res.render('expenses.html', {
-                                IdButtonText: tools.idButton(req, ID_BUTTON_TEXT),
+                                IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
                                 expenses: expenses.listOfExpenses(req, dbo),
                                 accounts: expenses.listOfAccounts(req, dbo),
@@ -224,6 +225,20 @@ MongoClient.connect('mongodb://localhost:27017', {
     /* ----------------
         POST Methods
     ---------------- */
+
+
+    app.post('/submitSearchGroup', function (req, res) {
+        search.searchGroup(req, res, dbo);
+    });
+    app.post('/submitSearchTodo', function (req, res) {
+        search.searchTodo(req, res, dbo);
+    });
+    app.post('submitSearchPlanning', function (req, res) {
+        search.searchPlanning(req, res, dbo);
+    })
+    app.post('/submitSearchExpenses', function (req, res) {
+        search.searchExpenses(req, res, dbo);
+    })
 
 
     app.post('/submitRegister', function (req, res) {
