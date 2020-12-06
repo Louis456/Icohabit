@@ -92,6 +92,7 @@ module.exports = {
         /**
          * Check if the group exist and if the user is a member of it.
          * If correct, remove the user from group's members list, the group from the user's group list and then refresh the page.
+         * And if the group is now empty then remove it from the database.
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
         */
