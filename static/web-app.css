@@ -263,6 +263,11 @@ form input[type="submit"]:hover::before {
   height: auto;
 }
 
+.appButtonText {
+  text-align: center;
+  color: #bababa;
+}
+
 .container2 {
   padding: 15px;
   margin-top: 15%;
