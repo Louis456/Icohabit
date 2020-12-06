@@ -62,11 +62,19 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (tools.isConnected(req)) {
             res.redirect('/groupes')
         } else {
+            let displayConnect = tools.displayOrNot(req, "login");
+            let displayRegister = tools.displayOrNot(req, "register");
+            let scroll = "scroll-behavior: smooth";
+            // Stop smooth-scrolling if an error has to be displayed.
+            if (displayConnect != "display:none" || displayRegister != "display:none") {
+                scroll = ""
+            }
             res.render('index.html', {
                 IdButtonText: ID_BUTTON_TEXT,
-                displayErrorConnect: tools.displayOrNot(req, "login"),
+                scrollBehavior: scroll,
+                displayErrorConnect: displayConnect,
                 badCredentialsMsg: BAD_CREDENTIALS_MSG,
-                displayErrorRegister: tools.displayOrNot(req, "register"),
+                displayErrorRegister: displayRegister,
                 usernameAlreadyExistMsg: USERNAME_ALREADY_EXIST_MSG
             });
         }

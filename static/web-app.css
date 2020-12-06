@@ -12,6 +12,10 @@ body {
   background-size: 100%;
 }
 
+#identification {
+    scroll-margin-top: 100px;
+}
+
 #slogan {
   padding-top: 80px;
 }
@@ -259,10 +263,6 @@ form input[type="submit"]:hover::before {
   height: auto;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 .container2 {
   padding: 15px;
   margin-top: 15%;
@@ -274,6 +274,4 @@ html {
   margin-right: auto;
 }
 
-#identification {
-    scroll-margin-top: 100px;
-}
+
