@@ -97,9 +97,9 @@
             </form>
             <h1>À faire</h1>
             {{#todoList}}
-            <div class="DateContainer">
+            <div class="resultContainer">
                 {{#tasksTodo}}
-                <div class="eachDate">
+                <div class="eachResult">
                     <h4>Date {{date}}</h4>
                         {{#tasks}}
                         <ul class="listdesign line_underneath" id="unfulfilled-tasks">
@@ -110,14 +110,14 @@
                                     <input type="hidden" name="task_id" value="{{_id}}">
                                     <input type="hidden" name="date" value="{{date}}">
                                     <button type="submit" name="Delete"
-                                        class="btn btn-outline-danger btn-sm maclasse">Delete</button>
+                                        class="btn btn-outline-danger btn-sm deleteAndDoneButton">Delete</button>
                                 </form>
                                 <form class="" action="checkTask" method="post">
                                     <input type="hidden" name="task" value="{{task}}">
                                     <input type="hidden" name="accountant" value="{{accountant}}">
                                     <input type="hidden" name="date" value="{{date}}">
                                     <input type="hidden" name="task_id" value="{{_id}}">
-                                    <button type="submit" name="Check" class="btn btn-outline-success btn-sm maclasse">Done</button>
+                                    <button type="submit" name="Check" class="btn btn-outline-success btn-sm deleteAndDoneButton">Done</button>
                                 </form>
                             </li>
                         </ul>
@@ -130,9 +130,9 @@
             <h1>Accomplies</h1>
 
             {{#todoList}}
-            <div class="DateContainer">
+            <div class="resultContainer">
                 {{#tasksDone}}
-                <div class="eachDate">
+                <div class="eachResult">
                     <h4>Date {{date}}</h4>
                         {{#tasks}}
                         <ul class="listdesign line_underneath" id="completed-tasks">

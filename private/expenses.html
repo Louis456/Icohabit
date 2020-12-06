@@ -111,11 +111,24 @@
             </form>
 
             <h1>Liste des dépenses</h1>
-            <ul class="listdesign">
-            {{#expenses}}
-                <li>{{whoPaid}} a payé {{amount}}€ pour {{receivers}}</li>
-            {{/expenses}}
-            </ul>
+            <div class="resultContainer">
+                {{#expenses}}
+                <div class="eachResult">
+                    <ul class="listdesign line_underneath">
+                        <li>
+                            <p><b>{{amount}}€</b>     {{title}}</p>
+                        </li>
+                        <li>
+                            <p><b>Payé par?</b> {{whoPaid}}</p>
+                        </li>
+                        <li>
+                            <p><b>Pour?</b> {{receivers}}</p>
+                        </li>
+                    </ul>
+                </div>
+                {{/expenses}}
+            </div>
+            
 
             <h1>Liste des comptes</h1>
             <ul class="listdesign">

@@ -65,20 +65,20 @@ h4 {
   list-style: none;
 }
 
-.DateContainer {
+.resultContainer {
   flex-direction: column;
   display: flex;
   margin: auto;
   overflow-wrap: break-word;
 }
 
-.eachDate{
+.eachResult{
   margin-top: 15px;
   background-color: rgb(164, 166, 168);
   color: rgb(31, 29, 29);
   border-left: 10px solid #133da8;
 }
 
-.maclasse {
-  margin: 10px;
+.deleteAndDoneButton {
+  margin-top: 10px;
 }

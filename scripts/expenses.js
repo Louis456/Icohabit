@@ -69,12 +69,12 @@ module.exports = {
          * Returns the list of all the expenses of the database for this group.
          *
          * @return {list}   A list of dictionaries to use with moustache, representing all the expenses made in the group.
-         * Example: {"whoPaid" : "Simon", "amount": 50, "receivers": ["Louis", "Antoine"]}   --> Simon paid 50€ for Louis and Antoine.
+         * Example: {"title": "Beers for the party", "whoPaid" : "Simon", "amount": 50, "receivers": ["Louis", "Antoine"]}   --> Simon paid 50€ for Louis and Antoine.
          */
         let depenses = [];
         dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
             for (const dep of expenses.expensesArray) {
-                depenses.push({ "whoPaid": dep.payeur, "amount": dep.amount, "receivers": dep.receveurs })
+                depenses.push({ "title": dep.title, "whoPaid": dep.payeur, "amount": dep.amount, "receivers": dep.receveurs })
             }
         });
         return depenses
