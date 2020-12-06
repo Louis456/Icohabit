@@ -114,6 +114,9 @@ module.exports = {
                             "members": req.session.username
                         }
                     });
+                    if (group.members.length === 1) {
+                        dbo.collection('groupes').deleteOne({"_id": Number(req.body.teamID)});
+                    }
                     res.redirect('/groupes');
                 } else {
                     req.session.displayLeaveGroupError = "yes";
