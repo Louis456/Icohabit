@@ -92,7 +92,7 @@ module.exports = {
         /**
          * Check if the group exist and if the user is a member of it.
          * If correct, remove the user from group's members list, the group from the user's group list and then refresh the page.
-         * And if the group is now empty then remove it from the database.
+         * And if the group is now empty then remove the group and the associated todolist, planning and expenses from the database.
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
         */
@@ -116,7 +116,10 @@ module.exports = {
                         }
                     });
                     if (group.members.length === 1) {
-                        dbo.collection('groupes').deleteOne({"_id": Number(req.body.teamID)});
+                        dbo.collection('groupes').deleteOne({ "_id": Number(req.body.teamID) });
+                        dbo.collection('todo').deleteOne({ "_id": req.body.teamID });
+                        dbo.collection('planning').deleteOne({ "_id": req.body.teamID });
+                        dbo.collection('expenses').deleteOne({ "_id": req.body.teamID });
                     }
                     res.redirect('/groupes');
                 } else {
