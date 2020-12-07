@@ -7,7 +7,6 @@ var session = require('express-session');
 var bodyParser = require("body-parser");
 var https = require('https');
 var fs = require('fs');
-var bcrypt = require('bcrypt');
 
 app.engine('html', consolidate.hogan);
 app.set('views', 'private');
