@@ -45,11 +45,17 @@
 
         <div class="emptysearch">
            <h1>Votre recherche n'a rien donné</h1>
+           <h3>Mots clés utilisés:</h3>
+           <ul>
+            {{#searchQuery}}
+               <li>{{.}}</li>
+            {{/searchQuery}}
+           </ul>
            <h2>Suggestions :</h2>
            <ul>
              <li>Vérifiez l'orthographe des termes de recherche</li>
-             <li>Essayez d'autres mots</li>
-             <li>Utilisez d'autres mots clés</li>
+             <li>Utilisez au moins 3 charactères pour chercher un nom</li>
+             <li>Essayez de chercher par id du groupe</li>
            </ul>
 				</div>
     </body>
