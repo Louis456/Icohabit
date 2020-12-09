@@ -10,7 +10,7 @@ module.exports = {
             dbo.collection('groupes').find({"_id": {$in: groupIds} }).toArray(function (err, userGroups) {
                 if (req.body.groupTextSearch.length) {
                     let result = [];
-                    let queries = req.body.groupTextSearch.toLowerCase().split(' ');
+                    let queries = req.body.groupTextSearch.toLowerCase().split(',').join(' ').split(';').join(' ').replace(/  +/g, ' ').trim().split(' ');
 
                     for (query of queries) {
                         // Search for ids
