@@ -138,13 +138,28 @@ MongoClient.connect('mongodb://localhost:27017', {
                     dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
                         if (err) throw err;
                         let today = new Date();
-                        res.render('todolist.html', {
-                            IdButtonText: req.session.username,
-                            groupName: req.session.team_name,
-                            todoList: todoList,
-                            minDate: today.toISOString().substring(0, 10),
-                            names: groupe.members
-                        });
+                        if (todoList === null) {
+                          res.render('todolist.html', {
+                              IdButtonText: req.session.username,
+                              groupName: req.session.team_name,
+                              minDate: today.toISOString().substring(0, 10),
+                              names: groupe.members
+                          });
+                        } else {
+                            let tasksTodo = todolist.getTasksTodo(todoList.tasks)
+                            let tasksDone = todolist.getTasksDone(todoList.tasks)
+                            console.log(tasksTodo);
+                            console.log(tasksDone);
+                            res.render('todolist.html', {
+                                IdButtonText: req.session.username,
+                                groupName: req.session.team_name,
+                                tasksTodo: tasksTodo,
+                                tasksDone: tasksDone,
+                                minDate: today.toISOString().substring(0, 10),
+                                names: groupe.members
+                            });
+                        }
+
                     });
                 });
             } else {
@@ -282,10 +297,10 @@ MongoClient.connect('mongodb://localhost:27017', {
         todolist.checkTask(req, res, dbo);
     });
     app.post('/deleteTask', function (req, res) {
-        todolist.deleteTaskTodo(req, res, dbo);
+        todolist.deleteTask(req, res, dbo);
     });
     app.post('/deleteTaskDone', function (req, res) {
-        todolist.deleteTaskDone(req, res, dbo);
+        todolist.deleteTask(req, res, dbo);
     });
 
 
