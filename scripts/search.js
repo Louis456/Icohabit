@@ -23,7 +23,7 @@ module.exports = {
                             groupes: result
                         });
                     } else {
-                        res.render('emptysearch.html', {
+                        res.render('emptySearchGroup.html', {
                             IdButtonText: req.session.username,
                             searchQuery: queries
                         });
