@@ -175,9 +175,11 @@ MongoClient.connect('mongodb://localhost:27017', {
         if (tools.isConnected(req)) {
             if (tools.hasChosenGroup(req)) {
                 dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
-                    dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl){
+                    if (err) throw err;
+                    dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, planningForGivenGroup){
+                        if (err) throw err;
                         let today = new Date();
-                        if (pl === null) {
+                        if (planningForGivenGroup === null) {
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -185,15 +187,18 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            let events = pl.eventsToCome;
-                            planning.filterPassedEvents(events,dbo,req);
+                            let pastEvents = planning.getPastEvents(planningForGivenGroup.events)
+                            let futureEvents = planning.getFutureEvents(planningForGivenGroup.events)
+                            console.log(pastEvents);
+                            console.log(futureEvents);
                             dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl2){
                                 res.render('planning.html', {
                                     IdButtonText: req.session.username,
                                     groupName: req.session.team_name,
                                     minDate: today.toISOString().substring(0, 10),
                                     names: groupe.members,
-                                    pl: pl2
+                                    pastEvents: pastEvents,
+                                    futureEvents: futureEvents
                                 });
                             });
                         }
@@ -299,21 +304,13 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.post('/deleteTask', function (req, res) {
         todolist.deleteTask(req, res, dbo);
     });
-    app.post('/deleteTaskDone', function (req, res) {
-        todolist.deleteTask(req, res, dbo);
-    });
 
 
     app.post('/addEvent', function (req, res) {
         planning.addEvent(req, res, dbo);
     });
-
-    app.post('/deletePassedEvent', function(req, res) {
-        planning.deletePassedEvent(req, res, dbo);
-    });
-
-    app.post('/deleteEventToCome', function (req, res) {
-        planning.deleteEventToCome(req, res, dbo);
+    app.post('/deleteEvent', function(req, res) {
+        planning.deleteEvent(req, res, dbo);
     });
 
 

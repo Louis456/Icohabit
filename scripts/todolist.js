@@ -75,7 +75,7 @@ module.exports = {
     getTasksTodo: function (tasks) {
         /**
          * @param {Array} tasks : Represents a list of objects corresponding to a task
-         * @return {Array} tasksTodo : Rpresents the input list filtered by field "done" === false for each object
+         * @return {Array} tasksTodo : Represents the input list filtered by field "done" === false for each object
          */
         let tasksTodo = tasks.filter(function(eachTask){
             return eachTask.done === false;

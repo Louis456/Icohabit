@@ -91,7 +91,9 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
         for (dict of arrayOfDicts) {
             for (key of exactKeys) {
                 if (dict[key].toString() === query) {
-                    result.push(dict);
+                    if (!result.includes(dict)) {
+                        result.push(dict);
+                    }
                 }
             }
         }
