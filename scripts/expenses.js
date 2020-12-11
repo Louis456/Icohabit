@@ -6,8 +6,8 @@ module.exports = {
          * Add an expense to the database.
          *
          * If the group doesn't already have a document in the database then it creates a new one with an id set to 0.
-         * If the group is in the database then it updates group's document to add the new expense to the expensesArray.
-         * Then refresh the page.
+         * If the group is in the database then it updates group's document to add the new expense to the expensesArray
+         * with a new incremented id (useful if we desire to delete it later) and then refresh the page.
          */
         dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
             if (err) throw err;
@@ -18,42 +18,30 @@ module.exports = {
                 let arrayAndDict = listOfAccounts(expArray);
                 dbo.collection('expenses').insertOne({
                     "groupe": req.session.team_ID,
-                    "expense_id": 0,
+                    "expense_id": 1,
                     "expensesArray": expArray,
                     "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])]
                 }, function (err, _) {
-                    if (err) throw err;
-                    dbo.collection('expenses').updateOne(
-                        { "groupe": req.session.team_ID },
-                        {
-                            $inc: { "expense_id": 1 }
-                        }, function (err, _) {
-                            if (err) throw err;
-                            res.redirect('/depenses');
-                        }
-                    );
+                    res.redirect('/depenses');
                 });
             } else {
                 let newArray = expenses.expensesArray.concat([{ "_id": expenses.expense_id, "title": req.body.expenseTitle, "date": req.body.date, "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": receivers }]);
-                let arrayAndDict = listOfAccounts(expenses.expensesArray);
+                let arrayAndDict = listOfAccounts(newArray);
                 dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
-                        $set: { "expensesArray": newArray, "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] },
-                        $inc: { "expense_id": 1 }
-                    }, function (err, _) {
-                        if (err) throw err;
-                        res.redirect('/depenses');
+                    $set: { "expensesArray": newArray, "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] },
+                    $inc: { "expense_id": 1 }
+                }, function (err, _) {
+                    if (err) throw err;
+                    res.redirect('/depenses');
                 });
             }
         });
     },
 
 
-    deleteExpense: function (req, res, dbo, expense_id) {
+    deleteExpense: function (req, res, dbo) {
         /**
-         * Delete the expense correspondig with the argument from the database.
-         *
-         * @param {int}  Integer corresponding to the expense to be deleted.
-         * Then refresh the page
+         * Delete the expense correspondig with the argument from the database and refresh the page.
          */
         dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
             $pull: { "expensesArray": { "_id": Number(req.body.expense_id) } }
@@ -63,12 +51,12 @@ module.exports = {
             let arrayAndDict = listOfAccounts(expenses.expensesArray);
             dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
                 $set: { "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] }
+            }, function (err, _) {
+                if (err) throw err;
+                res.redirect('/depenses');
             });
         });
-
-        res.redirect('/depenses')
-    }
-
+    },
 };
 
 
@@ -76,9 +64,15 @@ module.exports = {
 function listOfAccounts(expensesArray) {
     /**
      * Returns a list of people associated with their money (positive or negative).
+     * 
+     * @param {array} expensesArray : The array containing all the expenses from the database (dbo.expenses.expensesArray).
      *
-     * @return {list}   A list of dictionaries to use with moustache, representing who has how much money in positive or negative.
-     * Example: {"Louis" : 20, "Simon": -10, "Fred": -10}   --> Louis needs to get 20€ back, Simon has to give 10€ back, same for Fred.
+     * @return {array} An array of 2 items, the accounts in an array(1) and the accounts in a dictionary(2).
+     * Example: [
+     * 1)   [{ "people": "Louis", "money": "+20" }, { "people": "Simon", "money": "-10" }, { "people": "Fred", "money": "-10" }], 
+     * 2)   {"Louis" : 20, "Simon": -10, "Fred": -10}
+     *          ]  
+     * --> Louis needs to get 20€ back, Simon has to give 10€ back, same for Fred.
      */
     function addToAccount(person, amount) {
         if (person in accounts) return accounts[person] + amount;
@@ -96,7 +90,10 @@ function listOfAccounts(expensesArray) {
         }
     }
     for (const people in accounts) {
-        result.push({ "people": people, "money": Math.round(accounts[people] * 100) / 100 })
+        let money = Math.round(accounts[people] * 100) / 100;
+        let toConcat = '';
+        if (money > 0.0) toConcat = '+';
+        result.push({ "people": people, "money": toConcat.concat(money.toString())})
     }
     return [result, accounts];
 }
@@ -105,8 +102,11 @@ function listOfAccounts(expensesArray) {
 function listOfRefunds(accounts) {
     /**
      * Returns the list of transactions that should be done for everyone to get their money back.
+     * 
+     * @param {dictionary} accounts : Contains the name of the people as key and their money account as value.
+     * Example: {"michel": 10, "george": 15.6, "sebastien": -25.6}
      *
-     * @return {list}   A list of dictionaries to use with moustache, representing who owes how much to whom.
+     * @return {list} : A list of dictionaries to use with moustache, representing who owes how much to whom.
      * Example: [{"debtor": "Louis", "howMuch": 5, "creditor": "Simon"}, {...}]   --> Louis owes 5€ to Simon.
      */
     let balanceList = [];

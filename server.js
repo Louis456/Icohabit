@@ -205,7 +205,7 @@ MongoClient.connect('mongodb://localhost:27017', {
         } else {
             res.redirect('/');
         }
-    })
+    });
 
     // Expenses page
     app.get('/depenses', (req, res) => {
@@ -240,7 +240,20 @@ MongoClient.connect('mongodb://localhost:27017', {
         } else {
             res.redirect('/');
         }
-    })
+    });
+
+    app.get('/submitSearchGroup', (req, res) => {
+        res.redirect('groupes');
+    });
+    app.get('/submitSearchTodo', (req, res) => {
+        res.redirect('/app');
+    });
+    app.get('/submitSearchPlanning', (req, res) => {
+        res.redirect('/app');
+    });
+    app.get('/submitSearchExpenses', (req, res) => {
+        res.redirect('/app');
+    });
 
 
 
@@ -248,20 +261,6 @@ MongoClient.connect('mongodb://localhost:27017', {
     /* ----------------
         POST Methods
     ---------------- */
-
-
-    app.post('/submitSearchGroup', function (req, res) {
-        search.searchGroup(req, res, dbo);
-    });
-    app.post('/submitSearchTodo', function (req, res) {
-        search.searchTodo(req, res, dbo);
-    });
-    app.post('submitSearchPlanning', function (req, res) {
-        search.searchPlanning(req, res, dbo);
-    })
-    app.post('/submitSearchExpenses', function (req, res) {
-        search.searchExpenses(req, res, dbo);
-    })
 
 
     app.post('/submitRegister', function (req, res) {
@@ -315,6 +314,20 @@ MongoClient.connect('mongodb://localhost:27017', {
     });
     app.post('/deleteExpense', function (req, res) {
         expenses.deleteExpense(req, res, dbo);
+    });
+
+
+    app.post('/submitSearchGroup', function (req, res) {
+        search.searchGroup(req, res, dbo);
+    });
+    app.post('/submitSearchTodo', function (req, res) {
+        search.searchTodo(req, res, dbo);
+    });
+    app.post('submitSearchPlanning', function (req, res) {
+        search.searchPlanning(req, res, dbo);
+    });
+    app.post('/submitSearchExpenses', function (req, res) {
+        search.searchExpenses(req, res, dbo);
     });
 
 

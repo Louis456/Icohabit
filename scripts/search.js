@@ -15,7 +15,7 @@ module.exports = {
             dbo.collection('groupes').find({"_id": {$in: groupIds} }).toArray(function (err, userGroups) {
                 if (err) throw err;
                 let queries = getQueries(req.body.groupTextSearch);
-                if (queries.length > 0) {
+                if (queries[0].length > 0) {
 
                     let result = applySearching(queries, userGroups, ["_id"], ["groupname"]);
                     if (result.length > 0) {
@@ -30,7 +30,12 @@ module.exports = {
                     } else {
                         res.render('emptySearchGroup.html', {
                             IdButtonText: req.session.username,
-                            searchQuery: queries
+                            searchQuery: queries,
+                            displayErrorJoin: "display:none",
+                            badIdJoinMsg: "",
+                            displayErrorLeave: "display:none",
+                            badIdLeaveMsg: "",
+                            groupes: userGroups
                         });
                     }
                 } else {
@@ -50,7 +55,7 @@ module.exports = {
             let queries = getQueries(req.body.todoTextSearch);
             if (todo != null){
                 let tasks = todo.tasks;
-                if (queries.length > 0) {
+                if (queries[0].length > 0) {
                     let result = applySearching(queries, tasks, [], ["date", "task", "accountant"]);
                     if (result.length > 0) {
                         dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
@@ -87,7 +92,7 @@ module.exports = {
             let queries = getQueries(req.body.planningTextSearch);
             if (planning != null){
                 let events = planning.events;
-                if (queries.length > 0) {
+                if (queries[0].length > 0) {
                     let result = applySearching(queries, events, [], ["date", "event", "participants"]);
                     if (result.length > 0) {
                         dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
@@ -124,18 +129,17 @@ module.exports = {
           let queries = getQueries(req.body.expensesTextSearch);
           if (depenses != null){
               let depensesArray = depenses.expensesArray;
-              if (queries.length > 0) {
+              if (queries[0].length > 0) {
                   let result = applySearching(queries, depensesArray, ["amount"], ["date", "title", "payeur", "receveurs"]);
                   if (result.length > 0) {
                       dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
                           if (err) throw err;
-                          let cachedData = depenses.cache;
                           res.render('expenses.html', {
                               IdButtonText: req.session.username,
                               groupName: req.session.team_name,
-                              expenses: depenses.expensesArray,
-                              accounts: cachedData[0],
-                              refunds: cachedData[1],
+                              expenses: result,
+                              accounts: [],
+                              refunds: [],
                               names: groupe.members
                           });
                       });
