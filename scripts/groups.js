@@ -11,8 +11,11 @@ module.exports = {
         dbo.collection('groupes').findOne({
             "_id": 0
         }, function (err, ids) {
+            if (err) throw err;
             bcrypt.genSalt(10, function (err, salt) {
+                if (err) throw err;
                 bcrypt.hash(req.body.newpwdTeam, salt, function (err, encrypted) {
+                    if (err) throw err;
                     dbo.collection('groupes').insertOne({
                         "groupname": req.body.newTeam,
                         "password": encrypted,
@@ -52,9 +55,11 @@ module.exports = {
         dbo.collection('groupes').findOne({
             "_id": Number(req.body.teamID)
         }, function (err, group) {
+            if (err) throw err;
             if (group != null) {
                 if (!group.members.includes(req.session.username)) {
                     bcrypt.compare(req.body.pwdTeam, group.password, function (err, result) {
+                        if (err) throw err;
                         if (result) {
                             dbo.collection('users').updateOne({
                                 "username": req.session.username
@@ -99,6 +104,7 @@ module.exports = {
         dbo.collection('groupes').findOne({
             "_id": Number(req.body.teamID)
         }, function (err, group) {
+            if (err) throw err;
             if (group != null) {
                 if (group.members.includes(req.session.username)) {
                     dbo.collection('users').updateOne({

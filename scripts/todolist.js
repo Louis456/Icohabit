@@ -9,12 +9,14 @@ module.exports = {
          * redirects to todolist page
          */
         dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, todoList) {
+            if (err) throw err;
             if (todoList === null) {
                 dbo.collection('todo').insertOne({
                     "groupe": req.session.team_ID,
                     "taskTodo_id": 0,
                     "tasks": [{ "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "accountant": req.body.accountant, "task": req.body.task, "_id": 0, "done":false }]
                 }, function (err, _) {
+                    if (err) throw err;
                     dbo.collection('todo').updateOne(
                         { "groupe": req.session.team_ID },
                         {
@@ -66,6 +68,7 @@ module.exports = {
             {
                 $set: {"tasks.$.done": true}
             }, function (err,_) {
+                if (err) throw err;
                 res.redirect('/todolist');
             }
         );
@@ -86,13 +89,32 @@ module.exports = {
 
     getTasksDone: function (tasks) {
         /**
-         *@param {Array} tasks : Represents a list of objects corresponding to a task
-         *@return {Array} tasksDone : Rpresents the input list filtered by field "done" === true for each object
+         * @param {Array} tasks : Represents a list of objects corresponding to a task
+         * @return {Array} tasksDone : Rpresents the input list filtered by field "done" === true for each object
          */
         let tasksDone = tasks.filter(function(eachTask){
             return eachTask.done === true;
         });
         return tasksDone;
+    },
+
+    groupTodolistByDate: function (tasks) {
+        /**
+         * @param {Array} tasks : Represents a list of objects corresponding to a task
+         * @return {Array} groupedByDate : Represent a list of objects corresponding to the same tasks but grouped by date
+         */
+        let groupedByDate = [];
+        for (element of tasks) {
+            if (groupedByDate.length === 0) {
+                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "tasks":[{"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done}]})
+            } else if (groupedByDate.some(each => each.date === element.date)) {
+                let idx = groupedByDate.findIndex(each => each.date === element.date);
+                groupedByDate[idx].events.push({"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done})
+            } else {
+                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "tasks":[{"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done}]})
+            }
+        }
+        return groupedByDate;
     }
 
 

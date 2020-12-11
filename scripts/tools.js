@@ -55,9 +55,20 @@ module.exports = {
          */
         req.session.team_ID = req.body.team_ID
         dbo.collection('groupes').findOne({"_id": Number(req.body.team_ID)}, function (err, group) {
+            if (err) throw err;
             req.session.team_name = group.groupname;
             res.redirect('/app')
         });
+    },
+
+
+    sortByDate: function (arr) {
+        /**
+         * @param {Array} arr: Represents an array of objects containing a "date" key
+         * @return {Array} sortedByDate: Represents the input array sorted by date in chronological order
+         */
+        sortedByDate =  arr.sort((a,b) => a.dateGetTime - b.dateGetTime);
+        return sortedByDate;
     }
 
 

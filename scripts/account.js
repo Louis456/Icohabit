@@ -14,7 +14,9 @@ module.exports = {
         }, function (err, user) {
             if (user === null) {
                 bcrypt.genSalt(10, function (err, salt) {
+                    if (err) throw err;
                     bcrypt.hash(req.body.pwd, salt, function (err, encrypted) {
+                        if (err) throw err;
                         dbo.collection("users").insertOne({
                             "username": req.body.username,
                             "password": encrypted,
@@ -45,8 +47,10 @@ module.exports = {
         dbo.collection('users').findOne({
             "username": req.body.usernamealready
         }, function (err, user) {
+            if (err) throw err;
             if (user != null) {
                 bcrypt.compare(req.body.pwdalready, user.password, function (err, result) {
+                    if (err) throw err;
                     if (result) {
                         req.session.username = req.body.usernamealready //create cookie
                         res.redirect('/groupes');

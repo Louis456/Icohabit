@@ -103,6 +103,7 @@ MongoClient.connect('mongodb://localhost:27017', {
             dbo.collection('groupes').findOne({
                 "_id": 0
             }, function (err, ids) {
+                if (err) throw err;
                 // Add the counter if db is empty
                 if (ids == null) dbo.collection('groupes').insertOne({ "_id": 0, "idcount": 1 });
             });
@@ -146,10 +147,8 @@ MongoClient.connect('mongodb://localhost:27017', {
                               names: groupe.members
                           });
                         } else {
-                            let tasksTodo = todolist.getTasksTodo(todoList.tasks)
-                            let tasksDone = todolist.getTasksDone(todoList.tasks)
-                            console.log(tasksTodo);
-                            console.log(tasksDone);
+                            tasksTodo = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksTodo(todoList.tasks)));
+                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(todoList.tasks)));
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -187,19 +186,15 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            let pastEvents = planning.getPastEvents(planningForGivenGroup.events)
-                            let futureEvents = planning.getFutureEvents(planningForGivenGroup.events)
-                            console.log(pastEvents);
-                            console.log(futureEvents);
-                            dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, pl2){
-                                res.render('planning.html', {
-                                    IdButtonText: req.session.username,
-                                    groupName: req.session.team_name,
-                                    minDate: today.toISOString().substring(0, 10),
-                                    names: groupe.members,
-                                    pastEvents: pastEvents,
-                                    futureEvents: futureEvents
-                                });
+                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)));
+                            futureEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getFutureEvents(planningForGivenGroup.events)));
+                            res.render('planning.html', {
+                                IdButtonText: req.session.username,
+                                groupName: req.session.team_name,
+                                minDate: today.toISOString().substring(0, 10),
+                                names: groupe.members,
+                                pastEvents: pastEvent,
+                                futureEvents: futureEvents
                             });
                         }
                     });
@@ -227,12 +222,13 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
+                            let cachedData = depenses.cache;
                             res.render('expenses.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
-                                expenses: expenses.listOfExpenses(req, dbo),
-                                accounts: expenses.listOfAccounts(req, dbo),
-                                refunds: expenses.listOfRefunds(req, dbo),
+                                expenses: depenses.expensesArray,
+                                accounts: cachedData[0],
+                                refunds: cachedData[1],
                                 names: groupe.members
                             });
                         }

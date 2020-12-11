@@ -45,7 +45,7 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearchPlanning" method="post">
-                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher un évènement" aria-label="Rechercher un évènement" size="30">
+                <input class="form-control mr-sm-2" id="planningTextSearch" name="planningTextSearch" type="search" placeholder="Rechercher un évènement" aria-label="Rechercher un évènement" size="30" maxlength="40">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <ul class="navbar-nav">
@@ -96,22 +96,24 @@
             </form>
 
             <h1>Evènements passés</h1>
-            
+
             <div class="resultContainer">
                 {{#pastEvents}}
                 <div class="eachResult">
-                    <h4>Date  {{date}}</h4>                        
-                    <ul class="listdesign line_underneath" id="unfulfilled-tasks">
-                        <li><b>Quoi?</b> {{event}}</li>
-                        <li><b>Qui?</b> {{participants}}</li>
-                        <li><form class="" action="deleteEvent" method="post">
-                                <input type="hidden" name="event_id" value="{{_id}}">
-                                <input type="hidden" name="date" value="{{date}}">
-                                <button type="submit" name="Delete"
-                                    class="btn btn-outline-danger btn-sm">Delete</button>
-                            </form>
-                        </li>
-                    </ul>
+                    <h4>Date  {{date}}</h4>
+                      {{#events}}
+                      <ul class="listdesign line_underneath" id="unfulfilled-tasks">
+                          <li><b>Quoi?</b> {{event}}</li>
+                          <li><b>Qui?</b> {{participants}}</li>
+                          <li><form class="" action="deleteEvent" method="post">
+                                  <input type="hidden" name="event_id" value="{{_id}}">
+                                  <input type="hidden" name="date" value="{{date}}">
+                                  <button type="submit" name="Delete"
+                                      class="btn btn-outline-danger btn-sm">Delete</button>
+                              </form>
+                          </li>
+                      </ul>
+                      {{/events}}
                 </div>
                 {{/pastEvents}}
             </div>
@@ -121,18 +123,19 @@
                 {{#futureEvents}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
-                    <ul class="listdesign line_underneath" id="unfulfilled-tasks">
-                        <li><b>Quoi?</b> {{event}}</li>
-                        <li><b>Qui?</b> {{participants}}</li>
-                        <li>
-                            <form class="" action="deleteEvent" method="post">
-                                <input type="hidden" name="event_id" value="{{_id}}">
-                                <input type="hidden" name="date" value="{{date}}">
-                                <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
-                            </form>
-                        </li>
-                    </ul>
-                    </ul>
+                      {{#events}}
+                      <ul class="listdesign line_underneath" id="unfulfilled-tasks">
+                          <li><b>Quoi?</b> {{event}}</li>
+                          <li><b>Qui?</b> {{participants}}</li>
+                          <li>
+                              <form class="" action="deleteEvent" method="post">
+                                  <input type="hidden" name="event_id" value="{{_id}}">
+                                  <input type="hidden" name="date" value="{{date}}">
+                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                              </form>
+                          </li>
+                      </ul>
+                      {{/events}}
                 </div>
                 {{/futureEvents}}
             </div>

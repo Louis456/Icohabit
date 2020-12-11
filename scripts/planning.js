@@ -9,12 +9,14 @@ module.exports = {
          * redirects to planning page
          */
         dbo.collection('planning').findOne({ "groupe": req.session.team_ID }, function (err, planning) {
+            if (err) throw err;
             if (planning === null) {
                 dbo.collection('planning').insertOne({
                     "groupe": req.session.team_ID,
                     "events_id": 0,
                     "events": [{ "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": 0 }]
                 }, function (err, _) {
+                    if (err) throw err;
                     dbo.collection('planning').updateOne(
                         { "groupe": req.session.team_ID },
                         {
@@ -25,7 +27,7 @@ module.exports = {
                         }
                     );
                 });
-            } else {        
+            } else {
                 dbo.collection('planning').updateOne(
                     { "groupe": req.session.team_ID },
                     {
@@ -64,7 +66,7 @@ module.exports = {
         return futureEvents
     },
 
-    
+
     deleteEvent: function (req, res, dbo) {
         /**
          * pull an event given the event_id from the events list of a group document in the 'planning' collection
@@ -77,6 +79,26 @@ module.exports = {
             }
         );
         res.redirect('/planning');
+    },
+
+    groupPlanningByDate: function (events) {
+        /**
+         * @param {Array} events : Represents a list of objects corresponding to an event
+         * @return {Array} groupedByDate : Represent a list of objects corresponding to the same events but grouped by date
+         */
+        let groupedByDate = [];
+        for (element of events) {
+            if (groupedByDate.length === 0) {
+                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "events":[{"participants": element.participants, "event": element.event, "_id": element._id}]})
+            } else if (groupedByDate.some(each => each.date === element.date)) {
+                let idx = groupedByDate.findIndex(each => each.date === element.date);
+                groupedByDate[idx].events.push({"participants": element.participants, "event": element.event, "_id": element._id})
+            } else {
+                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "events":[{"participants": element.participants, "event": element.event, "_id": element._id}]})
+            }
+        }
+        return groupedByDate;
+
     }
 
 };
