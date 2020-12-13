@@ -62,14 +62,28 @@ module.exports = {
     },
 
 
-    sortByDate: function (arr) {
+    sortByDate: function (arr, inverse=false) {
         /**
          * @param {Array} arr: Represents an array of objects containing a "date" key
+         * @param {boolean} inverse: Set as false by default, if true sort in reverse order.
+         *
          * @return {Array} sortedByDate: Represents the input array sorted by date in chronological order
          */
-        sortedByDate =  arr.sort((a,b) => a.dateGetTime - b.dateGetTime);
+        if (inverse) {
+            sortedByDate = arr.sort((a,b) => b.dateGetTime - a.dateGetTime);
+        } else {
+            sortedByDate = arr.sort((a,b) => a.dateGetTime - b.dateGetTime);
+        }
         return sortedByDate;
-    }
+    },
 
+
+    getPrettyDate: function (date) {
+        /**
+         * Return a prettier date than the default one.
+         */
+        let splitted = date.split('-');
+        return splitted[2]+'/'+splitted[1]+'/'+splitted[0];
+    }
 
 };

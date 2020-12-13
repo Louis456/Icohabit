@@ -1,3 +1,5 @@
+var tools = require('./tools');
+
 module.exports = {
 
 
@@ -14,7 +16,7 @@ module.exports = {
                 dbo.collection('planning').insertOne({
                     "groupe": req.session.team_ID,
                     "events_id": 0,
-                    "events": [{ "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": 0 }]
+                    "events": [{ "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": 0 }]
                 }, function (err, _) {
                     if (err) throw err;
                     dbo.collection('planning').updateOne(
@@ -31,7 +33,7 @@ module.exports = {
                 dbo.collection('planning').updateOne(
                     { "groupe": req.session.team_ID },
                     {
-                        $push: { "events": { "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": planning.events_id } },
+                        $push: { "events": { "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": planning.events_id } },
                         $inc: { "events_id": 1 }
                     }, function (err, _) {
                         if (err) throw err;
@@ -81,6 +83,7 @@ module.exports = {
         res.redirect('/planning');
     },
 
+
     groupPlanningByDate: function (events) {
         /**
          * @param {Array} events : Represents a list of objects corresponding to an event
@@ -98,7 +101,6 @@ module.exports = {
             }
         }
         return groupedByDate;
-
     }
 
 };

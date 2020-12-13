@@ -1,3 +1,5 @@
+var tools = require('./tools');
+
 module.exports = {
 
 
@@ -14,7 +16,7 @@ module.exports = {
                 dbo.collection('todo').insertOne({
                     "groupe": req.session.team_ID,
                     "taskTodo_id": 0,
-                    "tasks": [{ "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "accountant": req.body.accountant, "task": req.body.task, "_id": 0, "done":false }]
+                    "tasks": [{ "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "accountant": req.body.accountant, "task": req.body.task, "_id": 0, "done":false }]
                 }, function (err, _) {
                     if (err) throw err;
                     dbo.collection('todo').updateOne(
@@ -31,7 +33,7 @@ module.exports = {
                 dbo.collection('todo').updateOne(
                     { "groupe": req.session.team_ID },
                     {
-                        $push: { "tasks": { "date": req.body.date, "dateGetTime":new Date(req.body.date).getTime(), "accountant": req.body.accountant, "task": req.body.task, "_id": todoList.taskTodo_id, "done":false } },
+                        $push: { "tasks": { "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "accountant": req.body.accountant, "task": req.body.task, "_id": todoList.taskTodo_id, "done":false } },
                         $inc: { "taskTodo_id": 1 }
                     }, function (err, _) {
                         if (err) throw err;
@@ -98,6 +100,7 @@ module.exports = {
         return tasksDone;
     },
 
+
     groupTodolistByDate: function (tasks) {
         /**
          * @param {Array} tasks : Represents a list of objects corresponding to a task
@@ -109,14 +112,12 @@ module.exports = {
                 groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "tasks":[{"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done}]})
             } else if (groupedByDate.some(each => each.date === element.date)) {
                 let idx = groupedByDate.findIndex(each => each.date === element.date);
-                groupedByDate[idx].events.push({"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done})
+                groupedByDate[idx].tasks.push({"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done})
             } else {
                 groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "tasks":[{"accountant": element.accountant, "task": element.task, "_id": element._id, "done": element.done}]})
             }
         }
         return groupedByDate;
     }
-
-
 
 };

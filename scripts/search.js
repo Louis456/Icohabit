@@ -1,6 +1,7 @@
 var todolist = require('./todolist');
 var planning = require('./planning');
 var expenses = require('./expenses');
+var tools = require('./tools');
 
 module.exports = {
 
@@ -61,11 +62,13 @@ module.exports = {
                         dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
+                            tasksTodo = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksTodo(result)));
+                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(result)));
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
-                                tasksTodo: todolist.getTasksTodo(result),
-                                tasksDone: todolist.getTasksDone(result),
+                                tasksTodo: tasksTodo,
+                                tasksDone: tasksDone,
                                 minDate: today.toISOString().substring(0, 10),
                                 names: groupe.members
                             });
@@ -98,13 +101,15 @@ module.exports = {
                         dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
+                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(result)));
+                            futureEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getFutureEvents(result)));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
                                 minDate: today.toISOString().substring(0, 10),
                                 names: groupe.members,
-                                pastEvents: planning.getPastEvents(result),
-                                futureEvents: planning.getFutureEvents(result)
+                                pastEvents: pastEvents,
+                                futureEvents: futureEvents
                             });
                         });
                     } else {

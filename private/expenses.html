@@ -79,9 +79,9 @@
                             oninput="setCustomValidity('')">
                     </div>
                     <div class="col-sm-2">
-                        <input class="form-control" type="number" step="any" id="amount" name="amount"
+                        <input class="form-control" type="number" step="any" id="amount" name="amount" min="0"
                             placeholder="Montant" required
-                            oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense')"
+                            oninvalid="this.setCustomValidity('Veuillez indiquer le montant de la dépense (une valeur positive).')"
                             oninput="setCustomValidity('')">
                     </div>
                     <div class="col-sm-2">
@@ -114,53 +114,48 @@
             <div class="resultContainer">
                 {{#expenses}}
                 <div class="eachResult">
-                    <ul class="listdesign line_underneath">
-                        <li>
-                            <p><b>{{amount}}€</b>     {{title}}</p>
-                        </li>
-                        <li>
-                            <p><b>Payé par?</b> {{payeur}}</p>
-                        </li>
-                        <li>
-                            <p><b>Pour?</b> {{receveurs}}</p>
-                        </li>
-                        <li>
-                            <form action="deleteExpense" method="post">
-                                <input type="hidden" name="expense_id" value="{{_id}}">
-                                <button type="submit" name="Delete"
-                                    class="btn btn-outline-danger btn-sm">Delete</button>
-                            </form>
-                        </li>
-                    </ul>
+                    <h4>Date {{date}}</h4>
+                      {{#expensesArray}}
+                      <ul class="listdesign line_underneath">
+                          <li><b>{{amount}}€</b> {{title}}</li>
+                          <li><b>Payé par?</b> {{payeur}}</li>
+                          <li><b>Pour?</b> {{receveurs}}</li>
+                          <li>
+                              <form class="" action="deleteEvent" method="post">
+                                  <input type="hidden" name="event_id" value="{{_id}}">
+                                  <input type="hidden" name="date" value="{{date}}">
+                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                              </form>
+                          </li>
+                      </ul>
+                      {{/expensesArray}}
                 </div>
                 {{/expenses}}
             </div>
 
 
             <h1>Liste des comptes</h1>
-            <ul class="listdesign">
-            {{#accounts}}
-                <li>{{people}} est à {{money}}€</li>
-            {{/accounts}}
-            </ul>
+            <div class="resultContainer">
+                {{#accounts}}
+                <div class="eachResult">
+                    <ul class="listdesign line_underneath">
+                        <li>{{people}} est à {{money}}€</li>
+                    </ul>
+                </div>
+                {{/accounts}}
+            </div>
 
             <h1>Remboursements à effectuer</h1>
-            <ul class="listdesign">
-            {{#refunds}}
-                <li>{{debtor}} doit {{howMuch}}€ à {{creditor}}</li>
-            {{/refunds}}
-            </ul>
-
-            <!--
-            <button class="btn btn-warning" onclick="balance()">Afficher les remboursements</button>
-            <label for="refund"> {{names}} : </label>
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                    aria-valuenow="lemontantlàjesaispas" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="resultContainer">
+                {{#refunds}}
+                <div class="eachResult">
+                    <ul class="listdesign line_underneath">
+                        <li>{{debtor}} doit {{howMuch}}€ à {{creditor}}</li>
+                    </ul>
+                </div>
+                {{/refunds}}
             </div>
-            -->
         </div>
-    </div>
     </div>
 </body>
 

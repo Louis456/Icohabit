@@ -148,7 +148,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                           });
                         } else {
                             tasksTodo = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksTodo(todoList.tasks)));
-                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(todoList.tasks)));
+                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(todoList.tasks)), true);
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -186,14 +186,14 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)));
+                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)), true);
                             futureEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getFutureEvents(planningForGivenGroup.events)));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
                                 minDate: today.toISOString().substring(0, 10),
                                 names: groupe.members,
-                                pastEvents: pastEvent,
+                                pastEvents: pastEvents,
                                 futureEvents: futureEvents
                             });
                         }
@@ -223,10 +223,11 @@ MongoClient.connect('mongodb://localhost:27017', {
                             });
                         } else {
                             let cachedData = depenses.cache;
+                            sortedExpenses = tools.sortByDate(expenses.groupExpensesByDate(depenses.expensesArray), true);
                             res.render('expenses.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
-                                expenses: depenses.expensesArray,
+                                expenses: sortedExpenses,
                                 accounts: cachedData[0],
                                 refunds: cachedData[1],
                                 names: groupe.members
@@ -323,7 +324,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.post('/submitSearchTodo', function (req, res) {
         search.searchTodo(req, res, dbo);
     });
-    app.post('submitSearchPlanning', function (req, res) {
+    app.post('/submitSearchPlanning', function (req, res) {
         search.searchPlanning(req, res, dbo);
     });
     app.post('/submitSearchExpenses', function (req, res) {

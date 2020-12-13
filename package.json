@@ -1,0 +1,42 @@
+{
+  "name": "fixmyllnv2",
+  "version": "1.0.0",
+  "description": "coucou",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "jest":{
+    "verbose":true
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "consolidate": "^0.16.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "fs": "^0.0.1-security",
+    "hogan": "^1.0.2",
+    "https": "^1.0.0",
+    "mongodb": "^3.6.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryssimon/ProjetFinal_AppSinf.git"
+  },
+  "keywords": [
+    "groupes",
+    "planning"
+  ],
+  "author": "Alsteens Louis, Thirifay Louis, Arys Simon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aryssimon/ProjetFinal_AppSinf/issues"
+  },
+  "homepage": "https://github.com/Aryssimon/ProjetFinal_AppSinf#readme"
+}
