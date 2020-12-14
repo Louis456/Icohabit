@@ -64,7 +64,7 @@ module.exports = {
     gatherExpensesByDate: function (expensesArray) {
         /**
          * @param {Array} expensesArray : The array containing all the expenses of a group.
-         * @return {Array} Return a list of objects corresponding to the same expenses but grouped by date.
+         * @return {Array} An array of dictionaries corresponding to the same expenses but grouped by date.
          */
         let groupedByDate = [];
         for (element of expensesArray) {

@@ -57,13 +57,13 @@ module.exports = {
             if (groupTodo != null) {
                 let tasks = groupTodo.tasks;
                 if (queries[0].length > 0) {
-                    let result = applySearching(queries, tasks, [], ["date", "task", "accountant"]);
+                    let result = applySearching(queries, tasks, ["date"], ["task", "accountant"]);
                     if (result.length > 0) {
                         dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
-                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksTodo(result)));
-                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksDone(result)), true);
+                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(result, false));
+                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(result, true), true);
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -96,13 +96,13 @@ module.exports = {
             if (groupPlanning != null) {
                 let events = groupPlanning.events;
                 if (queries[0].length > 0) {
-                    let result = applySearching(queries, events, [], ["date", "event", "participants"]);
+                    let result = applySearching(queries, events, ["date"], ["event", "participants"]);
                     if (result.length > 0) {
                         dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
-                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getPastEvents(result)), true);
-                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getFutureEvents(result)));
+                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(result, false), true);
+                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(result, true));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -134,7 +134,7 @@ module.exports = {
             let queries = getQueries(req.body.expensesTextSearch);
             if (groupExpenses != null) {
                 if (queries[0].length > 0) {
-                    let result = applySearching(queries, groupExpenses.expensesArray, ["amount"], ["date", "title", "payeur", "receveurs"]);
+                    let result = applySearching(queries, groupExpenses.expensesArray, ["amount", "date"], ["title", "payeur", "receveurs"]);
                     if (result.length > 0) {
                         dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                             if (err) throw err;
@@ -192,12 +192,24 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
 
     for (query of queries) {
         // Search for exact values
-        for (dict of arrayOfDicts) {
-            for (key of exactKeys) {
-                if (dict[key].toString().toLowerCase() === query) {
-                    if (!result.includes(dict)) {
+        for (key of exactKeys) {
+            for (dict of arrayOfDicts) {
+                if (dict[key].toString().toLowerCase() === query && !result.includes(dict)) {
+                    result.push(dict);
+                // Search by date accept month/day or year if not the entire date is written.
+                } else if (key === "date") {
+                    let dayAndMonth = dict["date"].toString().substring(0, 5);
+                    let day = dict["date"].toString().substring(0, 2);
+                    let month = dict["date"].toString().substring(2, 5);
+                    let year = dict["date"].toString().substring(6, 10);
+                    // If nothing found then Search by 'day/month'
+                    if ((dayAndMonth === query) && !result.includes(dict)) {
+                        result.push(dict);
+                    // If still nothing found then Search by day or month or year
+                    } else if ((day === query || month === query || year === query) && !result.includes(dict)) {
                         result.push(dict);
                     }
+
                 }
             }
         }
@@ -208,10 +220,8 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
                 for (dict of arrayOfDicts) {
                     for (key of inexactKeys) {
                         let value = dict[key].toString().toLowerCase();
-                        if (value.includes(query.substring(j, query.length - i + j))) {
-                            if (!result.includes(dict)) {
-                                result.push(dict);
-                            }
+                        if (value.includes(query.substring(j, query.length - i + j)) && !result.includes(dict)) {
+                            result.push(dict);
                         }
                     }
                 }

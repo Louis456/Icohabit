@@ -64,10 +64,10 @@ module.exports = {
 
     sortByDate: function (arr, inverse = false) {
         /**
-         * @param {Array} arr: Represents an array of objects containing a "date" key
+         * @param {Array} arr: An array of objects containing a "date" key.
          * @param {boolean} inverse: Set as false by default, if true sort in reverse order.
          *
-         * @return {Array} sortedByDate: Represents the input array sorted by date in chronological order
+         * @return {Array} The input array sorted by date in chronological order.
          */
         if (inverse) {
             sortedByDate = arr.sort((a, b) => b.dateGetTime - a.dateGetTime);

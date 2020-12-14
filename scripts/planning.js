@@ -5,10 +5,10 @@ module.exports = {
 
     addEvent: function (req, res, dbo) {
         /**
-         * add an event in 'planning' collection of db in the document of the corresponding group
-         * if no such document exist yet, create the document of the group
-         * else, it pushes the event in the events list of the group document
-         * redirects to planning page
+         * Add an event in 'planning' collection of db in the document of the corresponding group.
+         * If no such document exist yet, create the document of the group.
+         * Else, it pushes the event in the events list of the group document.
+         * Redirects to planning page.
          */
         dbo.collection('planning').findOne({ "groupe": req.session.team_ID }, function (err, planning) {
             if (err) throw err;
@@ -45,34 +45,10 @@ module.exports = {
     },
 
 
-    getPastEvents: function (events) {
-        /**
-         * @param {Array} events : Represents a list of objects corresponding to an event
-         * @return {Array} pastEvents : Represents the input list filtered by Date in order to contain only events in the past
-        **/
-        let pastEvents = events.filter(function (eachEvent) {
-            return eachEvent.dateGetTime < Date.now();
-        });
-        return pastEvents
-    },
-
-
-    getFutureEvents: function (events) {
-        /**
-         * @param {Array} events : Represents a list of objects corresponding to an event
-         * @return {Array} futureEvents : Represents the input list filtered by Date in order to contain only future events
-         */
-        let futureEvents = events.filter(function (eachEvent) {
-            return eachEvent.dateGetTime >= Date.now();
-        });
-        return futureEvents
-    },
-
-
     deleteEvent: function (req, res, dbo) {
         /**
-         * pull an event given the event_id from the events list of a group document in the 'planning' collection
-         * redirects to planning page
+         * Pull an event given the event_id from the events array of a group document in the 'planning' collection.
+         * Redirects to planning page.
          */
         dbo.collection('planning').updateOne(
             { "groupe": req.session.team_ID },
@@ -84,13 +60,18 @@ module.exports = {
     },
 
 
-    gatherPlanningByDate: function (events) {
+    gatherPlanningByDate: function (events, future) {
         /**
          * @param {Array} events : The array containing all the events of a group.
-         * @return {Array} Return a list of objects corresponding to the same events but grouped by date
+         * @param {Boolean} future : true to filter only future events, false to filter events in the past.
+         *
+         * @return {Array} An array of dictionaries corresponding to the same events but grouped by date.
          */
+        let eventsPastorFuture = events.filter(function (eachEvent) {
+            return (eachEvent.dateGetTime >= Date.now()) === future;
+        });
         let groupedByDate = [];
-        for (element of events) {
+        for (element of eventsPastorFuture) {
             if (groupedByDate.length === 0) {
                 groupedByDate.push({ "date": element.date, "dateGetTime": element.dateGetTime, "events": [{ "participants": element.participants, "event": element.event, "_id": element._id }] })
             } else if (groupedByDate.some(each => each.date === element.date)) {

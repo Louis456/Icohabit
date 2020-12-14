@@ -147,8 +147,8 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksTodo(todoList.tasks)));
-                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksDone(todoList.tasks)), true);
+                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(todoList.tasks, false));
+                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(todoList.tasks, true), true);
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -186,8 +186,8 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)), true);
-                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getFutureEvents(planningForGivenGroup.events)));
+                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(planningForGivenGroup.events, false), true);
+                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(planningForGivenGroup.events, true));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
