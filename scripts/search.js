@@ -10,10 +10,10 @@ module.exports = {
         /**
          *
          */
-        dbo.collection('users').findOne({"username" : req.session.username}, function (err, userDoc) {
+        dbo.collection('users').findOne({ "username": req.session.username }, function (err, userDoc) {
             if (err) throw err;
             let groupIds = userDoc.groupes;
-            dbo.collection('groupes').find({"_id": {$in: groupIds} }).toArray(function (err, userGroups) {
+            dbo.collection('groupes').find({ "_id": { $in: groupIds } }).toArray(function (err, userGroups) {
                 if (err) throw err;
                 let queries = getQueries(req.body.groupTextSearch);
                 if (queries[0].length > 0) {
@@ -51,19 +51,19 @@ module.exports = {
         /**
          *
          */
-        dbo.collection('todo').findOne({"groupe" : req.session.team_ID}, function (err, todo) {
+        dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, groupTodo) {
             if (err) throw err;
             let queries = getQueries(req.body.todoTextSearch);
-            if (todo != null){
-                let tasks = todo.tasks;
+            if (groupTodo != null) {
+                let tasks = groupTodo.tasks;
                 if (queries[0].length > 0) {
                     let result = applySearching(queries, tasks, [], ["date", "task", "accountant"]);
                     if (result.length > 0) {
-                        dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
+                        dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
-                            tasksTodo = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksTodo(result)));
-                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(result)));
+                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksTodo(result)));
+                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksDone(result)), true);
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -90,19 +90,19 @@ module.exports = {
         /**
          *
          */
-        dbo.collection('planning').findOne({"groupe" : req.session.team_ID}, function (err, planning) {
+        dbo.collection('planning').findOne({ "groupe": req.session.team_ID }, function (err, groupPlanning) {
             if (err) throw err;
             let queries = getQueries(req.body.planningTextSearch);
-            if (planning != null){
-                let events = planning.events;
+            if (groupPlanning != null) {
+                let events = groupPlanning.events;
                 if (queries[0].length > 0) {
                     let result = applySearching(queries, events, [], ["date", "event", "participants"]);
                     if (result.length > 0) {
-                        dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
+                        dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                             if (err) throw err;
                             let today = new Date();
-                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(result)));
-                            futureEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getFutureEvents(result)));
+                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getPastEvents(result)), true);
+                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getFutureEvents(result)));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -126,38 +126,38 @@ module.exports = {
 
 
     searchExpenses: function (req, res, dbo) {
-      /**
-       *
-       */
-      dbo.collection('expenses').findOne({"groupe" : req.session.team_ID}, function (err, depenses) {
-          if (err) throw err;
-          let queries = getQueries(req.body.expensesTextSearch);
-          if (depenses != null){
-              let depensesArray = depenses.expensesArray;
-              if (queries[0].length > 0) {
-                  let result = applySearching(queries, depensesArray, ["amount"], ["date", "title", "payeur", "receveurs"]);
-                  if (result.length > 0) {
-                      dbo.collection('groupes').findOne({"_id" : Number(req.session.team_ID)}, function (err, groupe) {
-                          if (err) throw err;
-                          res.render('expenses.html', {
-                              IdButtonText: req.session.username,
-                              groupName: req.session.team_name,
-                              expenses: result,
-                              accounts: [],
-                              refunds: [],
-                              names: groupe.members
-                          });
-                      });
-                  } else {
-                      renderEmptyTools(req, res, queries)
-                  }
-              } else {
-                  res.redirect('/depenses')
-              }
-          } else {
-              renderEmptyTools(req, res, queries)
-          }
-      });
+        /**
+         *
+         */
+        dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, groupExpenses) {
+            if (err) throw err;
+            let queries = getQueries(req.body.expensesTextSearch);
+            if (groupExpenses != null) {
+                if (queries[0].length > 0) {
+                    let result = applySearching(queries, groupExpenses.expensesArray, ["amount"], ["date", "title", "payeur", "receveurs"]);
+                    if (result.length > 0) {
+                        dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
+                            if (err) throw err;
+                            sortedExpenses = tools.sortByDate(expenses.gatherExpensesByDate(result), true);
+                            res.render('expenses.html', {
+                                IdButtonText: req.session.username,
+                                groupName: req.session.team_name,
+                                expenses: sortedExpenses,
+                                accounts: [],
+                                refunds: [],
+                                names: groupe.members
+                            });
+                        });
+                    } else {
+                        renderEmptyTools(req, res, queries)
+                    }
+                } else {
+                    res.redirect('/depenses')
+                }
+            } else {
+                renderEmptyTools(req, res, queries)
+            }
+        });
     }
 
 };
@@ -194,7 +194,7 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
         // Search for exact values
         for (dict of arrayOfDicts) {
             for (key of exactKeys) {
-                if (dict[key].toString() === query) {
+                if (dict[key].toString().toLowerCase() === query) {
                     if (!result.includes(dict)) {
                         result.push(dict);
                     }

@@ -8,9 +8,7 @@ module.exports = {
          *
          *
          */
-        dbo.collection('groupes').findOne({
-            "_id": 0
-        }, function (err, ids) {
+        dbo.collection('groupes').findOne({ "_id": 0 }, function (err, ids) {
             if (err) throw err;
             bcrypt.genSalt(10, function (err, salt) {
                 if (err) throw err;
@@ -22,21 +20,19 @@ module.exports = {
                         "_id": ids.idcount,
                         "members": [req.session.username]
                     });
-                    dbo.collection('users').updateOne({
-                        "username": req.session.username
-                    }, {
-                        $addToSet: {
-                            "groupes": ids.idcount
+                    dbo.collection('users').updateOne(
+                        { "username": req.session.username },
+                        {
+                            $addToSet: { "groupes": ids.idcount }
                         }
-                    });
-                    dbo.collection('groupes').updateOne({
-                        "_id": 0
-                    }, {
-                        $inc: {
-                            "idcount": 1
+                    );
+                    dbo.collection('groupes').updateOne(
+                        { "_id": 0 },
+                        {
+                            $inc: { "idcount": 1 }
                         }
-                    });
-                    dbo.collection('groupes').createIndex({groupname: "text", _id: "text"});
+                    );
+                    dbo.collection('groupes').createIndex({ groupname: "text", _id: "text" });
                     res.redirect('/groupes');
                 });
             });
@@ -52,29 +48,25 @@ module.exports = {
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
         */
-        dbo.collection('groupes').findOne({
-            "_id": Number(req.body.teamID)
-        }, function (err, group) {
+        dbo.collection('groupes').findOne({ "_id": Number(req.body.teamID) }, function (err, group) {
             if (err) throw err;
             if (group != null) {
                 if (!group.members.includes(req.session.username)) {
                     bcrypt.compare(req.body.pwdTeam, group.password, function (err, result) {
                         if (err) throw err;
                         if (result) {
-                            dbo.collection('users').updateOne({
-                                "username": req.session.username
-                            }, {
-                                $addToSet: {
-                                    "groupes": group._id
+                            dbo.collection('users').updateOne(
+                                { "username": req.session.username },
+                                {
+                                    $addToSet: { "groupes": group._id }
                                 }
-                            });
-                            dbo.collection('groupes').updateOne({
-                                "_id": group._id
-                            }, {
-                                $addToSet: {
-                                    "members": req.session.username
+                            );
+                            dbo.collection('groupes').updateOne(
+                                { "_id": group._id },
+                                {
+                                    $addToSet: { "members": req.session.username }
                                 }
-                            });
+                            );
                             res.redirect('/groupes');
                         } else {
                             req.session.displayJoinGroupError = "yes";
@@ -101,26 +93,22 @@ module.exports = {
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
         */
-        dbo.collection('groupes').findOne({
-            "_id": Number(req.body.teamID)
-        }, function (err, group) {
+        dbo.collection('groupes').findOne({ "_id": Number(req.body.teamID) }, function (err, group) {
             if (err) throw err;
             if (group != null) {
                 if (group.members.includes(req.session.username)) {
-                    dbo.collection('users').updateOne({
-                        "username": req.session.username
-                    }, {
-                        $pull: {
-                            "groupes": group._id
+                    dbo.collection('users').updateOne(
+                        { "username": req.session.username },
+                        {
+                            $pull: { "groupes": group._id }
                         }
-                    });
-                    dbo.collection('groupes').updateOne({
-                        "_id": group._id
-                    }, {
-                        $pull: {
-                            "members": req.session.username
+                    );
+                    dbo.collection('groupes').updateOne(
+                        { "_id": group._id },
+                        {
+                            $pull: { "members": req.session.username }
                         }
-                    });
+                    );
                     if (group.members.length === 1) {
                         dbo.collection('groupes').deleteOne({ "_id": Number(req.body.teamID) });
                         dbo.collection('todo').deleteOne({ "_id": req.body.teamID });

@@ -140,15 +140,15 @@ MongoClient.connect('mongodb://localhost:27017', {
                         if (err) throw err;
                         let today = new Date();
                         if (todoList === null) {
-                          res.render('todolist.html', {
-                              IdButtonText: req.session.username,
-                              groupName: req.session.team_name,
-                              minDate: today.toISOString().substring(0, 10),
-                              names: groupe.members
-                          });
+                            res.render('todolist.html', {
+                                IdButtonText: req.session.username,
+                                groupName: req.session.team_name,
+                                minDate: today.toISOString().substring(0, 10),
+                                names: groupe.members
+                            });
                         } else {
-                            tasksTodo = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksTodo(todoList.tasks)));
-                            tasksDone = tools.sortByDate(todolist.groupTodolistByDate(todolist.getTasksDone(todoList.tasks)), true);
+                            tasksTodo = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksTodo(todoList.tasks)));
+                            tasksDone = tools.sortByDate(todolist.gatherTodolistByDate(todolist.getTasksDone(todoList.tasks)), true);
                             res.render('todolist.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -175,7 +175,7 @@ MongoClient.connect('mongodb://localhost:27017', {
             if (tools.hasChosenGroup(req)) {
                 dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                     if (err) throw err;
-                    dbo.collection('planning').findOne({"groupe":req.session.team_ID}, function(err, planningForGivenGroup){
+                    dbo.collection('planning').findOne({ "groupe": req.session.team_ID }, function (err, planningForGivenGroup) {
                         if (err) throw err;
                         let today = new Date();
                         if (planningForGivenGroup === null) {
@@ -186,8 +186,8 @@ MongoClient.connect('mongodb://localhost:27017', {
                                 names: groupe.members
                             });
                         } else {
-                            pastEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)), true);
-                            futureEvents = tools.sortByDate(planning.groupPlanningByDate(planning.getFutureEvents(planningForGivenGroup.events)));
+                            pastEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getPastEvents(planningForGivenGroup.events)), true);
+                            futureEvents = tools.sortByDate(planning.gatherPlanningByDate(planning.getFutureEvents(planningForGivenGroup.events)));
                             res.render('planning.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -211,7 +211,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.get('/depenses', (req, res) => {
         if (tools.isConnected(req)) {
             if (tools.hasChosenGroup(req)) {
-                dbo.collection('groupes').findOne({"_id": Number(req.session.team_ID)}, function (err, groupe) {
+                dbo.collection('groupes').findOne({ "_id": Number(req.session.team_ID) }, function (err, groupe) {
                     if (err) throw err;
                     dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, depenses) {
                         if (err) throw err;
@@ -223,7 +223,7 @@ MongoClient.connect('mongodb://localhost:27017', {
                             });
                         } else {
                             let cachedData = depenses.cache;
-                            sortedExpenses = tools.sortByDate(expenses.groupExpensesByDate(depenses.expensesArray), true);
+                            sortedExpenses = tools.sortByDate(expenses.gatherExpensesByDate(depenses.expensesArray), true);
                             res.render('expenses.html', {
                                 IdButtonText: req.session.username,
                                 groupName: req.session.team_name,
@@ -305,7 +305,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     app.post('/addEvent', function (req, res) {
         planning.addEvent(req, res, dbo);
     });
-    app.post('/deleteEvent', function(req, res) {
+    app.post('/deleteEvent', function (req, res) {
         planning.deleteEvent(req, res, dbo);
     });
 

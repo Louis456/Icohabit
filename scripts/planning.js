@@ -16,7 +16,7 @@ module.exports = {
                 dbo.collection('planning').insertOne({
                     "groupe": req.session.team_ID,
                     "events_id": 0,
-                    "events": [{ "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": 0 }]
+                    "events": [{ "date": tools.getPrettyDate(req.body.date), "dateGetTime": new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": 0 }]
                 }, function (err, _) {
                     if (err) throw err;
                     dbo.collection('planning').updateOne(
@@ -33,7 +33,7 @@ module.exports = {
                 dbo.collection('planning').updateOne(
                     { "groupe": req.session.team_ID },
                     {
-                        $push: { "events": { "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": planning.events_id } },
+                        $push: { "events": { "date": tools.getPrettyDate(req.body.date), "dateGetTime": new Date(req.body.date).getTime(), "participants": req.body.participants, "event": req.body.event, "_id": planning.events_id } },
                         $inc: { "events_id": 1 }
                     }, function (err, _) {
                         if (err) throw err;
@@ -50,7 +50,7 @@ module.exports = {
          * @param {Array} events : Represents a list of objects corresponding to an event
          * @return {Array} pastEvents : Represents the input list filtered by Date in order to contain only events in the past
         **/
-        let pastEvents = events.filter(function(eachEvent){
+        let pastEvents = events.filter(function (eachEvent) {
             return eachEvent.dateGetTime < Date.now();
         });
         return pastEvents
@@ -62,7 +62,7 @@ module.exports = {
          * @param {Array} events : Represents a list of objects corresponding to an event
          * @return {Array} futureEvents : Represents the input list filtered by Date in order to contain only future events
          */
-        let futureEvents = events.filter(function(eachEvent){
+        let futureEvents = events.filter(function (eachEvent) {
             return eachEvent.dateGetTime >= Date.now();
         });
         return futureEvents
@@ -75,29 +75,29 @@ module.exports = {
          * redirects to planning page
          */
         dbo.collection('planning').updateOne(
-            {"groupe": req.session.team_ID},
+            { "groupe": req.session.team_ID },
             {
-                $pull: {"events": { "_id": Number(req.body.event_id) } }
+                $pull: { "events": { "_id": Number(req.body.event_id) } }
             }
         );
         res.redirect('/planning');
     },
 
 
-    groupPlanningByDate: function (events) {
+    gatherPlanningByDate: function (events) {
         /**
-         * @param {Array} events : Represents a list of objects corresponding to an event
-         * @return {Array} groupedByDate : Represent a list of objects corresponding to the same events but grouped by date
+         * @param {Array} events : The array containing all the events of a group.
+         * @return {Array} Return a list of objects corresponding to the same events but grouped by date
          */
         let groupedByDate = [];
         for (element of events) {
             if (groupedByDate.length === 0) {
-                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "events":[{"participants": element.participants, "event": element.event, "_id": element._id}]})
+                groupedByDate.push({ "date": element.date, "dateGetTime": element.dateGetTime, "events": [{ "participants": element.participants, "event": element.event, "_id": element._id }] })
             } else if (groupedByDate.some(each => each.date === element.date)) {
                 let idx = groupedByDate.findIndex(each => each.date === element.date);
-                groupedByDate[idx].events.push({"participants": element.participants, "event": element.event, "_id": element._id})
+                groupedByDate[idx].events.push({ "participants": element.participants, "event": element.event, "_id": element._id })
             } else {
-                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "events":[{"participants": element.participants, "event": element.event, "_id": element._id}]})
+                groupedByDate.push({ "date": element.date, "dateGetTime": element.dateGetTime, "events": [{ "participants": element.participants, "event": element.event, "_id": element._id }] })
             }
         }
         return groupedByDate;

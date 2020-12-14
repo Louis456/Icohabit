@@ -54,7 +54,7 @@ module.exports = {
          * Create two new cookies (team_ID & team_name) and redirect to the App page.
          */
         req.session.team_ID = req.body.team_ID
-        dbo.collection('groupes').findOne({"_id": Number(req.body.team_ID)}, function (err, group) {
+        dbo.collection('groupes').findOne({ "_id": Number(req.body.team_ID) }, function (err, group) {
             if (err) throw err;
             req.session.team_name = group.groupname;
             res.redirect('/app')
@@ -62,7 +62,7 @@ module.exports = {
     },
 
 
-    sortByDate: function (arr, inverse=false) {
+    sortByDate: function (arr, inverse = false) {
         /**
          * @param {Array} arr: Represents an array of objects containing a "date" key
          * @param {boolean} inverse: Set as false by default, if true sort in reverse order.
@@ -70,9 +70,9 @@ module.exports = {
          * @return {Array} sortedByDate: Represents the input array sorted by date in chronological order
          */
         if (inverse) {
-            sortedByDate = arr.sort((a,b) => b.dateGetTime - a.dateGetTime);
+            sortedByDate = arr.sort((a, b) => b.dateGetTime - a.dateGetTime);
         } else {
-            sortedByDate = arr.sort((a,b) => a.dateGetTime - b.dateGetTime);
+            sortedByDate = arr.sort((a, b) => a.dateGetTime - b.dateGetTime);
         }
         return sortedByDate;
     },
@@ -83,7 +83,7 @@ module.exports = {
          * Return a prettier date than the default one.
          */
         let splitted = date.split('-');
-        return splitted[2]+'/'+splitted[1]+'/'+splitted[0];
+        return splitted[2] + '/' + splitted[1] + '/' + splitted[0];
     }
 
 };

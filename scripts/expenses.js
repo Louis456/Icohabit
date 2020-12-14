@@ -16,7 +16,7 @@ module.exports = {
             let receivers = req.body.receveurs;
             if (!(req.body.receveurs instanceof Object)) receivers = [req.body.receveurs];
             if (expenses === null) {
-                let expArray = [{ "_id": 0, "title": req.body.expenseTitle, "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": receivers }];
+                let expArray = [{ "_id": 0, "title": req.body.expenseTitle, "date": tools.getPrettyDate(req.body.date), "dateGetTime": new Date(req.body.date).getTime(), "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": receivers }];
                 let arrayAndDict = listOfAccounts(expArray);
                 dbo.collection('expenses').insertOne({
                     "groupe": req.session.team_ID,
@@ -27,7 +27,7 @@ module.exports = {
                     res.redirect('/depenses');
                 });
             } else {
-                let newArray = expenses.expensesArray.concat([{ "_id": expenses.expense_id, "title": req.body.expenseTitle, "date": tools.getPrettyDate(req.body.date), "dateGetTime":new Date(req.body.date).getTime(), "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": receivers }]);
+                let newArray = expenses.expensesArray.concat([{ "_id": expenses.expense_id, "title": req.body.expenseTitle, "date": tools.getPrettyDate(req.body.date), "dateGetTime": new Date(req.body.date).getTime(), "amount": req.body.amount, "payeur": req.body.payeur, "receveurs": receivers }]);
                 let arrayAndDict = listOfAccounts(newArray);
                 dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
                     $set: { "expensesArray": newArray, "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] },
@@ -61,20 +61,20 @@ module.exports = {
     },
 
 
-    groupExpensesByDate: function (expensesArray) {
+    gatherExpensesByDate: function (expensesArray) {
         /**
-         * @param {Array} expensesArray : Represents a list of objects corresponding to an expense.
+         * @param {Array} expensesArray : The array containing all the expenses of a group.
          * @return {Array} Return a list of objects corresponding to the same expenses but grouped by date.
          */
         let groupedByDate = [];
         for (element of expensesArray) {
             if (groupedByDate.length === 0) {
-                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "expensesArray":[{"title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id}]})
+                groupedByDate.push({ "date": element.date, "dateGetTime": element.dateGetTime, "expensesArray": [{ "title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id }] })
             } else if (groupedByDate.some(each => each.date === element.date)) {
                 let idx = groupedByDate.findIndex(each => each.date === element.date);
-                groupedByDate[idx].expensesArray.push({"title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id})
+                groupedByDate[idx].expensesArray.push({ "title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id })
             } else {
-                groupedByDate.push({"date":element.date, "dateGetTime": element.dateGetTime, "expensesArray":[{"title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id}]})
+                groupedByDate.push({ "date": element.date, "dateGetTime": element.dateGetTime, "expensesArray": [{ "title": element.title, "amount": element.amount, "receveurs": element.receveurs, "payeur": element.payeur, "_id": element._id }] })
             }
         }
         return groupedByDate;
@@ -87,7 +87,7 @@ function listOfAccounts(expensesArray) {
     /**
      * Returns a list of people associated with their money (positive or negative).
      *
-     * @param {array} expensesArray : The array containing all the expenses from the database (dbo.expenses.expensesArray).
+     * @param {array} expensesArray : The array containing all the expenses of a group.
      *
      * @return {array} An array of 2 items, the accounts in an array(1) and the accounts in a dictionary(2).
      * Example: [
@@ -115,7 +115,7 @@ function listOfAccounts(expensesArray) {
         let money = Math.round(accounts[people] * 100) / 100;
         let toConcat = '';
         if (money > 0.0) toConcat = '+';
-        result.push({ "people": people, "money": toConcat.concat(money.toString())})
+        result.push({ "people": people, "money": toConcat.concat(money.toString()) })
     }
     return [result, accounts];
 }
