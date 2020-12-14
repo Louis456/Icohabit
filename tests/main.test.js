@@ -21,6 +21,7 @@ describe('tests to create an account / login', () => {
 
     beforeEach(async () => {
         driver.manage().deleteAllCookies();
+        bypassCertAuthorityInvalid()
     }, 5000);
 
     afterAll(async() => {
@@ -50,3 +51,12 @@ describe('tests to create an account / login', () => {
     });
 
 });
+
+
+async function bypassCertAuthorityInvalid(){
+    /**
+     * Use this to bypass the chrome NET::ERR_CERT_AUTHORITY_INVALID
+     */
+    await driver.findElement(By.id('details-button')).click();
+    await driver.findElement(By.id('proceed-link')).click();
+}
