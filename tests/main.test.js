@@ -1,13 +1,20 @@
 require('chromedriver');
-const {Builder,By,Key,Until} = require('selenium-webdriver');
+const { Builder, By, until, Key, Capabilities, Capability} = require('selenium-webdriver');
 const script = require('jest');
 const { beforeAll } = require('@jest/globals');
 const { MongoClient } = require('mongodb');
 
 const url = 'https://localhost:8080';
 
+const capabilities = Capabilities.chrome();
+capabilities.set(Capability.ACCEPT_INSECURE_TLS_CERTS, true);
+
 describe('tests to create an account / login', () => {
-    let driver = new Builder().forBrowser("chrome").build();
+    //let driver = new Builder().forBrowser("chrome").build();
+    let driver = new Builder()
+        .withCapabilities(capabilities)
+        .forBrowser('chrome')
+        .build();
     let dbo;
 
     beforeAll(async () => {
@@ -15,13 +22,12 @@ describe('tests to create an account / login', () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        dbo = await connection.db("database");
+        dbo = await connection.db("testdb");
         await dbo.collection('users').drop();
     },15000);
 
     beforeEach(async () => {
         driver.manage().deleteAllCookies();
-        bypassCertAuthorityInvalid()
     }, 5000);
 
     afterAll(async() => {
@@ -51,12 +57,3 @@ describe('tests to create an account / login', () => {
     });
 
 });
-
-
-async function bypassCertAuthorityInvalid(){
-    /**
-     * Use this to bypass the chrome NET::ERR_CERT_AUTHORITY_INVALID
-     */
-    await driver.findElement(By.id('details-button')).click();
-    await driver.findElement(By.id('proceed-link')).click();
-}

@@ -216,7 +216,7 @@ form input[type="submit"]:hover::before {
 }
 
 .alert {
-  width: 40%;
+  width: 70%;
   margin: auto;
   display: none;
 }
