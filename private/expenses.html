@@ -121,8 +121,8 @@
                           <li><b>Payé par?</b> {{payeur}}</li>
                           <li><b>Pour?</b> {{receveurs}}</li>
                           <li>
-                              <form class="" action="deleteEvent" method="post">
-                                  <input type="hidden" name="event_id" value="{{_id}}">
+                              <form class="" action="deleteExpense" method="post">
+                                  <input type="hidden" name="expense_id" value="{{_id}}">
                                   <input type="hidden" name="date" value="{{date}}">
                                   <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
                               </form>
