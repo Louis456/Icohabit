@@ -13,7 +13,6 @@ capabilities.setPageLoadStrategy("normal");
 jest.setTimeout(30000);
 
 describe('tests to create an account / login', () => {
-    //let driver = new Builder().forBrowser("chrome").build();
     let driver;
     let dbo;
     
@@ -28,11 +27,13 @@ describe('tests to create an account / login', () => {
             useUnifiedTopology: true
         });
         dbo = await connection.db("database");
-        await dbo.collection('users').remove();
+        await dbo.collection('users').drop();
     },15000);
 
     beforeEach(async () => {
         driver.manage().deleteAllCookies();
+        await driver.manage().window().maximize();
+        await driver.get(url);
     }, 15000);
 
     afterAll(async() => {
@@ -42,33 +43,35 @@ describe('tests to create an account / login', () => {
     }, 15000);
 
     test('Create an account and check the page we get back has Groupes in its title', async () => {
-        await driver.get(url);
-        await driver.manage().window().maximize();
         await driver.findElement(By.id('username')).sendKeys('Xx_Killer_xX');
         await driver.findElement(By.id('pwd')).sendKeys('Hello123');
         await driver.findElement(By.id('name')).sendKeys('Jacques Dupont');
         await driver.findElement(By.id('mail')).sendKeys('Jacques.Dupont@gmail.com');
-        await driver.wait(until.elementLocated(By.id('submitRegister')),10000);
-        let button = await driver.findElement(By.id('submitRegister'));
-        await driver.wait(until.elementIsEnabled(button,15000));
-        await driver.executeScript("arguments[0].click();", button);
+        await clickButton(driver, 'submitRegister');
         let title = await driver.getTitle();
-        console.log('first');
         expect(title).toContain('Groupes');
     });
-
+    
     test('Login with correct password and check the page we get back has Groupes in its title', async () => {
-        await driver.get(url);
-        await driver.manage().window().maximize();
         await driver.findElement(By.id('usernamealready')).sendKeys('Xx_Killer_xX');
         await driver.findElement(By.id('pwdalready')).sendKeys('Hello123');
-        await driver.wait(until.elementLocated(By.id('submitLogIn')),10000);
-        let button = await driver.findElement(By.id('submitLogIn'));
-        await driver.wait(until.elementIsEnabled(button,15000));
-        await driver.executeScript("arguments[0].click();", button);
+        await clickButton(driver, 'submitLogIn');
         let title = await driver.getTitle();
-        console.log('second');
         expect(title).toContain('Groupes');
     });
+    
 
 });
+
+
+async function clickButton(driver, id) {
+    /**
+     * Workaround to click a button with selenium.
+     * @param {String} id : The id of the button.
+     */
+    await driver.wait(until.elementLocated(By.id(id)), 10000);
+    let button = await driver.findElement(By.id(id));
+    await driver.wait(until.elementIsEnabled(button, 15000));
+    await driver.executeScript("arguments[0].click();", button);
+    return;
+}
