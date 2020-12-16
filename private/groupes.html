@@ -62,7 +62,7 @@
             <div>
                 <form action="launchAppPage" method="post">
                     <input type="hidden" name="team_ID" value="{{_id}}">
-                    <button class="TeamButton" type="submit">
+                    <button class="TeamButton" type="submit" id="{{_id}}">
                         {{groupname}}<br>
                         id : {{_id}}
                     </button>
@@ -82,7 +82,7 @@
                     <input type="password" id="newpwdTeam" name="newpwdTeam" placeholder="Mot de passe" maxlength="50"
                         required oninvalid="this.setCustomValidity('Veuillez choisir un mot de passe')"
                         oninput="setCustomValidity('')"><br>
-                    <input id="Soumettre" type="submit" value="Créer">
+                    <input id="submitCreate" type="submit" value="Créer">
                 </form>
             </div>
 
@@ -97,7 +97,7 @@
                     <input type="password" id="pwdTeam" name="pwdTeam" placeholder="Mot de passe" maxlength="50"
                         required oninvalid="this.setCustomValidity('Veuillez entrer le mot de passe')"
                         oninput="setCustomValidity('')"><br>
-                    <input id="Soumettre" type="submit" value="Rejoindre">
+                    <input id="submitJoin" type="submit" value="Rejoindre">
                 </form>
             </div>
             <div class="team">
@@ -108,7 +108,7 @@
                 <form action="leaveTeam" name="leaveTeam" class="teamForm" method="post">
                     <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required
                         oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
-                    <input id="Soumettre" type="submit" value="Quitter">
+                    <input id="submitLeave" type="submit" value="Quitter">
                 </form>
             </div>
         </div>

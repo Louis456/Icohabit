@@ -12,11 +12,12 @@ capabilities.setPageLoadStrategy("normal");
 
 jest.setTimeout(30000);
 
-describe('tests to create an account / login', () => {
+/*
+----------Index Page----------
+*/
+describe('tests to create an account / login / logout', () => {
     let driver;
     let dbo;
-    
-
     beforeAll(async () => {
         driver = new Builder()
                 .withCapabilities(capabilities)
@@ -26,42 +27,117 @@ describe('tests to create an account / login', () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        dbo = await connection.db("database");
-        await dbo.collection('users').drop();
+        dbo = await connection.db("testdb");
+        await dbo.collection('users').deleteMany({});
+        await connection.close();
+
     },15000);
 
     beforeEach(async () => {
-        driver.manage().deleteAllCookies();
-        await driver.manage().window().maximize();
+        await driver.manage().deleteAllCookies();
         await driver.get(url);
     }, 15000);
 
     afterAll(async() => {
-        await connection.close();
-        await db.close();
         await driver.quit();
     }, 15000);
 
+
     test('Create an account and check the page we get back has Groupes in its title', async () => {
-        await driver.findElement(By.id('username')).sendKeys('Xx_Killer_xX');
-        await driver.findElement(By.id('pwd')).sendKeys('Hello123');
-        await driver.findElement(By.id('name')).sendKeys('Jacques Dupont');
-        await driver.findElement(By.id('mail')).sendKeys('Jacques.Dupont@gmail.com');
-        await clickButton(driver, 'submitRegister');
+        await createAccount(driver, 'Xx_Killer_xX', 'Hello123', 'Jacques Dupont', 'jacques.dupont@gmail.com')
         let title = await driver.getTitle();
-        expect(title).toContain('Groupes');
+        let usernameDisplayed = await driver.findElement(By.id('navbardrop')).getAttribute('innerHTML');
+        await expect(title).toContain('Groupes');
+        await expect(usernameDisplayed).toContain('Xx_Killer_xX');
     });
-    
+
+    test('Create an account with an username that already exist and check the page we get back has Accueil in its title', async () => {
+        await createAccount(driver, 'Xx_Killer_xX', 'Hello', 'Pierre Jacques', 'pierro@outlook.com')
+        let title = await driver.getTitle();
+        await expect(title).toContain('Accueil');
+    });
+
     test('Login with correct password and check the page we get back has Groupes in its title', async () => {
-        await driver.findElement(By.id('usernamealready')).sendKeys('Xx_Killer_xX');
-        await driver.findElement(By.id('pwdalready')).sendKeys('Hello123');
-        await clickButton(driver, 'submitLogIn');
+        await logIn(driver, 'Xx_Killer_xX', 'Hello123');
         let title = await driver.getTitle();
-        expect(title).toContain('Groupes');
+        let usernameDisplayed = await driver.findElement(By.id('navbardrop')).getAttribute('innerHTML');
+        await expect(title).toContain('Groupes');
+        await expect(usernameDisplayed).toContain('Xx_Killer_xX');
     });
-    
+
+    test('Login with incorrect password and check the page we get back has Accueil in its title', async () => {
+        await logIn(driver, 'Xx_Killer_xX', 'Hello');
+        let title = await driver.getTitle();
+        await expect(title).toContain('Accueil');
+    });
+
+    test('Login with incorrect username and check the page we get back has Accueil in its title', async () => {
+        await logIn(driver,'Xx_Killer','Hello123');
+        let title = await driver.getTitle();
+        await expect(title).toContain('Accueil');
+    });
+
+
+    // test('Logout when a user is connected and check the page we get back has Accueil in its title')
 
 });
+
+/*
+----------Group Page----------
+*/
+describe('tests to create, join and leave groups', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+                .withCapabilities(capabilities)
+                .forBrowser('chrome')
+                .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db("testdb");
+        await dbo.collection('users').deleteMany({});
+        await connection.close();
+    },15000);
+
+    beforeEach(async () => {
+        await driver.get(url);
+    }, 15000);
+
+    afterAll(async() => {
+        await driver.quit();
+    }, 15000);
+
+    test('Create a group and check the added group id is 1', async () => {
+        await driver.findElement(By.id('newTeam')).sendKeys('Groupe n1');
+        await driver.findElement(By.id('newpwdTeam')).sendKeys('pwd123456');
+        await clickButton(driver, 'submitCreate');
+        let groupIcon = await driver.findElement(By.id('1')).getAttribute('innerHTML');
+        await expect(groupIcon).toContain('Groupe n1');
+
+        // tester
+    });
+
+    test('Create a second group and check the added group id is 2', async () => {
+      await driver.findElement(By.id('newTeam')).sendKeys('Groupe n2');
+      await driver.findElement(By.id('newpwdTeam')).sendKeys('123pwd');
+      await clickButton(driver, 'submitCreate');
+      // tester
+    });
+
+    test('Join the first group and check the id', async () => {
+        await driver.findElement(By.id('teamID')).sendKeys('1');
+        await driver.findElement(By.id('pwdTeam')).sendKeys('pwd123456');
+        await clickButton(driver, 'submitJoin');
+        // tester
+    });
+
+});
+
+
+
 
 
 async function clickButton(driver, id) {
@@ -74,4 +150,28 @@ async function clickButton(driver, id) {
     await driver.wait(until.elementIsEnabled(button, 15000));
     await driver.executeScript("arguments[0].click();", button);
     return;
+}
+
+async function logIn(driver, username, pwd) {
+    /**
+     * @param {String} username : username of the user
+     * @param {String} pwd : pwd of the user
+     */
+    await driver.findElement(By.id('usernamealready')).sendKeys(username);
+    await driver.findElement(By.id('pwdalready')).sendKeys(pwd);
+    await clickButton(driver, 'submitLogIn');
+}
+
+async function createAccount(driver, username, pwd, name, mail) {
+    /**
+     * @param {String} username : username of the user
+     * @param {String} pwd : password of the user
+     * @param {String} name : complete name of the user
+     * @param {String} mail : email address of the user
+     */
+    await driver.findElement(By.id('username')).sendKeys(username);
+    await driver.findElement(By.id('pwd')).sendKeys(pwd);
+    await driver.findElement(By.id('name')).sendKeys(name);
+    await driver.findElement(By.id('mail')).sendKeys(mail);
+    await clickButton(driver, 'submitRegister');
 }
