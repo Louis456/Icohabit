@@ -187,6 +187,7 @@ describe('(2) Create, join, open and leave groups', () => {
         await clickButton(driver, '1');
         let title = await driver.getTitle();
         await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('AppPage');
     });
 
     test('Click on the second group ', async () => {
@@ -194,6 +195,7 @@ describe('(2) Create, join, open and leave groups', () => {
         await clickButton(driver, '2');
         let title = await driver.getTitle();
         await expect(title).toContain(TEAM_2_NAME);
+        await expect(title).toContain('AppPage');
     });
 
     test('Leave the first group', async () => {
@@ -224,9 +226,100 @@ describe('(2) Create, join, open and leave groups', () => {
 
 });
 
+/*
+----------AppPage----------
+*/
+describe('(3) test AppPage - Click on Planning / Expenses / Todolist', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db("testdb");
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('Click on the Todolist icon', async () => {
+        await driver.get(url);
+        await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'TodoListIcon');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('TodoList');
+    });
+
+    test('Click on the Planning icon', async () => {
+        await driver.get(url);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'PlanningIcon');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('Planning');
+    });
+
+    test('Click on the Expenses icon', async () => {
+        await driver.get(url);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'ExpensesIcon');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('Dépenses');
+    });
 
 
 
+});
+
+/*
+----------TodoList----------
+*/
+describe('(4) test TodoList - add / delete / check tasks', async () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db("testdb");
+        await dbo.collection('todo').deleteMany({});
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    /*test('add a task with the first account in the first group', async() => {
+        await driver.get(url);
+        await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
+        //re-joining groupe 1.
+        await joinGroup(driver, '1', TEAM_1_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'TodoListIcon');
+        await addTask(driver,'nettoyer le sol','20122020')
+    });*/
+
+});
 
 async function clickButton(driver, id) {
     /**
@@ -296,3 +389,13 @@ async function leaveGroup(driver, id) {
     await driver.findElement(By.id('teamIDLeave')).sendKeys(id);
     await clickButton(driver, 'submitLeave');
 }
+
+/*async function addTask(driver, task, date) {
+    
+    await driver.findElement(By.id('task')).sendKeys(task);
+    await driver.findElement(By.id('date')).sendKeys(date);
+    accountants = await Select(driver.findElement(By.id('accountants')));
+    accountants.selectByIndex(0);
+    accountants.selectByIndex(0);
+    await clickButton(driver, 'submitTask');
+}*/

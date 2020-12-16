@@ -80,7 +80,7 @@
                             min={{minDate}}>
                     </div>
                     <div class="col-sm-4">
-                        <select name="accountant" class="custom-select" multiple required
+                        <select id="accountants" name="accountant" class="custom-select" multiple required
                             oninvalid="this.setCustomValidity('Veuillez choisir un responsable')"
                             oninput="setCustomValidity('')">
                             <optgroup label="Choisir un responsable">
@@ -93,7 +93,7 @@
 
                     </div>
                 </div>
-                <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+                <button id="submitTask" class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
             <h1>À faire</h1>
 
