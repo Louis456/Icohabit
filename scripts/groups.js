@@ -93,7 +93,7 @@ module.exports = {
          * Else, create a cookie to use with tools.displayOrNot() to display an error message
          * after the page is refreshed.
         */
-        dbo.collection('groupes').findOne({ "_id": Number(req.body.teamID) }, function (err, group) {
+        dbo.collection('groupes').findOne({ "_id": Number(req.body.teamIDLeave) }, function (err, group) {
             if (err) throw err;
             if (group != null) {
                 if (group.members.includes(req.session.username)) {
@@ -110,10 +110,10 @@ module.exports = {
                         }
                     );
                     if (group.members.length === 1) {
-                        dbo.collection('groupes').deleteOne({ "_id": Number(req.body.teamID) });
-                        dbo.collection('todo').deleteOne({ "_id": req.body.teamID });
-                        dbo.collection('planning').deleteOne({ "_id": req.body.teamID });
-                        dbo.collection('expenses').deleteOne({ "_id": req.body.teamID });
+                        dbo.collection('groupes').deleteOne({ "_id": Number(req.body.teamIDLeave) });
+                        dbo.collection('todo').deleteOne({ "_id": req.body.teamIDLeave });
+                        dbo.collection('planning').deleteOne({ "_id": req.body.teamIDLeave });
+                        dbo.collection('expenses').deleteOne({ "_id": req.body.teamIDLeave });
                     }
                     res.redirect('/groupes');
                 } else {

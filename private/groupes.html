@@ -45,7 +45,7 @@
                         data-toggle="dropdown">{{IdButtonText}}</a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <form class="dropdown-item" action="disconnect" method="post">
-                            <button class="btn" type="submit">Se déconnecter</button>
+                            <button id="logout" class="btn" type="submit">Se déconnecter</button>
                         </form>
                     </div>
                 </li>
@@ -57,7 +57,7 @@
         <div id="myGroup">
             <h1>Mes groupes</h1>
         </div>
-        <div class="Teams">
+        <div id="Teams">
             {{#groupes}}
             <div>
                 <form action="launchAppPage" method="post">
@@ -106,7 +106,7 @@
                     {{badIdLeaveMsg}}
                 </div>
                 <form action="leaveTeam" name="leaveTeam" class="teamForm" method="post">
-                    <input type="text" id="teamID" name="teamID" placeholder="ID du groupe" maxlength="10" required
+                    <input type="text" id="teamIDLeave" name="teamIDLeave" placeholder="ID du groupe" maxlength="10" required
                         oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
                     <input id="submitLeave" type="submit" value="Quitter">
                 </form>

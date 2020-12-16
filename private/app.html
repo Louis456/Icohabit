@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link active" href="/groupes">Groupes</a>
+                    <a id="getBackToGroups" class="nav-link active" href="/groupes">Groupes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/todolist">TodoList</a>
@@ -50,7 +50,7 @@
                         data-toggle="dropdown">{{IdButtonText}}</a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <form class="dropdown-item" action="disconnect" method="post">
-                            <button class="btn" type="submit">Se déconnecter</button>
+                            <button id="logout" class="btn" type="submit">Se déconnecter</button>
                         </form>
                     </div>
                 </li>
