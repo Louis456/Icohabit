@@ -309,15 +309,18 @@ describe('(4) test TodoList - add / delete / check tasks', async () => {
         await connection.close();
     }, 15000);
 
-    /*test('add a task with the first account in the first group', async() => {
+    test('add a task with the first account in the first group', async() => {
         await driver.get(url);
         await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
         //re-joining groupe 1.
         await joinGroup(driver, '1', TEAM_1_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'TodoListIcon');
-        await addTask(driver,'nettoyer le sol','20122020')
-    });*/
+        await addTask(driver,'nettoyer le sol','20122020',[ACCOUNT_1_USERNAME,ACCOUNT_2_USERNAME])
+        dbo.collection('todo').find().toArray(function(err, res){
+            console.log(res);
+        })
+    });
 
 });
 
@@ -390,12 +393,20 @@ async function leaveGroup(driver, id) {
     await clickButton(driver, 'submitLeave');
 }
 
-/*async function addTask(driver, task, date) {
-    
+async function addTask(driver, task, date, accountants) {
+    /**
+     * @param {String} task : name of the task
+     * @param {String} date : if day = 20, month = 11, year = 2020, date should be in format "20112020"
+     * @param {Array} : accountants : list of the accountants.
+     * Ex : ['simon','louis','pierre']
+     */
     await driver.findElement(By.id('task')).sendKeys(task);
     await driver.findElement(By.id('date')).sendKeys(date);
-    accountants = await Select(driver.findElement(By.id('accountants')));
-    accountants.selectByIndex(0);
-    accountants.selectByIndex(0);
-    await clickButton(driver, 'submitTask');
-}*/
+    await driver.actions().keyDown(Key.CONTROL).perform();
+    for (accountant of accountants) {
+        await driver.findElement(By.id(accountant)).click();
+    }
+    await driver.actions().keyUp(Key.CONTROL).perform();
+    await clickButton(driver,'submitTask')
+}
+
