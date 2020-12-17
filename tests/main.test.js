@@ -4,13 +4,15 @@ const script = require('jest');
 const { beforeAll } = require('@jest/globals');
 const { MongoClient } = require('mongodb');
 
-const url = 'https://localhost:8080';
-
 const capabilities = Capabilities.chrome();
 capabilities.set(Capability.ACCEPT_INSECURE_TLS_CERTS, true);
 capabilities.setPageLoadStrategy("normal");
 
 jest.setTimeout(30000);
+
+
+const URL = 'https://localhost:8080';
+const DATABASE = "testdb"
 
 const ACCOUNT_1_USERNAME = 'firstAccount';
 const ACCOUNT_1_PASSWORD = 'firstPwd123';
@@ -38,7 +40,7 @@ describe('(1) Create an account, login and logout', () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        dbo = await connection.db("testdb");
+        dbo = await connection.db(DATABASE);
         await dbo.collection('users').deleteMany({});
         await connection.close();
         driver.manage().window().maximize();
@@ -46,7 +48,7 @@ describe('(1) Create an account, login and logout', () => {
 
     beforeEach(async () => {
         await driver.manage().deleteAllCookies();
-        await driver.get(url);
+        await driver.get(URL);
     }, 15000);
 
     afterAll(async () => {
@@ -103,7 +105,7 @@ describe('(1) Create an account, login and logout', () => {
         await logOut(driver);
         title = await driver.getTitle();
         await expect(title).toContain('Accueil');
-        
+
     });
 
 });
@@ -123,7 +125,7 @@ describe('(2) Create, join, open and leave groups', () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        dbo = await connection.db("testdb");
+        dbo = await connection.db(DATABASE);
         await dbo.collection('groupes').deleteMany({});
         await driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
@@ -135,7 +137,7 @@ describe('(2) Create, join, open and leave groups', () => {
     }, 15000);
 
     test('Create a group with the first account', async () => {
-        await driver.get(url);
+        await driver.get(URL);
         await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
         await createGroup(driver, TEAM_1_NAME, TEAM_1_PASSWORD);
         let groupIcon = await driver.findElement(By.id('1')).getAttribute('innerHTML');
@@ -191,7 +193,7 @@ describe('(2) Create, join, open and leave groups', () => {
     });
 
     test('Click on the second group ', async () => {
-        await driver.get(url);
+        await driver.get(URL);
         await clickButton(driver, '2');
         let title = await driver.getTitle();
         await expect(title).toContain(TEAM_2_NAME);
@@ -199,7 +201,7 @@ describe('(2) Create, join, open and leave groups', () => {
     });
 
     test('Leave the first group', async () => {
-        await driver.get(url);
+        await driver.get(URL);
         await leaveGroup(driver, '1');
         let groupIcons = await driver.findElement(By.id('Teams')).getAttribute('innerHTML');
         await expect(groupIcons).toEqual(expect.not.stringContaining(TEAM_1_NAME));
@@ -229,30 +231,26 @@ describe('(2) Create, join, open and leave groups', () => {
 /*
 ----------AppPage----------
 */
-describe('(3) test AppPage - Click on Planning / Expenses / Todolist', () => {
+describe('(3) Click on Todolist, Planning, Expenses', () => {
     let driver;
-    let dbo;
     beforeAll(async () => {
         driver = new Builder()
             .withCapabilities(capabilities)
             .forBrowser('chrome')
             .build();
-        connection = await MongoClient.connect('mongodb://localhost:27017', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        dbo = await connection.db("testdb");
         await driver.manage().deleteAllCookies();
-        driver.manage().window().maximize();
+        await driver.manage().window().maximize();
+    }, 15000);
+
+    beforeEach(async () => {
+        await driver.get(URL);
     }, 15000);
 
     afterAll(async () => {
         await driver.quit();
-        await connection.close();
     }, 15000);
 
     test('Click on the Todolist icon', async () => {
-        await driver.get(url);
         await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'TodoListIcon');
@@ -262,7 +260,6 @@ describe('(3) test AppPage - Click on Planning / Expenses / Todolist', () => {
     });
 
     test('Click on the Planning icon', async () => {
-        await driver.get(url);
         await clickButton(driver, '1');
         await clickButton(driver, 'PlanningIcon');
         let title = await driver.getTitle();
@@ -271,9 +268,32 @@ describe('(3) test AppPage - Click on Planning / Expenses / Todolist', () => {
     });
 
     test('Click on the Expenses icon', async () => {
-        await driver.get(url);
         await clickButton(driver, '1');
         await clickButton(driver, 'ExpensesIcon');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('Dépenses');
+    });
+
+    test('Click on the Todolist navbar button', async () => {
+        await clickButton(driver, '1');
+        await clickButton(driver, 'TodoListButtton');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('TodoList');
+    });
+
+    test('Click on the Planning navbar button', async () => {
+        await clickButton(driver, '1');
+        await clickButton(driver, 'PlanningButtton');
+        let title = await driver.getTitle();
+        await expect(title).toContain(TEAM_1_NAME);
+        await expect(title).toContain('Planning');
+    });
+
+    test('Click on the Expenses navbar button', async () => {
+        await clickButton(driver, '1');
+        await clickButton(driver, 'ExpensesButtton');
         let title = await driver.getTitle();
         await expect(title).toContain(TEAM_1_NAME);
         await expect(title).toContain('Dépenses');
@@ -286,7 +306,7 @@ describe('(3) test AppPage - Click on Planning / Expenses / Todolist', () => {
 /*
 ----------TodoList----------
 */
-describe('(4) test TodoList - add / delete / check tasks', async () => {
+describe('(4) Add, Delete and Check tasks in the todolist', () => {
     let driver;
     let dbo;
     beforeAll(async () => {
@@ -298,7 +318,7 @@ describe('(4) test TodoList - add / delete / check tasks', async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        dbo = await connection.db("testdb");
+        dbo = await connection.db(DATABASE);
         await dbo.collection('todo').deleteMany({});
         await driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
@@ -309,20 +329,47 @@ describe('(4) test TodoList - add / delete / check tasks', async () => {
         await connection.close();
     }, 15000);
 
-    test('add a task with the first account in the first group', async() => {
-        await driver.get(url);
+    test('Add a task with the first account in the first group', async () => {
+        await driver.get(URL);
         await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
         //re-joining groupe 1.
         await joinGroup(driver, '1', TEAM_1_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'TodoListIcon');
-        await addTask(driver,'nettoyer le sol','20122020',[ACCOUNT_1_USERNAME,ACCOUNT_2_USERNAME])
-        dbo.collection('todo').find().toArray(function(err, res){
-            console.log(res);
-        })
+        await addTask(driver, 'nettoyer le sol', '12202020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await verifyTask(dbo, '1', 0, 'nettoyer le sol', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '12202020', false);
+    });
+
+    test('Add another task with the first account in the first group', async () => {
+        await addTask(driver, 'cuire les saucisses', '12252020', [ACCOUNT_1_USERNAME]);
+        await verifyTask(dbo, '1', 1, 'cuire les saucisses', [ACCOUNT_1_USERNAME], '12252020', false);
+    });
+
+    test('Check the first task', async () => {
+        await clickButton(driver, 'done 0')
+        dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
+            let addedTask = todoOfTheGroup.tasks[0];
+            expect(addedTask["done"]).toEqual(true);
+        });
+    });
+
+    test('Delete the first task that has been checked', async () => {
+        await clickButton(driver, 'delete 0')
+        dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
+            expect(todoOfTheGroup.tasks[0]['_id']).not.toEqual(0);
+        });
+    });
+
+    test('Delete the second task that hasnt been checked', async () => {
+        await clickButton(driver, 'delete 1')
+        dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
+            expect(todoOfTheGroup.tasks).toEqual([]);
+        });
     });
 
 });
+
+
 
 async function clickButton(driver, id) {
     /**
@@ -395,9 +442,9 @@ async function leaveGroup(driver, id) {
 
 async function addTask(driver, task, date, accountants) {
     /**
-     * @param {String} task : name of the task
-     * @param {String} date : if day = 20, month = 11, year = 2020, date should be in format "20112020"
-     * @param {Array} : accountants : list of the accountants.
+     * @param {String} task : name of the task.
+     * @param {String} date : if day = 20, month = 11, year = 2020, date should be in format "20112020".
+     * @param {Array} accountants : list of the accountants.
      * Ex : ['simon','louis','pierre']
      */
     await driver.findElement(By.id('task')).sendKeys(task);
@@ -407,6 +454,27 @@ async function addTask(driver, task, date, accountants) {
         await driver.findElement(By.id(accountant)).click();
     }
     await driver.actions().keyUp(Key.CONTROL).perform();
-    await clickButton(driver,'submitTask')
+    await clickButton(driver, 'submitTask');
+}
+
+async function verifyTask(dbo, groupId, taskId, title, accountants, date, done) {
+    /**
+     * @param {String} groupId : id of the groupe (! string).
+     * @param {int} taskId : id of the task.
+     * @param {String} title : title of the task.
+     * @param {Array} accountants : Array of the accountants.
+     * @param {String} date : if day = 20, month = 11, year = 2020, date should be in format "20112020".
+     * @param {Boolean} done : state of the task.
+     */
+    dbo.collection('todo').findOne({ "groupe": groupId }, function (err, todoOfTheGroup) {
+        expect(todoOfTheGroup).not.toBeNull();
+        let addedTask = todoOfTheGroup.tasks[taskId];
+        expect(addedTask["task"]).toEqual(title);
+        for (let name of accountants) {
+            expect(addedTask["accountant"]).toContain(name);
+        }
+        expect(addedTask["date"]).toEqual(date.substring(2, 4) + '/' + date.substring(0, 2) + '/' + date.substring(4, 8));
+        expect(addedTask["done"]).toEqual(done);
+    });
 }
 
