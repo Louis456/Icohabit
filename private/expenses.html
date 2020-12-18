@@ -90,7 +90,7 @@
                             oninput="setCustomValidity('')">
                             <optgroup label="Par qui?">
                               {{#names}}
-                              <option value="{{.}}">{{.}}</option>
+                              <option id="payeurName" value="{{.}}">{{.}}</option>
                               {{/names}}
                             </optgroup>
                         </select>
@@ -101,7 +101,7 @@
                             oninput="setCustomValidity('')">
                             <optgroup label="Pour qui?">
                               {{#names}}
-                              <option value="{{.}}">{{.}}</option>
+                              <option id="{{.}}" value="{{.}}">{{.}}</option>
                               {{/names}}
                             </optgroup>
                         </select>

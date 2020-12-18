@@ -86,13 +86,13 @@
                             oninput="setCustomValidity('')">
                             <optgroup label="Choisir un/des participant(s)">
                                 {{#names}}
-                                <option value="{{.}}">{{.}}</option>
+                                <option id="{{.}}" value="{{.}}">{{.}}</option>
                                 {{/names}}
                             </optgroup>
                         </select>
                     </div>
                 </div>
-                <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+                <button id="submitEvent" class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
 
             <h1>évènements futurs</h1>
@@ -101,14 +101,14 @@
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
                       {{#events}}
-                      <ul class="listdesign line_underneath" id="unfulfilled-tasks">
+                      <ul class="listdesign line_underneath" id="tocome {{_id}}">
                           <li><b>Quoi?</b> {{event}}</li>
                           <li><b>Qui?</b> {{participants}}</li>
                           <li>
                               <form class="" action="deleteEvent" method="post">
                                   <input type="hidden" name="event_id" value="{{_id}}">
                                   <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
                               </form>
                           </li>
                       </ul>
@@ -124,14 +124,14 @@
                 <div class="eachResult">
                     <h4>Date  {{date}}</h4>
                       {{#events}}
-                      <ul class="listdesign line_underneath">
+                      <ul class="listdesign line_underneath" id="past {{_id}}">
                           <li><b>Quoi?</b> {{event}}</li>
                           <li><b>Qui?</b> {{participants}}</li>
                           <li><form class="" action="deleteEvent" method="post">
                                   <input type="hidden" name="event_id" value="{{_id}}">
                                   <input type="hidden" name="date" value="{{date}}">
                                   <button type="submit" name="Delete"
-                                      class="btn btn-outline-danger btn-sm">Delete</button>
+                                      class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
                               </form>
                           </li>
                       </ul>
