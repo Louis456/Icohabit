@@ -12,7 +12,7 @@ capabilities.setPageLoadStrategy("normal");
 jest.setTimeout(30000);
 
 // IMPORTANT !! Choose your browser language before starting tests (en, fr, nl) !!
-const BROWSER_LANGUAGE = "en"
+const BROWSER_LANGUAGE = "fr"
 
 const URL = 'https://localhost:8080';
 const DATABASE = "testdb"
@@ -26,7 +26,14 @@ const TEAM_1_NAME = 'Groupe n1';
 const TEAM_1_PASSWORD = '123pwd1';
 const TEAM_2_NAME = 'Groupe n2';
 const TEAM_2_PASSWORD = '123pwd2';
-
+const TEAM_3_NAME = 'groupRocknRoll'
+const TEAM_3_PASSWORD = '123pwd3';
+const TEAM_4_NAME = 'BlueJacket'
+const TEAM_4_PASSWORD = '123pwd4';
+const TEAM_5_NAME = 'TeamRocket'
+const TEAM_5_PASSWORD = '123pwd5';
+const TEAM_6_NAME = 'HomeSweetHome'
+const TEAM_6_PASSWORD = '123pwd6';
 
 /*
 ----------Accounts----------
@@ -302,6 +309,13 @@ describe('(3) Click on Todolist, Planning, Expenses', () => {
         await expect(title).toContain('Dépenses');
     });
 
+    test('Click on the Expenses navbar button', async () => {
+        await clickButton(driver, '1');
+        await clickButton(driver, "getBackToGroups");
+        let title = await driver.getTitle();
+        await expect(title).toContain('Groupes');
+    });
+
 
 
 });
@@ -457,22 +471,14 @@ describe('(5) Add and Delete events in the planning', () => {
     });
 
     test('Second account sees both events', async() => {
-        let firstEvent = await driver.findElement(By.id('tocome 0')).getAttribute('innerHTML');
-        let secondEvent = await driver.findElement(By.id('past 1')).getAttribute('innerHTML');
-        await expect(firstEvent).toContain('soirée pyjama au kot');
-        await expect(firstEvent).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-        await expect(secondEvent).toContain('apocalypse de zombies');
-        await expect(secondEvent).toContain(ACCOUNT_1_USERNAME);
+        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], [])
+        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], [])
     });
 
     test('First account sees both events', async() => {
         await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'PlanningIcon');
-        let firstEvent = await driver.findElement(By.id('tocome 0')).getAttribute('innerHTML');
-        let secondEvent = await driver.findElement(By.id('past 1')).getAttribute('innerHTML');
-        await expect(firstEvent).toContain('soirée pyjama au kot');
-        await expect(firstEvent).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-        await expect(secondEvent).toContain('apocalypse de zombies');
-        await expect(secondEvent).toContain(ACCOUNT_1_USERNAME);
+        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], [])
+        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], [])
     });
 
     test('Delete the first event that was a future event', async () => {
@@ -490,25 +496,16 @@ describe('(5) Add and Delete events in the planning', () => {
     });
 
     test('First account sees no event', async () => {
-        let eventTocome = await driver.findElement(By.id('tocome')).getAttribute('innerHTML');
-        let eventPast = await driver.findElement(By.id('past')).getAttribute('innerHTML');
-        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies'];
-        for (let item of toCheck) {
-            await expect(eventTocome).toEqual(expect.not.stringContaining(item));
-            await expect(eventPast).toEqual(expect.not.stringContaining(item));
-        }
+        await verifyContainingOrNot(driver, 'tocome',[], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
+        await verifyContainingOrNot(driver,'past', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
 
     });
 
     test('Second account sees no event', async () => {
         await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'PlanningIcon');
-        let eventTocome = await driver.findElement(By.id('tocome')).getAttribute('innerHTML');
-        let eventPast = await driver.findElement(By.id('past')).getAttribute('innerHTML');
-        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies'];
-        for (let item of toCheck) {
-            await expect(eventTocome).toEqual(expect.not.stringContaining(item));
-            await expect(eventPast).toEqual(expect.not.stringContaining(item));
-        }
+        await verifyContainingOrNot(driver, 'tocome',[], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
+        await verifyContainingOrNot(driver,'past', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
+        
     });
 
 
@@ -560,6 +557,67 @@ describe('(5) Add and Delete expenses in the Dépenses', () => {
 
 
 });
+
+describe('(6) research in groups', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db(DATABASE);
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('research for group(s) with inexact search text', async () => {
+        await driver.get(URL);
+        await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
+        await createGroup(driver,TEAM_3_NAME,TEAM_3_PASSWORD);
+        await createGroup(driver,TEAM_4_NAME,TEAM_4_PASSWORD);
+        await createGroup(driver,TEAM_5_NAME,TEAM_5_PASSWORD);
+        await createGroup(driver,TEAM_6_NAME,TEAM_6_PASSWORD);
+        await research(driver,"groupTextSearch","Rock")
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_5_NAME,TEAM_3_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_4_NAME,TEAM_6_NAME])
+    });
+
+    test('research for group(s) with inexact search text', async () => {
+        await research(driver,"groupTextSearch","cket")
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_4_NAME,TEAM_5_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_6_NAME]);
+    });
+
+    test('research for group(s) with exact search text', async () => {
+        await research(driver,"groupTextSearch","HomeSweetHome");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_6_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME]);
+    });
+
+    test('empty search for group', async () => {
+        await driver.get(URL);
+        await research(driver,"groupTextSearch","");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME,TEAM_6_NAME], [])
+    })
+
+
+});
+
 
 
 
@@ -775,7 +833,7 @@ async function verifyExpense(dbo, groupId, expenseId, title, date, amount, payeu
     });
 }
 
-async function verifyExpensesSolver(dbo, groupId, usernames, money, debtors, creditors, amounts){
+async function verifyExpensesSolver(dbo, groupId, usernames, money, debtors, creditors, amounts) {
     /**
      * @param {String} groupId : id of the groupe (! string).
      * @param {Array} usernames : Array of strings of all the usernames used in any transaction.
@@ -799,4 +857,29 @@ async function verifyExpensesSolver(dbo, groupId, usernames, money, debtors, cre
         }
     });
 
+}
+
+async function research(driver, id, searchText) {
+    /**
+     * @param {String} id : id of the searchText zone
+     * @param {String} searchText : text to search with
+     */
+    await driver.findElement(By.id(id)).sendKeys(searchText);
+    clickButton(driver, 'seachbtn');
+}
+
+async function verifyContainingOrNot(driver, id, containing, notContaining) {
+    /**
+     * @param {String} id : id of the element you need to check if it contains or not some text
+     * @param {Array} containing : list of text the element by id should be containing 
+     * @param {Array} notContaining : list of text the element by id shouldn't be containing 
+     */
+    let teams = await driver.findElement(By.id(id)).getAttribute('innerHTML');
+    for (item of containing) {
+        await expect(teams).toContain(item);
+    }
+    for (item of notContaining) {
+        await expect(teams).toEqual(expect.not.stringContaining(item));
+    }
+    
 }
