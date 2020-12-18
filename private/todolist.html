@@ -95,14 +95,14 @@
                 </div>
                 <button id="submitTask" class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
+            
             <h1>À faire</h1>
-
             <div class="resultContainer" id="todo">
                 {{#tasksTodo}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
                       {{#tasks}}
-                      <ul class="listdesign line_underneath unfulfilled-tasks" id="todo {{_id}}">
+                      <ul class="listdesign line_underneath" id="todo {{_id}}">
                           <li><b>Quoi?</b> {{task}}</li>
                           <li><b>Qui?</b> {{accountant}}</li>
                           <li>

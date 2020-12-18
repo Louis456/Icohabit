@@ -344,10 +344,7 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
     });
 
     test('Add another task with the second account in the first group', async () => {
-        await logOut(driver);
-        await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
-        await clickButton(driver, '1');
-        await clickButton(driver, 'TodoListIcon');
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'TodoListIcon');
         await addTask(driver, 'cuire les saucisses', '25122020', [ACCOUNT_1_USERNAME]);
         await verifyTask(dbo, '1', 1, 'cuire les saucisses', [ACCOUNT_1_USERNAME], '25122020', false);
     });
@@ -362,16 +359,13 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
     });
 
     test('First account sees both tasks', async() => {
-      await logOut(driver);
-      await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
-      await clickButton(driver, '1');
-      await clickButton(driver, 'TodoListIcon');
-      let firstTask = await driver.findElement(By.id('todo 0')).getAttribute('innerHTML');
-      let secondTask = await driver.findElement(By.id('todo 1')).getAttribute('innerHTML');
-      await expect(firstTask).toContain('nettoyer le sol');
-      await expect(firstTask).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-      await expect(secondTask).toContain('cuire les saucisses');
-      await expect(secondTask).toContain(ACCOUNT_1_USERNAME);
+        await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'TodoListIcon');
+        let firstTask = await driver.findElement(By.id('todo 0')).getAttribute('innerHTML');
+        let secondTask = await driver.findElement(By.id('todo 1')).getAttribute('innerHTML');
+        await expect(firstTask).toContain('nettoyer le sol');
+        await expect(firstTask).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
+        await expect(secondTask).toContain('cuire les saucisses');
+        await expect(secondTask).toContain(ACCOUNT_1_USERNAME);
     });
 
     test('Check the first task', async () => {
@@ -399,32 +393,23 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
     test('First account sees no task', async () => {
         let tasksTodo = await driver.findElement(By.id('todo')).getAttribute('innerHTML');
         let tasksDone = await driver.findElement(By.id('done')).getAttribute('innerHTML');
-        await expect(tasksTodo).toEqual(expect.not.stringContaining(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining(ACCOUNT_1_USERNAME));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining('nettoyer le sol'));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining('cuire les saucisses'));
-        await expect(tasksDone).toEqual(expect.not.stringContaining(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME));
-        await expect(tasksDone).toEqual(expect.not.stringContaining(ACCOUNT_1_USERNAME));
-        await expect(tasksDone).toEqual(expect.not.stringContaining('nettoyer le sol'));
-        await expect(tasksDone).toEqual(expect.not.stringContaining('cuire les saucisses'));
+        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses'];
+        for (let item of toCheck) {
+            await expect(tasksTodo).toEqual(expect.not.stringContaining(item));
+            await expect(tasksDone).toEqual(expect.not.stringContaining(item));
+        }
 
     });
 
     test('Second account sees no task', async () => {
-        await logOut(driver);
-        await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
-        await clickButton(driver, '1');
-        await clickButton(driver, 'TodoListIcon');
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'TodoListIcon');
         let tasksTodo = await driver.findElement(By.id('todo')).getAttribute('innerHTML');
         let tasksDone = await driver.findElement(By.id('done')).getAttribute('innerHTML');
-        await expect(tasksTodo).toEqual(expect.not.stringContaining(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining(ACCOUNT_1_USERNAME));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining('nettoyer le sol'));
-        await expect(tasksTodo).toEqual(expect.not.stringContaining('cuire les saucisses'));
-        await expect(tasksDone).toEqual(expect.not.stringContaining(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME));
-        await expect(tasksDone).toEqual(expect.not.stringContaining(ACCOUNT_1_USERNAME));
-        await expect(tasksDone).toEqual(expect.not.stringContaining('nettoyer le sol'));
-        await expect(tasksDone).toEqual(expect.not.stringContaining('cuire les saucisses'));
+        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses'];
+        for (let item of toCheck) {
+            await expect(tasksTodo).toEqual(expect.not.stringContaining(item));
+            await expect(tasksDone).toEqual(expect.not.stringContaining(item));
+        }
     });
 
 });
@@ -433,7 +418,7 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
 /*
 ----------Planning----------
 */
-describe('(4) Add and Delete events in the planning', () => {
+describe('(5) Add and Delete events in the planning', () => {
     let driver;
     let dbo;
     beforeAll(async () => {
@@ -447,6 +432,7 @@ describe('(4) Add and Delete events in the planning', () => {
         });
         dbo = await connection.db(DATABASE);
         await dbo.collection('planning').deleteMany({});
+        await driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
     }, 15000);
 
@@ -460,20 +446,17 @@ describe('(4) Add and Delete events in the planning', () => {
         await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'PlanningIcon');
-        await addEvent(driver, 'soirée pyjama au kot', '15022020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
-        await verifyEvent(dbo, '1', 0, 'soirée pyjama au kot', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '15022020');
+        await addEvent(driver, 'soirée pyjama au kot', '15022021', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await verifyEvent(dbo, '1', 0, 'soirée pyjama au kot', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '15022021');
     });
 
     test('Add an already past event with the second account in the first group', async () => {
-        await logOut(driver);
-        await logIn(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD);
-        await clickButton(driver, '1');
-        await clickButton(driver, 'PlanningIcon');
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'PlanningIcon');
         await addEvent(driver, 'apocalypse de zombies', '05122020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
         await verifyEvent(dbo, '1', 1, 'apocalypse de zombies', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '05122020');
     });
 
-    test('Second account sees both tasks', async() => {
+    test('Second account sees both events', async() => {
         let firstEvent = await driver.findElement(By.id('tocome 0')).getAttribute('innerHTML');
         let secondEvent = await driver.findElement(By.id('past 1')).getAttribute('innerHTML');
         await expect(firstEvent).toContain('soirée pyjama au kot');
@@ -482,22 +465,101 @@ describe('(4) Add and Delete events in the planning', () => {
         await expect(secondEvent).toContain(ACCOUNT_1_USERNAME);
     });
 
-    test('First account sees both tasks', async() => {
-      await logOut(driver);
-      await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
-      await clickButton(driver, '1');
-      await clickButton(driver, 'PlanningIcon');
-      let firstEvent = await driver.findElement(By.id('tocome 0')).getAttribute('innerHTML');
-      let secondEvent = await driver.findElement(By.id('past 1')).getAttribute('innerHTML');
-      await expect(firstEvent).toContain('soirée pyjama au kot');
-      await expect(firstEvent).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-      await expect(secondEvent).toContain('apocalypse de zombies');
-      await expect(secondEvent).toContain(ACCOUNT_1_USERNAME);
+    test('First account sees both events', async() => {
+        await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'PlanningIcon');
+        let firstEvent = await driver.findElement(By.id('tocome 0')).getAttribute('innerHTML');
+        let secondEvent = await driver.findElement(By.id('past 1')).getAttribute('innerHTML');
+        await expect(firstEvent).toContain('soirée pyjama au kot');
+        await expect(firstEvent).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
+        await expect(secondEvent).toContain('apocalypse de zombies');
+        await expect(secondEvent).toContain(ACCOUNT_1_USERNAME);
+    });
+
+    test('Delete the first event that was a future event', async () => {
+        await clickButton(driver, 'deletebtn 0')
+        dbo.collection('planning').findOne({ "groupe": '1' }, function (err, planningOfTheGroup) {
+            expect(planningOfTheGroup.events[0]['_id']).not.toEqual(0);
+        });
+    });
+
+    test('Delete the second event that was a past event', async () => {
+        await clickButton(driver, 'deletebtn 1')
+        dbo.collection('planning').findOne({ "groupe": '1' }, function (err, planningOfTheGroup) {
+            expect(planningOfTheGroup.events).toEqual([]);
+        });
+    });
+
+    test('First account sees no event', async () => {
+        let eventTocome = await driver.findElement(By.id('tocome')).getAttribute('innerHTML');
+        let eventPast = await driver.findElement(By.id('past')).getAttribute('innerHTML');
+        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies'];
+        for (let item of toCheck) {
+            await expect(eventTocome).toEqual(expect.not.stringContaining(item));
+            await expect(eventPast).toEqual(expect.not.stringContaining(item));
+        }
+
+    });
+
+    test('Second account sees no event', async () => {
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'PlanningIcon');
+        let eventTocome = await driver.findElement(By.id('tocome')).getAttribute('innerHTML');
+        let eventPast = await driver.findElement(By.id('past')).getAttribute('innerHTML');
+        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies'];
+        for (let item of toCheck) {
+            await expect(eventTocome).toEqual(expect.not.stringContaining(item));
+            await expect(eventPast).toEqual(expect.not.stringContaining(item));
+        }
     });
 
 
 });
 
+
+/*
+----------Expenses----------
+*/
+describe('(5) Add and Delete expenses in the Dépenses', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db(DATABASE);
+        await dbo.collection('expenses').deleteMany({});
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('Add an expense with the first account in the first group', async () => {
+        await driver.get(URL);
+        await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'ExpensesIcon');
+        await addExpense(driver, 'jupilers et chipolatas', '24122020', 27, ACCOUNT_1_USERNAME, [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await verifyExpense(dbo, '1', 0, 'jupilers et chipolatas', '24122020', 27, ACCOUNT_1_USERNAME, [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await verifyExpensesSolver(dbo, '1', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], ['+13.5', '-13.5'], [ACCOUNT_2_USERNAME], [ACCOUNT_1_USERNAME], [13.5]);
+    });
+
+    test('Add another expense with the second account in the first group', async () => {
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'ExpensesIcon');
+        await addExpense(driver, 'guirlandes et boules chromées', '20122020', 32.6, ACCOUNT_2_USERNAME, [ACCOUNT_1_USERNAME]);
+        await verifyExpense(dbo, '1', 1, 'guirlandes et boules chromées', '20122020', 32.6, ACCOUNT_2_USERNAME, [ACCOUNT_1_USERNAME]);
+        await verifyExpensesSolver(dbo, '1', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], ['-19.1', '+19.1'], [ACCOUNT_1_USERNAME], [ACCOUNT_2_USERNAME], [19.1]);
+    });
+
+
+});
 
 
 
@@ -542,6 +604,20 @@ async function logOut(driver) {
     // Click on the username and then click on 'se déconnecter' to disconnect.
     await clickButton(driver, 'navbardrop');
     await clickButton(driver, 'logout');
+}
+
+async function switchAccountAndGetToApp(driver, username, password, group, app) {
+    /**
+     * To switch to another account and move to the an app in a group.
+     * @param {String} username : username of the account.
+     * @param {String} password : password of the account.
+     * @param {String} group : the group to click. 
+     * @param {String} app : the app to click. 
+     */
+    await logOut(driver);
+    await logIn(driver, username, password);
+    await clickButton(driver, group);
+    await clickButton(driver, app);
 }
 
 async function createGroup(driver, name, pwd) {
@@ -664,7 +740,8 @@ async function addExpense(driver, title, date, amount, payeur, receveurs) {
     await driver.findElement(By.id('expenseTitle')).sendKeys(title);
     await driver.findElement(By.id('date')).sendKeys(correctDate);
     await driver.findElement(By.id('amount')).sendKeys(amount);
-    await driver.findElement(By.id('payeurName')).sendKeys(payeur);
+    await driver.findElement(By.id('payeur')).click();
+    await driver.findElement(By.id('payeurName '+payeur)).click();
     await driver.actions().keyDown(Key.CONTROL).perform();
     for (receveur of receveurs) {
         await driver.findElement(By.id(receveur)).click();
@@ -688,10 +765,38 @@ async function verifyExpense(dbo, groupId, expenseId, title, date, amount, payeu
         let addedExpense = expensesOfTheGroup.expensesArray[expenseId];
         expect(addedExpense["title"]).toEqual(title);
         expect(addedExpense["date"]).toEqual(date.substring(0, 2) + '/' + date.substring(2, 4) + '/' + date.substring(4, 8));
-        expect(addedExpense["amount"]).toEqual(amount);
+        expect(addedExpense["amount"]).toEqual(amount.toString());
         expect(addedExpense["payeur"]).toEqual(payeur);
         for (let name of receveurs) {
             expect(addedExpense["receveurs"]).toContain(name);
         }
+        let updatedMoneyAccounts = expensesOfTheGroup.cache[0];
+        let updatedTransactions = expensesOfTheGroup.cache[1];
     });
+}
+
+async function verifyExpensesSolver(dbo, groupId, usernames, money, debtors, creditors, amounts){
+    /**
+     * @param {String} groupId : id of the groupe (! string).
+     * @param {Array} usernames : Array of strings of all the usernames used in any transaction.
+     * @param {Array} money : Array of strings of all money accounts corresponding with the usernames.
+     * @param {Array} debtors : Array of strings of the usernames of the people that have to refund someone else.
+     * @param {Array} creditors : Array of strings of the usernames of the people that have to be refunded by the corresponding detor.
+     * @param {Array} amounts : Array of int of the corresponding amounts that have to be refunded.
+     */
+    dbo.collection('expenses').findOne({ "groupe": groupId }, function (err, expensesOfTheGroup) {
+        expect(expensesOfTheGroup).not.toBeNull();
+        let updatedMoneyAccounts = expensesOfTheGroup.cache[0];
+        let updatedTransactions = expensesOfTheGroup.cache[1];
+        for (let i = 0; i < updatedMoneyAccounts.length; i++) {
+            expect(updatedMoneyAccounts[i]["people"]).toEqual(usernames[i]);
+            expect(updatedMoneyAccounts[i]["money"]).toEqual(money[i]);
+        }
+        for (let i = 0; i < updatedTransactions.length; i++) {
+            expect(updatedTransactions[i]["debtor"]).toEqual(debtors[0]);
+            expect(updatedTransactions[i]["creditor"]).toEqual(creditors[0]);
+            expect(updatedTransactions[i]["howMuch"]).toEqual(amounts[0]);
+        }
+    });
+
 }

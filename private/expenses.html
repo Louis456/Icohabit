@@ -90,7 +90,7 @@
                             oninput="setCustomValidity('')">
                             <optgroup label="Par qui?">
                               {{#names}}
-                              <option id="payeurName" value="{{.}}">{{.}}</option>
+                              <option id="payeurName {{.}}" value="{{.}}">{{.}}</option>
                               {{/names}}
                             </optgroup>
                         </select>
@@ -107,7 +107,7 @@
                         </select>
                     </div>
                 </div>
-                <button class="btn btn-outline-primary" type="submit">Ajouter</button>
+                <button id="submitExpense" class="btn btn-outline-primary" type="submit">Ajouter</button>
             </form>
 
             <h1>Liste des dépenses</h1>
