@@ -45,7 +45,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearchPlanning" method="post">
-                <input class="form-control mr-sm-2" id="planningTextSearch" name="planningTextSearch" type="search" placeholder="Rechercher un évènement" aria-label="Rechercher un évènement" size="30" maxlength="40">
+                <input class="form-control mr-sm-2" id="planningTextSearch" name="planningTextSearch" type="search"
+                    placeholder="Rechercher un évènement" aria-label="Rechercher un évènement" size="30" maxlength="40">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <ul class="navbar-nav">
@@ -77,8 +78,7 @@
                     <div class="col-sm-4">
                         <input class="form-control" type="date" id="date" name="date" required
                             oninvalid="this.setCustomValidity('Veuillez choisir une date')"
-                            oninput="setCustomValidity('')"
-                            >
+                            oninput="setCustomValidity('')">
                     </div>
                     <div class="col-sm-4">
                         <select id="participants" name="participants" class="custom-select" multiple required
@@ -100,19 +100,20 @@
                 {{#futureEvents}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
-                      {{#events}}
-                      <ul class="listdesign line_underneath" id="tocome {{_id}}">
-                          <li><b>Quoi?</b> {{event}}</li>
-                          <li><b>Qui?</b> {{participants}}</li>
-                          <li>
-                              <form class="" action="deleteEvent" method="post">
-                                  <input type="hidden" name="event_id" value="{{_id}}">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
-                              </form>
-                          </li>
-                      </ul>
-                      {{/events}}
+                    {{#events}}
+                    <ul class="listdesign line_underneath" id="tocome {{_id}}">
+                        <li><b>Quoi?</b> {{event}}</li>
+                        <li><b>Qui?</b> {{participants}}</li>
+                        <li>
+                            <form class="" action="deleteEvent" method="post">
+                                <input type="hidden" name="event_id" value="{{_id}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm"
+                                    id="deletebtn {{_id}}">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                    {{/events}}
                 </div>
                 {{/futureEvents}}
             </div>
@@ -122,20 +123,21 @@
             <div class="resultContainer" id="past">
                 {{#pastEvents}}
                 <div class="eachResult">
-                    <h4>Date  {{date}}</h4>
-                      {{#events}}
-                      <ul class="listdesign line_underneath" id="past {{_id}}">
-                          <li><b>Quoi?</b> {{event}}</li>
-                          <li><b>Qui?</b> {{participants}}</li>
-                          <li><form class="" action="deleteEvent" method="post">
-                                  <input type="hidden" name="event_id" value="{{_id}}">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete"
-                                      class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
-                              </form>
-                          </li>
-                      </ul>
-                      {{/events}}
+                    <h4>Date {{date}}</h4>
+                    {{#events}}
+                    <ul class="listdesign line_underneath" id="past {{_id}}">
+                        <li><b>Quoi?</b> {{event}}</li>
+                        <li><b>Qui?</b> {{participants}}</li>
+                        <li>
+                            <form class="" action="deleteEvent" method="post">
+                                <input type="hidden" name="event_id" value="{{_id}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm"
+                                    id="deletebtn {{_id}}">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                    {{/events}}
                 </div>
                 {{/pastEvents}}
             </div>

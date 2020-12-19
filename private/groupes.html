@@ -36,7 +36,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearchGroup" method="post">
-                <input class="form-control mr-sm-2" id="groupTextSearch" name="groupTextSearch" type="search" placeholder="Rechercher un groupe" aria-label="Rechercher un groupe" size="30" maxlength="40">
+                <input class="form-control mr-sm-2" id="groupTextSearch" name="groupTextSearch" type="search"
+                    placeholder="Rechercher un groupe" aria-label="Rechercher un groupe" size="30" maxlength="40">
                 <button id="searchbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <ul class="navbar-nav">
@@ -76,7 +77,8 @@
             <div class="team">
                 <h2 id="createorjoin">Créer un groupe</h2>
                 <form action="createTeam" name="createTeam" class="teamForm" method="post">
-                    <input type="text" id="newTeam" name="newTeam" placeholder="Nom du groupe" maxlength="35" minlength="3" required
+                    <input type="text" id="newTeam" name="newTeam" placeholder="Nom du groupe" maxlength="35"
+                        minlength="3" required
                         oninvalid="this.setCustomValidity('Veuillez choisir un nom de groupe avec 3 caractères minimum')"
                         oninput="setCustomValidity('')">
                     <input type="password" id="newpwdTeam" name="newpwdTeam" placeholder="Mot de passe" maxlength="50"
@@ -106,8 +108,9 @@
                     {{badIdLeaveMsg}}
                 </div>
                 <form action="leaveTeam" name="leaveTeam" class="teamForm" method="post">
-                    <input type="text" id="teamIDLeave" name="teamIDLeave" placeholder="ID du groupe" maxlength="10" required
-                        oninvalid="this.setCustomValidity('Veuillez indiquer un ID')" oninput="setCustomValidity('')">
+                    <input type="text" id="teamIDLeave" name="teamIDLeave" placeholder="ID du groupe" maxlength="10"
+                        required oninvalid="this.setCustomValidity('Veuillez indiquer un ID')"
+                        oninput="setCustomValidity('')">
                     <input id="submitLeave" type="submit" value="Quitter">
                 </form>
             </div>

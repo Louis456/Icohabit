@@ -45,7 +45,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearchTodo" method="post">
-                <input class="form-control mr-sm-2" id="todoTextSearch" name="todoTextSearch" type="search" placeholder="Rechercher une tâche" aria-label="Rechercher une tâche" size="30" maxlength="40">
+                <input class="form-control mr-sm-2" id="todoTextSearch" name="todoTextSearch" type="search"
+                    placeholder="Rechercher une tâche" aria-label="Rechercher une tâche" size="30" maxlength="40">
                 <button id="searchbtn" class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <ul class="navbar-nav">
@@ -76,8 +77,7 @@
                     <div class="col-sm-4">
                         <input class="form-control" type="date" id="date" name="date" required
                             oninvalid="this.setCustomValidity('Veuillez choisir une date')"
-                            oninput="setCustomValidity('')"
-                            min={{minDate}}>
+                            oninput="setCustomValidity('')" min={{minDate}}>
                     </div>
                     <div class="col-sm-4">
                         <select id="accountants" name="accountant" class="custom-select" multiple required
@@ -101,27 +101,30 @@
                 {{#tasksTodo}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
-                      {{#tasks}}
-                      <ul class="listdesign line_underneath" id="todo {{_id}}">
-                          <li><b>Quoi?</b> {{task}}</li>
-                          <li><b>Qui?</b> {{accountant}}</li>
-                          <li>
-                              <form class="" action="deleteTask" method="post">
-                                  <input type="hidden" name="task_id" value="{{_id}}">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete"
-                                      class="btn btn-outline-danger btn-sm deleteAndDoneButton" id="deletebtn {{_id}}">Delete</button>
-                              </form>
-                              <form action="checkTask" method="post">
-                                  <input type="hidden" name="task" value="{{task}}">
-                                  <input type="hidden" name="accountant" value="{{accountant}}">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <input type="hidden" name="task_id" value="{{_id}}">
-                                  <button type="submit" name="Check" class="btn btn-outline-success btn-sm deleteAndDoneButton" id="donebtn {{_id}}">Done</button>
-                              </form>
-                          </li>
-                      </ul>
-                      {{/tasks}}
+                    {{#tasks}}
+                    <ul class="listdesign line_underneath" id="todo {{_id}}">
+                        <li><b>Quoi?</b> {{task}}</li>
+                        <li><b>Qui?</b> {{accountant}}</li>
+                        <li>
+                            <form class="" action="deleteTask" method="post">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <button type="submit" name="Delete"
+                                    class="btn btn-outline-danger btn-sm deleteAndDoneButton"
+                                    id="deletebtn {{_id}}">Delete</button>
+                            </form>
+                            <form action="checkTask" method="post">
+                                <input type="hidden" name="task" value="{{task}}">
+                                <input type="hidden" name="accountant" value="{{accountant}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <button type="submit" name="Check"
+                                    class="btn btn-outline-success btn-sm deleteAndDoneButton"
+                                    id="donebtn {{_id}}">Done</button>
+                            </form>
+                        </li>
+                    </ul>
+                    {{/tasks}}
                 </div>
                 {{/tasksTodo}}
             </div>
@@ -134,20 +137,20 @@
                 {{#tasksDone}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
-                      {{#tasks}}
-                      <ul class="listdesign line_underneath" id="done {{_id}}">
-                          <li><b>Quoi?</b> {{task}}</li>
-                          <li><b>Qui?</b> {{accountant}}</li>
-                          <li>
-                              <form action="deleteTask" method="post">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <input type="hidden" name="task_id" value="{{_id}}">
-                                  <button type="submit" name="Delete"
-                                      class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
-                              </form>
-                          </li>
-                      </ul>
-                      {{/tasks}}
+                    {{#tasks}}
+                    <ul class="listdesign line_underneath" id="done {{_id}}">
+                        <li><b>Quoi?</b> {{task}}</li>
+                        <li><b>Qui?</b> {{accountant}}</li>
+                        <li>
+                            <form action="deleteTask" method="post">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <input type="hidden" name="task_id" value="{{_id}}">
+                                <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm"
+                                    id="deletebtn {{_id}}">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                    {{/tasks}}
                 </div>
                 {{/tasksDone}}
             </div>

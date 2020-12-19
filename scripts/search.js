@@ -196,7 +196,7 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
             for (dict of arrayOfDicts) {
                 if (dict[key].toString().toLowerCase() === query && !result.includes(dict)) {
                     result.push(dict);
-                // Search by date accept month/day or year if not the entire date is written.
+                    // Search by date accept month/day or year if not the entire date is written.
                 } else if (key === "date") {
                     let dayAndMonth = dict["date"].toString().substring(0, 5);
                     let day = dict["date"].toString().substring(0, 2);
@@ -205,7 +205,7 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
                     // If nothing found then Search by 'day/month'
                     if ((dayAndMonth === query) && !result.includes(dict)) {
                         result.push(dict);
-                    // If still nothing found then Search by day or month or year
+                        // If still nothing found then Search by day or month or year
                     } else if ((day === query || month === query || year === query) && !result.includes(dict)) {
                         result.push(dict);
                     }

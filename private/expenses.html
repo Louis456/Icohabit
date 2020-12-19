@@ -45,7 +45,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="submitSearchExpenses" method="post">
-                <input class="form-control mr-sm-2" id="expensesTextSearch" name="expensesTextSearch" type="search" placeholder="Rechercher une dépense" aria-label="Rechercher une dépense" size="30" maxlength="40">
+                <input class="form-control mr-sm-2" id="expensesTextSearch" name="expensesTextSearch" type="search"
+                    placeholder="Rechercher une dépense" aria-label="Rechercher une dépense" size="30" maxlength="40">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <ul class="navbar-nav">
@@ -89,9 +90,9 @@
                             oninvalid="this.setCustomValidity('Veuillez choisir la personne qui a payé')"
                             oninput="setCustomValidity('')">
                             <optgroup label="Par qui?">
-                              {{#names}}
-                              <option id="payeurName {{.}}" value="{{.}}">{{.}}</option>
-                              {{/names}}
+                                {{#names}}
+                                <option id="payeurName {{.}}" value="{{.}}">{{.}}</option>
+                                {{/names}}
                             </optgroup>
                         </select>
                     </div>
@@ -100,9 +101,9 @@
                             oninvalid="this.setCustomValidity('Veuillez choisir les personnes pour qui il a payé')"
                             oninput="setCustomValidity('')">
                             <optgroup label="Pour qui?">
-                              {{#names}}
-                              <option id="{{.}}" value="{{.}}">{{.}}</option>
-                              {{/names}}
+                                {{#names}}
+                                <option id="{{.}}" value="{{.}}">{{.}}</option>
+                                {{/names}}
                             </optgroup>
                         </select>
                     </div>
@@ -115,20 +116,21 @@
                 {{#expenses}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
-                      {{#expensesArray}}
-                      <ul class="listdesign line_underneath" id="expense {{_id}}">
-                          <li><b>{{amount}}€</b> {{title}}</li>
-                          <li><b>Payé par?</b> {{payeur}}</li>
-                          <li><b>Pour?</b> {{receveurs}}</li>
-                          <li>
-                              <form class="" action="deleteExpense" method="post">
-                                  <input type="hidden" name="expense_id" value="{{_id}}">
-                                  <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
-                              </form>
-                          </li>
-                      </ul>
-                      {{/expensesArray}}
+                    {{#expensesArray}}
+                    <ul class="listdesign line_underneath" id="expense {{_id}}">
+                        <li><b>{{amount}}€</b> {{title}}</li>
+                        <li><b>Payé par?</b> {{payeur}}</li>
+                        <li><b>Pour?</b> {{receveurs}}</li>
+                        <li>
+                            <form class="" action="deleteExpense" method="post">
+                                <input type="hidden" name="expense_id" value="{{_id}}">
+                                <input type="hidden" name="date" value="{{date}}">
+                                <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm"
+                                    id="deletebtn {{_id}}">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                    {{/expensesArray}}
                 </div>
                 {{/expenses}}
             </div>
