@@ -47,15 +47,17 @@ module.exports = {
          */
         dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
             $pull: { "expensesArray": { "_id": Number(req.body.expense_id) } }
-        });
-        dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
+        }, function (err, _) {
             if (err) throw err;
-            let arrayAndDict = listOfAccounts(expenses.expensesArray);
-            dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
-                $set: { "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] }
-            }, function (err, _) {
+            dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, expenses) {
                 if (err) throw err;
-                res.redirect('/depenses');
+                let arrayAndDict = listOfAccounts(expenses.expensesArray);
+                dbo.collection('expenses').updateOne({ "groupe": req.session.team_ID }, {
+                    $set: { "cache": [arrayAndDict[0], listOfRefunds(arrayAndDict[1])] }
+                }, function (err, _) {
+                    if (err) throw err;
+                    res.redirect('/depenses');
+                });
             });
         });
     },

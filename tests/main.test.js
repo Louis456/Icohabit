@@ -12,7 +12,7 @@ capabilities.setPageLoadStrategy("normal");
 jest.setTimeout(30000);
 
 // IMPORTANT !! Choose your browser language before starting tests (en, fr, nl) !!
-const BROWSER_LANGUAGE = "fr"
+const BROWSER_LANGUAGE = "en"
 
 const URL = 'https://localhost:8080';
 const DATABASE = "testdb"
@@ -364,26 +364,18 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
     });
 
     test('Second account sees both tasks', async() => {
-        let firstTask = await driver.findElement(By.id('todo 0')).getAttribute('innerHTML');
-        let secondTask = await driver.findElement(By.id('todo 1')).getAttribute('innerHTML');
-        await expect(firstTask).toContain('nettoyer le sol');
-        await expect(firstTask).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-        await expect(secondTask).toContain('cuire les saucisses');
-        await expect(secondTask).toContain(ACCOUNT_1_USERNAME);
+        verifyContainingOrNot(driver, 'todo 0', ['nettoyer le sol',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], []);
+        verifyContainingOrNot(driver, 'todo 1', ['cuire les saucisses',ACCOUNT_1_USERNAME], []);
     });
 
     test('First account sees both tasks', async() => {
         await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'TodoListIcon');
-        let firstTask = await driver.findElement(By.id('todo 0')).getAttribute('innerHTML');
-        let secondTask = await driver.findElement(By.id('todo 1')).getAttribute('innerHTML');
-        await expect(firstTask).toContain('nettoyer le sol');
-        await expect(firstTask).toContain(ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME);
-        await expect(secondTask).toContain('cuire les saucisses');
-        await expect(secondTask).toContain(ACCOUNT_1_USERNAME);
+        verifyContainingOrNot(driver, 'todo 0', ['nettoyer le sol',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], []);
+        verifyContainingOrNot(driver, 'todo 1', ['cuire les saucisses',ACCOUNT_1_USERNAME], []);
     });
 
     test('Check the first task', async () => {
-        await clickButton(driver, 'donebtn 0')
+        await clickButton(driver, 'donebtn 0');
         dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
             let addedTask = todoOfTheGroup.tasks[0];
             expect(addedTask["done"]).toEqual(true);
@@ -391,39 +383,28 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
     });
 
     test('Delete the first task that has been checked', async () => {
-        await clickButton(driver, 'deletebtn 0')
+        await clickButton(driver, 'deletebtn 0');
         dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
             expect(todoOfTheGroup.tasks[0]['_id']).not.toEqual(0);
         });
     });
 
     test('Delete the second task that hasnt been checked', async () => {
-        await clickButton(driver, 'deletebtn 1')
+        await clickButton(driver, 'deletebtn 1');
         dbo.collection('todo').findOne({ "groupe": '1' }, function (err, todoOfTheGroup) {
             expect(todoOfTheGroup.tasks).toEqual([]);
         });
     });
 
     test('First account sees no task', async () => {
-        let tasksTodo = await driver.findElement(By.id('todo')).getAttribute('innerHTML');
-        let tasksDone = await driver.findElement(By.id('done')).getAttribute('innerHTML');
-        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses'];
-        for (let item of toCheck) {
-            await expect(tasksTodo).toEqual(expect.not.stringContaining(item));
-            await expect(tasksDone).toEqual(expect.not.stringContaining(item));
-        }
-
+        await verifyContainingOrNot(driver,'todo', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses']);
+        await verifyContainingOrNot(driver, 'done', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses']);
     });
 
     test('Second account sees no task', async () => {
         await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'TodoListIcon');
-        let tasksTodo = await driver.findElement(By.id('todo')).getAttribute('innerHTML');
-        let tasksDone = await driver.findElement(By.id('done')).getAttribute('innerHTML');
-        let toCheck = [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses'];
-        for (let item of toCheck) {
-            await expect(tasksTodo).toEqual(expect.not.stringContaining(item));
-            await expect(tasksDone).toEqual(expect.not.stringContaining(item));
-        }
+        await verifyContainingOrNot(driver,'todo', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses']);
+        await verifyContainingOrNot(driver, 'done', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'nettoyer le sol', 'cuire les saucisses']);
     });
 
 });
@@ -471,25 +452,25 @@ describe('(5) Add and Delete events in the planning', () => {
     });
 
     test('Second account sees both events', async() => {
-        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], [])
-        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], [])
+        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], []);
+        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], []);
     });
 
     test('First account sees both events', async() => {
         await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'PlanningIcon');
-        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], [])
-        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], [])
+        await verifyContainingOrNot(driver, 'tocome 0', ['soirée pyjama au kot',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME], []);
+        await verifyContainingOrNot(driver, 'past 1', ['apocalypse de zombies',ACCOUNT_1_USERNAME], []);
     });
 
     test('Delete the first event that was a future event', async () => {
-        await clickButton(driver, 'deletebtn 0')
+        await clickButton(driver, 'deletebtn 0');
         dbo.collection('planning').findOne({ "groupe": '1' }, function (err, planningOfTheGroup) {
             expect(planningOfTheGroup.events[0]['_id']).not.toEqual(0);
         });
     });
 
     test('Delete the second event that was a past event', async () => {
-        await clickButton(driver, 'deletebtn 1')
+        await clickButton(driver, 'deletebtn 1');
         dbo.collection('planning').findOne({ "groupe": '1' }, function (err, planningOfTheGroup) {
             expect(planningOfTheGroup.events).toEqual([]);
         });
@@ -505,7 +486,7 @@ describe('(5) Add and Delete events in the planning', () => {
         await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'PlanningIcon');
         await verifyContainingOrNot(driver, 'tocome',[], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
         await verifyContainingOrNot(driver,'past', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'soirée pyjama au kot', 'apocalypse de zombies']);
-        
+
     });
 
 
@@ -515,7 +496,7 @@ describe('(5) Add and Delete events in the planning', () => {
 /*
 ----------Expenses----------
 */
-describe('(5) Add and Delete expenses in the Dépenses', () => {
+describe('(6) Add and Delete expenses in the Dépenses', () => {
     let driver;
     let dbo;
     beforeAll(async () => {
@@ -555,10 +536,58 @@ describe('(5) Add and Delete expenses in the Dépenses', () => {
         await verifyExpensesSolver(dbo, '1', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], ['-19.1', '+19.1'], [ACCOUNT_1_USERNAME], [ACCOUNT_2_USERNAME], [19.1]);
     });
 
+    test('Second account sees both expenses and the result of the solver', async() => {
+        await verifyContainingOrNot(driver, 'expense 0', ['jupilers et chipolatas',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME, '27'], ['guirlandes et boules chromées']);
+        await verifyContainingOrNot(driver, 'expense 1', ['guirlandes et boules chromées',ACCOUNT_1_USERNAME, '32.6'], ['jupilers et chipolatas']);
+        await verifyContainingOrNot(driver, 'accounts', [ACCOUNT_2_USERNAME, ACCOUNT_1_USERNAME, '+19.1', '-19.1'], []);
+        await verifyContainingOrNot(driver, 'transactions', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, '19.1'], ['13.5']);
+    });
+
+    test('First account sees both expenses and the result of the solver', async() => {
+        await switchAccountAndGetToApp(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD, '1', 'ExpensesIcon');
+        await verifyContainingOrNot(driver, 'expense 0', ['jupilers et chipolatas',ACCOUNT_2_USERNAME+','+ACCOUNT_1_USERNAME, '27'], ['guirlandes et boules chromées']);
+        await verifyContainingOrNot(driver, 'expense 1', ['guirlandes et boules chromées',ACCOUNT_1_USERNAME, '32.6'], ['jupilers et chipolatas']);
+        await verifyContainingOrNot(driver, 'accounts', [ACCOUNT_2_USERNAME, ACCOUNT_1_USERNAME, '+19.1', '-19.1'], []);
+        await verifyContainingOrNot(driver, 'transactions', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, '19.1'], ['13.5']);
+    });
+
+    test('Delete the first expense', async () => {
+        await clickButton(driver, 'deletebtn 0');
+        dbo.collection('expenses').findOne({ "groupe": '1' }, function (err, expensesOfTheGroup) {
+            expect(expensesOfTheGroup.expensesArray[0]['_id']).not.toEqual(0);
+        });
+    });
+
+    test('Verify the new result of the solver', async () => {
+        await verifyExpensesSolver(dbo, '1', [ACCOUNT_2_USERNAME, ACCOUNT_1_USERNAME], ['+32.6', '-32.6'], [ACCOUNT_1_USERNAME], [ACCOUNT_2_USERNAME], [32.6]);
+    });
+
+    test('Delete the second expense', async () => {
+        await clickButton(driver, 'deletebtn 1');
+        dbo.collection('expenses').findOne({ "groupe": '1' }, function (err, expensesOfTheGroup) {
+            expect(expensesOfTheGroup.expensesArray).toEqual([]);
+        });
+    });
+
+    test('First account sees no expense and no result of the solver', async () => {
+        await verifyContainingOrNot(driver, 'expenses',[], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+        await verifyContainingOrNot(driver,'accounts', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+        await verifyContainingOrNot(driver,'transactions', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+
+    });
+
+    test('Second account sees no expense and no result of the solver', async () => {
+        await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'ExpensesIcon');
+        await verifyContainingOrNot(driver, 'expenses',[], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+        await verifyContainingOrNot(driver,'accounts', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+        await verifyContainingOrNot(driver,'transactions', [], [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME, 'jupilers', 'guirlandes', '13.5', '19.1']);
+
+    });
+
 
 });
 
-describe('(6) research in groups', () => {
+describe('(7) Search in groups', () => {
     let driver;
     let dbo;
     beforeAll(async () => {
@@ -587,14 +616,14 @@ describe('(6) research in groups', () => {
         await createGroup(driver,TEAM_4_NAME,TEAM_4_PASSWORD);
         await createGroup(driver,TEAM_5_NAME,TEAM_5_PASSWORD);
         await createGroup(driver,TEAM_6_NAME,TEAM_6_PASSWORD);
-        await research(driver,"groupTextSearch","Rock")
+        await research(driver,"groupTextSearch","Rock");
         let title = await driver.getTitle();
         await expect(title).toContain("Groupes");
-        await verifyContainingOrNot(driver, 'Teams', [TEAM_5_NAME,TEAM_3_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_4_NAME,TEAM_6_NAME])
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_5_NAME,TEAM_3_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_4_NAME,TEAM_6_NAME]);
     });
 
     test('research for group(s) with inexact search text', async () => {
-        await research(driver,"groupTextSearch","cket")
+        await research(driver,"groupTextSearch","cket");
         let title = await driver.getTitle();
         await expect(title).toContain("Groupes");
         await verifyContainingOrNot(driver, 'Teams', [TEAM_4_NAME,TEAM_5_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_6_NAME]);
@@ -607,18 +636,108 @@ describe('(6) research in groups', () => {
         await verifyContainingOrNot(driver, 'Teams', [TEAM_6_NAME], [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME]);
     });
 
-    test('empty search for group', async () => {
+    test('empty research for group', async () => {
         await driver.get(URL);
         await research(driver,"groupTextSearch","");
         let title = await driver.getTitle();
         await expect(title).toContain("Groupes");
-        await verifyContainingOrNot(driver, 'Teams', [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME,TEAM_6_NAME], [])
-    })
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_1_NAME,TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME,TEAM_6_NAME], []);
+    });
 
+    test('research with less than 3 char', async () => {
+        await research(driver,"groupTextSearch", "ck");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche de groupe");
+    });
+
+    test('research by id', async () => {
+        await driver.get(URL);
+        await research(driver,"groupTextSearch","1");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_1_NAME], [TEAM_2_NAME,TEAM_3_NAME,TEAM_4_NAME,TEAM_5_NAME,TEAM_6_NAME]);
+    });
+
+    test('research with multiple queries', async () => {
+        await research(driver,"groupTextSearch","1 blue Home");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Groupes");
+        await verifyContainingOrNot(driver, 'Teams', [TEAM_1_NAME,TEAM_4_NAME,TEAM_6_NAME], [TEAM_2_NAME,TEAM_3_NAME,TEAM_5_NAME]);
+    });
+
+    test('inconclusive research', async () => {
+        await research(driver,"groupTextSearch", "chipolatas");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche de groupe");
+    });
 
 });
 
+describe('(8) Search in todolist', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db(DATABASE);
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
 
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('research by accountant name with one query', async () => {
+        await driver.get(URL);
+        await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'TodoListIcon');
+        await addTask(driver, 'nettoyer le sol', '10022020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await addTask(driver, 'cuire les saucisses', '15022020', [ACCOUNT_1_USERNAME]);
+        await addTask(driver, 'nettoyer les vitres', '12022020', [ACCOUNT_2_USERNAME]);
+        await clickButton(driver, 'donebtn 2')
+        await research(driver,"todoTextSearch",'first');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', ['nettoyer le sol'], ['cuire les saucisses','nettoyer les vitres']);
+        await verifyContainingOrNot(driver, 'todo', ['cuire les saucisses'], ['nettoyer le sol','nettoyer les vitres']);
+    });
+
+    test('research by task name mith multiple queries', async () => {
+        await research(driver,"todoTextSearch",'saucisses vitr');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses','nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'todo', ['cuire les saucisses','nettoyer les vitres'], ['nettoyer le sol']);
+
+    });
+
+    test('empty research for task', async () => {
+        await research(driver,"todoTextSearch",'');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses','nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'todo', [], ['cuire les saucisses','nettoyer les vitres','nettoyer le sol']);
+    });
+
+    test('research with less than 3 char', async () => {
+        await research(driver,"todoTextSearch",'sa');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+
+
+
+});
 
 
 
@@ -669,8 +788,8 @@ async function switchAccountAndGetToApp(driver, username, password, group, app) 
      * To switch to another account and move to the an app in a group.
      * @param {String} username : username of the account.
      * @param {String} password : password of the account.
-     * @param {String} group : the group to click. 
-     * @param {String} app : the app to click. 
+     * @param {String} group : the group to click.
+     * @param {String} app : the app to click.
      */
     await logOut(driver);
     await logIn(driver, username, password);
@@ -865,14 +984,14 @@ async function research(driver, id, searchText) {
      * @param {String} searchText : text to search with
      */
     await driver.findElement(By.id(id)).sendKeys(searchText);
-    clickButton(driver, 'seachbtn');
+    await clickButton(driver, "searchbtn");
 }
 
 async function verifyContainingOrNot(driver, id, containing, notContaining) {
     /**
      * @param {String} id : id of the element you need to check if it contains or not some text
-     * @param {Array} containing : list of text the element by id should be containing 
-     * @param {Array} notContaining : list of text the element by id shouldn't be containing 
+     * @param {Array} containing : list of text the element by id should be containing
+     * @param {Array} notContaining : list of text the element by id shouldn't be containing
      */
     let teams = await driver.findElement(By.id(id)).getAttribute('innerHTML');
     for (item of containing) {
@@ -881,5 +1000,5 @@ async function verifyContainingOrNot(driver, id, containing, notContaining) {
     for (item of notContaining) {
         await expect(teams).toEqual(expect.not.stringContaining(item));
     }
-    
+
 }

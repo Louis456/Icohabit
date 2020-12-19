@@ -111,12 +111,12 @@
             </form>
 
             <h1>Liste des dépenses</h1>
-            <div class="resultContainer">
+            <div class="resultContainer" id="expenses">
                 {{#expenses}}
                 <div class="eachResult">
                     <h4>Date {{date}}</h4>
                       {{#expensesArray}}
-                      <ul class="listdesign line_underneath">
+                      <ul class="listdesign line_underneath" id="expense {{_id}}">
                           <li><b>{{amount}}€</b> {{title}}</li>
                           <li><b>Payé par?</b> {{payeur}}</li>
                           <li><b>Pour?</b> {{receveurs}}</li>
@@ -124,7 +124,7 @@
                               <form class="" action="deleteExpense" method="post">
                                   <input type="hidden" name="expense_id" value="{{_id}}">
                                   <input type="hidden" name="date" value="{{date}}">
-                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm">Delete</button>
+                                  <button type="submit" name="Delete" class="btn btn-outline-danger btn-sm" id="deletebtn {{_id}}">Delete</button>
                               </form>
                           </li>
                       </ul>
@@ -135,7 +135,7 @@
 
 
             <h1>Liste des comptes</h1>
-            <div class="resultContainer">
+            <div class="resultContainer" id="accounts">
                 {{#accounts}}
                 <div class="eachResult">
                     <ul class="listdesign line_underneath">
@@ -146,7 +146,7 @@
             </div>
 
             <h1>Remboursements à effectuer</h1>
-            <div class="resultContainer">
+            <div class="resultContainer" id="transactions">
                 {{#refunds}}
                 <div class="eachResult">
                     <ul class="listdesign line_underneath">
