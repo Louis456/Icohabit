@@ -700,9 +700,9 @@ describe('(8) Search in todolist', () => {
         await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'TodoListIcon');
-        await addTask(driver, 'nettoyer le sol', '10022020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
-        await addTask(driver, 'cuire les saucisses', '15022020', [ACCOUNT_1_USERNAME]);
-        await addTask(driver, 'nettoyer les vitres', '12022020', [ACCOUNT_2_USERNAME]);
+        await addTask(driver, 'nettoyer le sol', '10022021', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await addTask(driver, 'cuire les saucisses', '15022021', [ACCOUNT_1_USERNAME]);
+        await addTask(driver, 'nettoyer les vitres', '12022021', [ACCOUNT_2_USERNAME]);
         await clickButton(driver, 'donebtn 2')
         await research(driver,"todoTextSearch",'first');
         let title = await driver.getTitle();
@@ -724,8 +724,8 @@ describe('(8) Search in todolist', () => {
         await research(driver,"todoTextSearch",'');
         let title = await driver.getTitle();
         await expect(title).toContain("TodoList");
-        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses','nettoyer les vitres','nettoyer le sol']);
-        await verifyContainingOrNot(driver, 'todo', [], ['cuire les saucisses','nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'done', ['cuire les saucisses','nettoyer les vitres','nettoyer le sol'], []);
+        await verifyContainingOrNot(driver, 'todo', ['cuire les saucisses','nettoyer les vitres','nettoyer le sol'], []);
     });
 
     test('research with less than 3 char', async () => {
