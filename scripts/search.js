@@ -199,11 +199,15 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
                     // Search by date accept month/day or year if not the entire date is written.
                 } else if (key === "date") {
                     let dayAndMonth = dict["date"].toString().substring(0, 5);
+                    let monthAndYear = dict["date"].toString().substring(3, 10);
                     let day = dict["date"].toString().substring(0, 2);
                     let month = dict["date"].toString().substring(2, 5);
                     let year = dict["date"].toString().substring(6, 10);
                     // If nothing found then Search by 'day/month'
                     if ((dayAndMonth === query) && !result.includes(dict)) {
+                        result.push(dict);
+                        // Try to search by 'month/year'
+                    } else if ((monthAndYear === query) && !result.includes(dict)) {
                         result.push(dict);
                         // If still nothing found then Search by day or month or year
                     } else if ((day === query || month === query || year === query) && !result.includes(dict)) {
@@ -213,15 +217,25 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
                 }
             }
         }
-        // Search for inexact values with min 3 characters
-        let min3chars = query.length - 2;
-        for (var i = 0; i < min3chars; i++) {
-            for (var j = 0; j < i + 1; j++) {
-                for (dict of arrayOfDicts) {
-                    for (key of inexactKeys) {
-                        let value = dict[key].toString().toLowerCase();
-                        if (value.includes(query.substring(j, query.length - i + j)) && !result.includes(dict)) {
-                            result.push(dict);
+        for (key of inexactKeys) {
+            let entireWordNotFound = true;
+            // First try to find the entireWord well typed by the user
+            for (dict of arrayOfDicts) {
+                if (dict[key].toString().toLowerCase().includes(query) && !result.includes(dict)) {
+                    result.push(dict);
+                    entireWordNotFound = false;
+                }
+            }
+            // If not found then try to find parts of the word
+            if (entireWordNotFound) {
+                let min3chars = query.length - 2;
+                for (var i = 0; i < min3chars; i++) {
+                    for (dict of arrayOfDicts) {
+                        for (var j = 0; j < i + 1; j++) {
+                            let value = dict[key].toString().toLowerCase();
+                            if (value.includes(query.substring(j, query.length - i + j)) && !result.includes(dict)) {
+                                result.push(dict);
+                            }
                         }
                     }
                 }
