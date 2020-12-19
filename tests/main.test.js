@@ -702,7 +702,7 @@ describe('(8) Search in todolist', () => {
         await clickButton(driver, 'TodoListIcon');
         await addTask(driver, 'nettoyer le sol', '10022021', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
         await addTask(driver, 'cuire les saucisses', '15022021', [ACCOUNT_1_USERNAME]);
-        await addTask(driver, 'nettoyer les vitres', '12022021', [ACCOUNT_2_USERNAME]);
+        await addTask(driver, 'nettoyer les vitres', '12032021', [ACCOUNT_2_USERNAME]);
         await clickButton(driver, 'donebtn 2')
         await research(driver, "todoTextSearch", 'first');
         let title = await driver.getTitle();
@@ -734,12 +734,164 @@ describe('(8) Search in todolist', () => {
         await expect(title).toContain("Aucun résultat de recherche");
     });
 
+    test('research with complete date', async () => {
+        await driver.get(URL+'/todolist');
+        await research(driver, "todoTextSearch", '10/02/2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', ['nettoyer le sol'], ['cuire les saucisses', 'nettoyer les vitres']);
+        await verifyContainingOrNot(driver, 'todo', [], ['nettoyer le sol','cuire les saucisses', 'nettoyer les vitres']);
+    });
 
+    test('research for a date with only dd/mm', async () => {
+        await research(driver, "todoTextSearch", '12/03');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses', 'nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'todo', ['nettoyer les vitres'], ['nettoyer le sol','cuire les saucisses']);
+    });
+
+    test('research for a date with only mm', async () => {
+        await research(driver, "todoTextSearch", '/03');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses', 'nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'todo', ['nettoyer les vitres'], ['nettoyer le sol','cuire les saucisses']);
+    });
+
+    test('research for a date with only mm/yyyy', async () => {
+        await research(driver, "todoTextSearch", '03/2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("TodoList");
+        await verifyContainingOrNot(driver, 'done', [], ['cuire les saucisses', 'nettoyer les vitres','nettoyer le sol']);
+        await verifyContainingOrNot(driver, 'todo', ['nettoyer les vitres'], ['nettoyer le sol','cuire les saucisses']);
+    });
+
+    test('inconclusie research', async () => {
+        await research(driver, "todoTextSearch", 'chipolatas');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+    test('research with wrong date format', async () => {
+        await driver.get(URL+'/todolist');
+        await research(driver, "todoTextSearch", '10-02-2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
 
 
 });
 
 
+describe('(9) Search in planning', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db(DATABASE);
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('research by participant name with one query', async () => {
+        await driver.get(URL);
+        await logIn(driver, ACCOUNT_1_USERNAME, ACCOUNT_1_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'PlanningIcon');
+        await addEvent(driver, 'karaoké patrick sebastien', '18122020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await addEvent(driver, 'promenade au bois de boulogne', '15022021', [ACCOUNT_1_USERNAME]);
+        await addEvent(driver, 'soirée cinoche', '12032021', [ACCOUNT_2_USERNAME]);
+        await research(driver, "planningTextSearch", 'first');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['promenade au bois de boulogne'], ['karaoké patrick sebastien', 'soirée cinoche']);
+        await verifyContainingOrNot(driver, 'past', ['karaoké patrick sebastien'], ['promenade au bois de boulogne', 'soirée cinoche']);
+    });
+
+    test('research by task name mith multiple queries', async () => {
+        await research(driver, "planningTextSearch", 'promenade cino');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['promenade au bois de boulogne','soirée cinoche'], ['karaoké patrick sebastien']);
+        await verifyContainingOrNot(driver, 'past', [], ['promenade au bois de boulogne','soirée cinoche','karaoké patrick sebastien']);
+
+    });
+
+    test('empty research for task', async () => {
+        await clickButton(driver, "searchbtn");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['promenade au bois de boulogne','soirée cinoche'], ['karaoké patrick sebastien']);
+        await verifyContainingOrNot(driver, 'past', ['karaoké patrick sebastien'], ['promenade au bois de boulogne','soirée cinoche']);
+    });
+
+    test('research with less than 3 chars', async () => {
+        await research(driver, "planningTextSearch", 'sa');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+    test('research with complete date', async () => {
+        await driver.get(URL+'/planning');
+        await research(driver, "planningTextSearch", '15/02/2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['promenade au bois de boulogne'], ['karaoké patrick sebastien','soirée cinoche']);
+        await verifyContainingOrNot(driver, 'past', [], ['promenade au bois de boulogne','karaoké patrick sebastien','soirée cinoche']);
+    });
+
+    test('research for a date with only dd/mm', async () => {
+        await research(driver, "planningTextSearch", '12/03');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['soirée cinoche'], ['promenade au bois de boulogne','karaoké patrick sebastien']);
+        await verifyContainingOrNot(driver, 'past', [], ['promenade au bois de boulogne','karaoké patrick sebastien','soirée cinoche']);
+    });
+
+    test('research for a date with only mm', async () => {
+        await research(driver, "planningTextSearch", '/03');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['soirée cinoche'], ['promenade au bois de boulogne','karaoké patrick sebastien']);
+        await verifyContainingOrNot(driver, 'past', [], ['promenade au bois de boulogne','karaoké patrick sebastien','soirée cinoche']);
+    });
+
+    test('research for date with only mm/yyyy', async () => {
+        await research(driver, "planningTextSearch", '02/2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Planning");
+        await verifyContainingOrNot(driver, 'tocome', ['promenade au bois de boulogne'], ['soirée cinoche','karaoké patrick sebastien']);
+        await verifyContainingOrNot(driver, 'past', [], ['promenade au bois de boulogne','nettoyer le sol','cuire les saucisses']);
+    });
+
+    test('inconclusie research', async () => {
+        await research(driver, "planningTextSearch", 'chipolatas');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+    test('research with wrong date format', async () => {
+        await driver.get(URL+'/planning');
+        await research(driver, "planningTextSearch", '10-02-2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+
+});
 
 
 async function clickButton(driver, id) {
