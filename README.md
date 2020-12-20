@@ -47,6 +47,7 @@
     (tous les mots de passe des utilisateurs et des groupes sont 123)
 
 5. (Pour executer les tests:)
+    - Si votre navigateur est en anglais vous pouvez passer les deux points suivants
     - Ouvrir le dossier tests puis ouvrir le fichier **main.test.js**
     - **Choisir la langue de votre navigateur** à la ligne 15 pour eviter les conflits entre les formats de date.
     - Executer la commande suivante dans le dossier racine: `npm test`
