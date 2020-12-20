@@ -49,7 +49,7 @@ MongoClient.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err, db) => {
-    dbo = db.db("testdb");
+        dbo = db.db("icohabitdb");
     if (err) throw err;
 
     /* ----------------

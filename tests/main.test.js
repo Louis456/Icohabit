@@ -15,7 +15,7 @@ jest.setTimeout(30000);
 const BROWSER_LANGUAGE = "en"
 
 const URL = 'https://localhost:8080';
-const DATABASE = "testdb"
+const DATABASE = "icohabitdb"
 
 const ACCOUNT_1_USERNAME = 'firstAccount';
 const ACCOUNT_1_PASSWORD = 'firstPwd123';
@@ -915,6 +915,11 @@ describe('(10) Search in Expenses', () => {
 
     afterAll(async () => {
         await driver.quit();
+        await dbo.collection('users').drop();
+        await dbo.collection('groupes').drop();
+        await dbo.collection('todo').drop();
+        await dbo.collection('planning').drop();
+        await dbo.collection('expenses').drop();
         await connection.close();
     }, 15000);
 

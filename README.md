@@ -27,6 +27,7 @@
         $ npm install selenium-webdriver selenium
         $ npm install jest
         ```
+3. Pour imported la db: mongorestore -d icohabitdb ./database_exported
 
 
 
