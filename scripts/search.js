@@ -217,24 +217,26 @@ function applySearching(queries, arrayOfDicts, exactKeys, inexactKeys) {
                 }
             }
         }
+        let min3chars = query.length - 2;
         for (key of inexactKeys) {
-            let entireWordNotFound = true;
-            // First try to find the entireWord well typed by the user
-            for (dict of arrayOfDicts) {
-                if (dict[key].toString().toLowerCase().includes(query) && !result.includes(dict)) {
-                    result.push(dict);
-                    entireWordNotFound = false;
+            if (min3chars > 0) {
+                let entireWordNotFound = true;
+                // First try to find the entire word correctly typed by the user
+                for (dict of arrayOfDicts) {
+                    if (dict[key].toString().toLowerCase().includes(query) && !result.includes(dict)) {
+                        result.push(dict);
+                        entireWordNotFound = false;
+                    }
                 }
-            }
-            // If not found then try to find parts of the word
-            if (entireWordNotFound) {
-                let min3chars = query.length - 2;
-                for (var i = 0; i < min3chars; i++) {
-                    for (dict of arrayOfDicts) {
-                        for (var j = 0; j < i + 1; j++) {
-                            let value = dict[key].toString().toLowerCase();
-                            if (value.includes(query.substring(j, query.length - i + j)) && !result.includes(dict)) {
-                                result.push(dict);
+                // If not found then try to find parts of the word
+                if (entireWordNotFound) {
+                    for (var i = 0; i < min3chars; i++) {
+                        for (dict of arrayOfDicts) {
+                            for (var j = 0; j < i + 1; j++) {
+                                let value = dict[key].toString().toLowerCase();
+                                if (value.includes(query.substring(j, query.length - i + j)) && !result.includes(dict)) {
+                                    result.push(dict);
+                                }
                             }
                         }
                     }
