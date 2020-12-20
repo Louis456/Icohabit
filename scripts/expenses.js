@@ -143,11 +143,15 @@ function listOfRefunds(accounts) {
                     if (toGive >= toRetrieve) {
                         accounts[creditor] = 0;
                         accounts[debtor] = accounts[debtor] + toRetrieve;
-                        balanceList.push({ "debtor": debtor, "howMuch": toRetrieve, "creditor": creditor });
+                        if (toRetrieve > 0) {
+                            balanceList.push({ "debtor": debtor, "howMuch": toRetrieve, "creditor": creditor });
+                        }
                     } else {
                         accounts[creditor] = accounts[creditor] - toGive;
                         accounts[debtor] = 0;
-                        balanceList.push({ "debtor": debtor, "howMuch": toGive, "creditor": creditor });
+                        if (toGive > 0) {
+                            balanceList.push({ "debtor": debtor, "howMuch": toGive, "creditor": creditor });
+                        }
                     }
                 }
             }

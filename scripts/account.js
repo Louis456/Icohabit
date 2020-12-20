@@ -6,7 +6,7 @@ module.exports = {
     register: function (req, res, dbo) {
         /**
          * If username already exist, then refresh the page.
-         * Else insert a new document into the database with the user's input datas (password encrypted),
+         * Else insert a new document into the collection 'users' with the user's input datas (password encrypted),
          * then create a cookie and redirect to the home page.
          */
         dbo.collection('users').findOne({

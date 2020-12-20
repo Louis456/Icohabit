@@ -31,7 +31,7 @@ body {
 h1 {
   font-family: "Fira Sans", serif;
   font-style: italic;
-  text-decoration: underline;
+  text-decoration: underline solid #3489db;
 }
 
 h2 {
@@ -97,7 +97,7 @@ p {
 
 .container {
   padding: 15px;
-  margin-top: 23%;
+  margin-top: 13%;
   display: flex;
   flex: 1;
   justify-content: center;

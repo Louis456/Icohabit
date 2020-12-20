@@ -3,15 +3,13 @@
 
 
 ## Installation
-1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js, toutes les etapes <br>
-indiquees dans les slides des semaines precedentes
-sont primordiales pour le bon fonctionnement de l'application.
+1. En premier lieu, assurez-vous d'avoir correctement installe MongoDB ainsi que Node.js
 
     - [**MongoDB**](https://www.mongodb.com/try/download/community)
     - [**Node.js**](https://nodejs.org)
 
 2. Installer les modules:
-    - Ouvrez un terminal et executez ces commandes :
+    - Ouvrez un terminal et executez ces commandes dans le dossier racine (ici) :
         ```sh
         $ npm install express
         $ npm install hogan
@@ -43,9 +41,9 @@ sont primordiales pour le bon fonctionnement de l'application.
 
 ## Application
 *  #### Accueil
-    La page contient notre slogan, une description generale du site, des descriptions de nos 3 fonctionnalites ainsi <br>
-    que les champs pour se connecter et se creer un compte.
-    
+    La page contient notre logo et notre slogan, une description generale du site, des descriptions de nos 3 fonctionnalites <br>
+    ainsi que les champs pour se connecter et se creer un compte.
+
 *  #### Groupes
     La page contient tous les groupes dont l'utilisateur fait parti ainsi que les champs pour pouvoir creer, <br>
     se connecter ou quitter un groupe.
@@ -64,7 +62,7 @@ sont primordiales pour le bon fonctionnement de l'application.
     La page affiche les depenses et permet d'ajouter ou de supprimer des depenses, elle affiche aussi de <br>
     combien les personnes sont en positif ou negatif ainsi que les transactions a realiser pour que tout <br>
     le monde recupere son argent.
-    
+
 
 
 

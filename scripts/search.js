@@ -8,7 +8,10 @@ module.exports = {
 
     searchGroup: function (req, res, dbo) {
         /**
-         *
+         * Search through the group names and ids.
+         * If the user has'nt inserted anything in the input then refresh the page.
+         * Else render the page with only the group found by the search algorithm.
+         * If nothing match the queries then redirect to the empty search page for groups.
          */
         dbo.collection('users').findOne({ "username": req.session.username }, function (err, userDoc) {
             if (err) throw err;
@@ -29,15 +32,7 @@ module.exports = {
                             groupes: result
                         });
                     } else {
-                        res.render('emptySearchGroup.html', {
-                            IdButtonText: req.session.username,
-                            searchQuery: queries,
-                            displayErrorJoin: "display:none",
-                            badIdJoinMsg: "",
-                            displayErrorLeave: "display:none",
-                            badIdLeaveMsg: "",
-                            groupes: userGroups
-                        });
+                        renderEmptyGroups(req, res, queries, userGroups);
                     }
                 } else {
                     res.redirect('/groupes')
@@ -49,7 +44,10 @@ module.exports = {
 
     searchTodo: function (req, res, dbo) {
         /**
-         *
+         * Search through the tasks titles, dates and accountants.
+         * If the user has'nt inserted anything in the input then refresh the page.
+         * Else render the page with only the tasks found by the search algorithm.
+         * If nothing match the queries then redirect to the empty search page for tools.
          */
         dbo.collection('todo').findOne({ "groupe": req.session.team_ID }, function (err, groupTodo) {
             if (err) throw err;
@@ -88,7 +86,10 @@ module.exports = {
 
     searchPlanning: function (req, res, dbo) {
         /**
-         *
+         * Search through the events titles, dates and accountants.
+         * If the user has'nt inserted anything in the input then refresh the page.
+         * Else render the page with only the events found by the search algorithm.
+         * If nothing match the queries then redirect to the empty search page for tools.
          */
         dbo.collection('planning').findOne({ "groupe": req.session.team_ID }, function (err, groupPlanning) {
             if (err) throw err;
@@ -127,7 +128,11 @@ module.exports = {
 
     searchExpenses: function (req, res, dbo) {
         /**
-         *
+         * Search through the expenses titles, dates, amounts, debtors and creditors.
+         * If the user has'nt inserted anything in the input then refresh the page.
+         * Else render the page with only the expenses found by the search algorithm.
+         * (The accounts and the transactions are no longer displayed)
+         * If nothing match the queries then redirect to the empty search page for tools.
          */
         dbo.collection('expenses').findOne({ "groupe": req.session.team_ID }, function (err, groupExpenses) {
             if (err) throw err;
@@ -269,13 +274,29 @@ function getQueries(userInput) {
 function renderEmptyTools(req, res, queries) {
     /**
      * Render the empty search html page for the 3 tools page (todolist, planning, expenses).
-     *
      * @param {array} queries : An array containing the queries of the user's input.
-     * Example: ["michel", "scouts"]
      */
     res.render('emptySearchTools.html', {
         IdButtonText: req.session.username,
         groupName: req.session.team_name,
         searchQuery: queries
+    });
+}
+
+
+function renderEmptyGroups(req, res, queries, userGroups) {
+    /**
+     * Render the empty search html page for the groups page.
+     * @param {array} queries : An array containing the queries of the user's input.
+     * @param {array} userGroups : An array containing the groups of the user.
+     */
+    res.render('emptySearchGroup.html', {
+        IdButtonText: req.session.username,
+        searchQuery: queries,
+        displayErrorJoin: "display:none",
+        badIdJoinMsg: "",
+        displayErrorLeave: "display:none",
+        badIdLeaveMsg: "",
+        groupes: userGroups
     });
 }

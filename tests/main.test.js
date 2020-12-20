@@ -21,6 +21,8 @@ const ACCOUNT_1_USERNAME = 'firstAccount';
 const ACCOUNT_1_PASSWORD = 'firstPwd123';
 const ACCOUNT_2_USERNAME = 'secondAccount';
 const ACCOUNT_2_PASSWORD = 'secondPwd123';
+const ACCOUNT_3_USERNAME = 'thirdAccount';
+const ACCOUNT_3_PASSWORD = 'thirdPwd123';
 
 const TEAM_1_NAME = 'Groupe n1';
 const TEAM_1_PASSWORD = '123pwd1';
@@ -353,14 +355,14 @@ describe('(4) Add, Delete and Check tasks in the todolist', () => {
         await joinGroup(driver, '1', TEAM_1_PASSWORD);
         await clickButton(driver, '1');
         await clickButton(driver, 'TodoListIcon');
-        await addTask(driver, 'nettoyer le sol', '20122020', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
-        await verifyTask(dbo, '1', 0, 'nettoyer le sol', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '20122020', false);
+        await addTask(driver, 'nettoyer le sol', '20022021', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME]);
+        await verifyTask(dbo, '1', 0, 'nettoyer le sol', [ACCOUNT_1_USERNAME, ACCOUNT_2_USERNAME], '20022021', false);
     });
 
     test('Add another task with the second account in the first group', async () => {
         await switchAccountAndGetToApp(driver, ACCOUNT_2_USERNAME, ACCOUNT_2_PASSWORD, '1', 'TodoListIcon');
-        await addTask(driver, 'cuire les saucisses', '25122020', [ACCOUNT_1_USERNAME]);
-        await verifyTask(dbo, '1', 1, 'cuire les saucisses', [ACCOUNT_1_USERNAME], '25122020', false);
+        await addTask(driver, 'cuire les saucisses', '25022021', [ACCOUNT_1_USERNAME]);
+        await verifyTask(dbo, '1', 1, 'cuire les saucisses', [ACCOUNT_1_USERNAME], '25022021', false);
     });
 
     test('Second account sees both tasks', async () => {
@@ -821,7 +823,7 @@ describe('(9) Search in planning', () => {
         await verifyContainingOrNot(driver, 'past', ['karaoké patrick sebastien'], ['promenade au bois de boulogne', 'soirée cinoche']);
     });
 
-    test('research by task name mith multiple queries', async () => {
+    test('research by event name mith multiple queries', async () => {
         await research(driver, "planningTextSearch", 'promenade cino');
         let title = await driver.getTitle();
         await expect(title).toContain("Planning");
@@ -830,7 +832,7 @@ describe('(9) Search in planning', () => {
 
     });
 
-    test('empty research for task', async () => {
+    test('empty research for event', async () => {
         await clickButton(driver, "searchbtn");
         let title = await driver.getTitle();
         await expect(title).toContain("Planning");
@@ -892,6 +894,111 @@ describe('(9) Search in planning', () => {
 
 
 });
+
+
+describe('(10) Search in Expenses', () => {
+    let driver;
+    let dbo;
+    beforeAll(async () => {
+        driver = new Builder()
+            .withCapabilities(capabilities)
+            .forBrowser('chrome')
+            .build();
+        connection = await MongoClient.connect('mongodb://localhost:27017', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        dbo = await connection.db(DATABASE);
+        await driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+    }, 15000);
+
+    afterAll(async () => {
+        await driver.quit();
+        await connection.close();
+    }, 15000);
+
+    test('research by name with one query', async () => {
+        await driver.get(URL);
+        await createAccount(driver, ACCOUNT_3_USERNAME, ACCOUNT_3_PASSWORD, 'Third Account Name', 'email.3.adress@mail.com');
+        await joinGroup(driver, '1', TEAM_1_PASSWORD);
+        await clickButton(driver, '1');
+        await clickButton(driver, 'ExpensesIcon');
+        await addExpense(driver, 'mcdo à jod', '05122019',10, ACCOUNT_1_USERNAME, [ACCOUNT_2_USERNAME]);
+        await addExpense(driver, 'alcool soirée vendredi', '28112020', 40, ACCOUNT_2_USERNAME, [ACCOUNT_1_USERNAME,ACCOUNT_3_USERNAME]);
+        await addExpense(driver, 'guirlandes pour sapin de noel', '18122020', 25, ACCOUNT_3_USERNAME, [ACCOUNT_2_USERNAME]);
+        await research(driver, "expensesTextSearch", 'first');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['mcdo à jod','alcool soirée vendredi'], ['guirlandes pour sapin de noel']);
+    });
+
+    test('research by expense name mith multiple queries', async () => {
+        await research(driver, "expensesTextSearch", 'alcool guirl');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['alcool soirée vendredi','guirlandes pour sapin de noel'], ['mcdo à jod']);
+    });
+
+    test('empty research for expense', async () => {
+        await clickButton(driver, "searchbtn");
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['alcool soirée vendredi','guirlandes pour sapin de noel','mcdo à jod'], []);
+    });
+
+    test('research with less than 3 chars', async () => {
+        await research(driver, "expensesTextSearch", 'sa');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+    test('research with complete date', async () => {
+        await driver.get(URL+'/depenses');
+        await research(driver, "expensesTextSearch", '05/12/2019');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['mcdo à jod'], ['alcool soirée vendredi','guirlandes pour sapin de noel']);
+    });
+
+    test('research for a date with only dd/mm', async () => {
+        await research(driver, "expensesTextSearch", '28/11');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['alcool soirée vendredi'], ['mcdo à jod','guirlandes pour sapin de noel']);
+    });
+
+    test('research for a date with only mm', async () => {
+        await research(driver, "expensesTextSearch", '/12');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['mcdo à jod','guirlandes pour sapin de noel'], ['alcool soirée vendredi']);
+    });
+
+    test('research for date with only mm/yyyy', async () => {
+        await research(driver, "expensesTextSearch", '12/2019');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Dépenses");
+        await verifyContainingOrNot(driver, 'expenses', ['mcdo à jod'], ['alcool soirée vendredi','guirlandes pour sapin de noel']);
+    });
+
+    test('inconclusie research', async () => {
+        await research(driver, "expensesTextSearch", 'chipolatas');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+    test('research with wrong date format', async () => {
+        await driver.get(URL+'/depenses');
+        await research(driver, "expensesTextSearch", '18-12-2021');
+        let title = await driver.getTitle();
+        await expect(title).toContain("Aucun résultat de recherche");
+    });
+
+
+});
+
+
 
 
 async function clickButton(driver, id) {

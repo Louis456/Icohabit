@@ -4,9 +4,9 @@ module.exports = {
 
     createGroup: function (req, res, dbo) {
         /**
-         *
-         *
-         *
+         * Insert a new document into the collection 'groupes' with the name and the password (encrypted)
+         * chosen by the user and with an id that is incremented by one.
+         * then refresh the page to display the new group.
          */
         dbo.collection('groupes').findOne({ "_id": 0 }, function (err, ids) {
             if (err) throw err;
