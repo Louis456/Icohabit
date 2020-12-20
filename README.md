@@ -27,7 +27,10 @@
         $ npm install selenium-webdriver selenium
         $ npm install jest
         ```
-3. Pour imported la db: mongorestore -d icohabitdb ./database_exported
+
+3. Importer la base de donnees remplie en exemple: 
+    - Executer la commande suivante dans le dossier racine (ici):
+        `mongorestore -d icohabitdb ./example_db`
 
 
 
@@ -37,6 +40,13 @@
 2. Ouvrir un navigateur.
 
 3. Entrer l'url suivante: `https://localhost:8080`.
+
+4. Si vous utilisez la base de donnees d'exemple vous pouvez utiliser ces identifiants:
+    - **Nom d'utilisateur**:    username
+    - **Mot de passe**:         123
+    (tous les mots de passe des utilisateurs et des groupes sont 123)
+
+5. (Pour executer les tests faire la commande suivant dans le dossier racine: `npm test`).
 
 
 
@@ -57,7 +67,8 @@
     ou de supprimer des taches.
 
 *  #### Planning
-    La page affiche les evenements a venir et permet d'en ajouter des nouveaux ou d'en supprimer.
+    La page affiche les evenements a venir ou passes en fonction de la date actuelle et permet d'en ajouter des <br>
+    nouveaux ou d'en supprimer.
 
 *  #### Depenses
     La page affiche les depenses et permet d'ajouter ou de supprimer des depenses, elle affiche aussi de <br>
