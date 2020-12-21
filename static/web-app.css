@@ -1,5 +1,5 @@
 body {
-  padding-top: 50px;
+  padding-top: 1%;
   color: white;
   background-color: black;
   background-size: cover;
@@ -20,12 +20,16 @@ body {
   background-size: cover;
 }
 
+.starter-template {
+  text-align: center;
+}
+
 #identification {
     scroll-margin-top: 100px;
 }
 
 #slogan {
-  padding-top: 80px;
+  padding-top: 6%;
 }
 
 h1 {
@@ -42,17 +46,13 @@ h2 {
   padding-top: 10px;
 }
 
-#oui {
+#spacer {
   margin-top: 80px;
 }
 
 p {
   font-family: "Fira Sans", serif;
   text-align: justify;
-}
-
-.teamForms {
-  margin-top: 25%;
 }
 
 .divider {
@@ -62,12 +62,9 @@ p {
   content: '';
 }
 
-.starter-template {
-  text-align: center;
-}
-
 #myGroup {
-  margin-top: 1%;
+  padding-top: 6%;
+  margin-top: 0%;
   margin-left: 2%;
   text-align: left;
 }
@@ -77,6 +74,10 @@ p {
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-left: 1%;
+}
+
+.teamForms {
+  margin-top: 25%;
 }
 
 .TeamButton {
@@ -97,7 +98,7 @@ p {
 
 .container {
   padding: 15px;
-  margin-top: 13%;
+  margin-top: 19%;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -156,7 +157,6 @@ form input[type="text"]:focus, form input[type="password"]:focus, form input[typ
   border-color: #00FA9A
 }
 
-/*Bouton*/
 .accountForm input[type="submit"] {
   position: relative;
   left: 50%;
@@ -229,7 +229,6 @@ form input[type="submit"]:hover::before {
   display: none;
 }
 
-/* Css app.html */
 .ButtonTool {
   background: #23244e;
   text-align: center;
@@ -290,7 +289,7 @@ form input[type="submit"]:hover::before {
 .emptysearch {
   display: inline-block;
   text-align: left;
-	padding-top: 30%;
+	padding-top: 18%;
 }
 
 .emptysearchList {
