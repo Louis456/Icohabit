@@ -12,7 +12,7 @@ capabilities.setPageLoadStrategy("normal");
 jest.setTimeout(30000);
 
 // IMPORTANT !! Choose your browser language before starting tests (en, fr, nl) !!
-const BROWSER_LANGUAGE = "en"
+const BROWSER_LANGUAGE = "fr"
 
 const URL = 'https://localhost:8080';
 const DATABASE = "icohabitdb"
