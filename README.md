@@ -28,8 +28,14 @@
         $ npm install jest
         ```
 
-3. Importer la base de donnees remplie en exemple: 
-    - Executer la commande suivante dans le dossier racine (ici):
+3. Importer la base de donnees remplie en exemple:
+    - Si votre base de donnees n'est vide, executer ces commandes:
+        ```sh
+        $ mongo
+        $ use icohabitdb
+        $ db.dropDatabase()
+        ```
+    - Ouvrir un nouveau terminal et executer la commande suivante:
         `mongorestore -d icohabitdb ./example_db`
 
 
